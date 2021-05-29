@@ -1,4 +1,4 @@
-file = File.new("criptocalc.log", 'a')
+file = File.new("criptoscore.log", 'a')
 file.write(Time.now, "\n")
 
 print "Calculador de score para criptomoedas
