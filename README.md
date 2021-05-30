@@ -1,5 +1,5 @@
 CriptoScore
-Versão 0.9
+Versão 0.91
 Escrito por Milo Draco
 
 O algoritmo calcula uma nota para uma criptomoeda de acordo com os dados inseridos, ajudando o usuário a decidir em qual cripto investir.
