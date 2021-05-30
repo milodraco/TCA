@@ -3,7 +3,7 @@ file.write(Time.now, "\n")
 
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.9\n"
+                        v. 0.91\n"
 loop do
 
 # inputs
@@ -29,76 +29,83 @@ dos últimos 3 meses: "
 news = (gets.chomp).to_i
 
 # cálculos
-cresc = c3.abs**(0.34) * 2
-cresc *= -1 if c3 < 0
 svalue = ((Math::log((10**10)-value) - 23.0258) * 25000)**(10)
 if nohist == true
   volat = 10
   else
   volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25
 end
+fator = 5.5 + volat
+if fator < 7
+  fator = 7
+  elsif fator > 21
+  fator = 21
+end
+#puts "\n", fator
+cresc = ((c3 + c6 + c12)/fator).abs**(1.0/3) * 2
+cresc *= -1 if c3+c6+c12 < 0
 score = (cresc + svalue + news - volat).round(2)
 
 # resultado
-print "\nValor (#{svalue.round(2)}): "
+print "\nValor: #{svalue.round(2)}"
 if svalue > 10
-  print "Excelente!\n"
+  print " (excelente!)\n"
   elsif svalue > 7
-  print "Bom\n"
+  print " (bom)\n"
   elsif svalue > 4
-  print "Razoável\n"
+  print " (razoável)\n"
   elsif svalue > 0
-  print "Ruim\n"
+  print " (ruim)\n"
   else
-  print "Muito ruim!\n"
+  print " (muito ruim!)\n"
 end
-print "Crescimento (#{cresc.round(2)}): "
+print "Crescimento: #{cresc.round(2)}"
 if cresc > 15
-  print "Excelente!\n"
+  print " (excelente!)\n"
   elsif cresc > 10
-  print "Bom\n"
+  print " (bom)\n"
   elsif cresc > 5
-  print "Razoável\n"
+  print " (razoável)\n"
   elsif cresc > 0
-  print "Baixo\n"
+  print " (baixo)\n"
   else
-  print "Negativo!\n"
+  print " (negativo!)\n"
 end
-print "Volatilidade (#{volat.round(2)}): "
+print "Volatilidade: #{volat.round(2)}"
 if volat > 10
-  print "Muito alta!\n"
+  print " (muito alta!)\n"
   elsif volat > 7
-  print "Alta\n"
+  print " (alta)\n"
   elsif volat > 4
-  print "Razoável\n"
+  print " (razoável)\n"
   elsif volat > 0
-  print "Estável\n"
+  print " (estável)\n"
   else
-  print "Nula!\n"
+  print " (nula!)\n"
 end
-print "Notícias (#{news.round}): "
+print "Notícias: #{news.round}"
 if news >= 10
-  print "Excelentes!\n"
+  print " (promissoras!)\n"
   elsif news > 7
-  print "Boas\n"
+  print " (boas)\n"
   elsif news > 4
-  print "Razoáveis\n"
+  print " (razoáveis)\n"
   elsif news > 0
-  print "Ruins\n"
+  print " (ruins)\n"
   else
-  print "Péssimas!\n"
+  print " (péssimas!)\n"
 end
-print "Score final: #{score} "
+print "Score final: #{score}"
 if score > 30
-  print result = "(investimento altamente recomendável!)"
+  print result = " (investimento altamente recomendável!)"
   elsif score > 20
-  print result = "(investimento recomendável)"
+  print result = " (investimento recomendável)"
   elsif score > 10
-  print result = "(razoável)"
+  print result = " (razoável)"
   elsif score > 5
-  print result = "(ruim)"
+  print result = " (ruim)"
   else
-  print result = "(não invista!)"
+  print result = " (não recomendado!)"
 end
 print "\n"
 file.write("#{name} (R$ #{value}): #{score} #{result}", "\n")
