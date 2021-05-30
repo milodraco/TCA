@@ -3,7 +3,7 @@ file.write(Time.now, "\n")
 
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.91\n"
+                        v. 0.92\n"
 loop do
 
 # inputs
@@ -41,10 +41,25 @@ if fator < 7
   elsif fator > 21
   fator = 21
 end
-#puts "\n", fator
 cresc = ((c3 + c6 + c12)/fator).abs**(1.0/3) * 2
-cresc *= -1 if c3+c6+c12 < 0
-score = (cresc + svalue + news - volat).round(2)
+cresc *= -1 if (c3+c6+c12)/fator < 0
+if c3 < c6/2.0 && c6 < c12/2.0
+  penal = true
+  else
+  penal = false
+end
+if c3 > c6/2.0 && c3 > c12/4.0
+  climb = true
+  else
+  climb = false
+end
+score = cresc + svalue + news - volat
+if penal == true
+  score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 
+  elsif climb == true
+  score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0)
+end
+score = score.round(2)
 
 # resultado
 print "\nValor: #{svalue.round(2)}"
