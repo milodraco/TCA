@@ -83,6 +83,8 @@ if cresc > 15
   print " (razoável)\n"
   elsif cresc > 0
   print " (baixo)\n"
+  elsif cresc == 0
+  print " (nulo)\n"
   else
   print " (negativo!)\n"
 end
@@ -101,23 +103,23 @@ end
 print "Notícias: #{news.round}"
 if news >= 10
   print " (promissoras!)\n"
-  elsif news > 7
+  elsif news >= 7
   print " (boas)\n"
-  elsif news > 4
+  elsif news >= 4
   print " (razoáveis)\n"
-  elsif news > 0
+  elsif news >= 0
   print " (ruins)\n"
   else
   print " (péssimas!)\n"
 end
 print "Score final: #{score}"
-if score > 30
+if score >= 30
   print result = " (investimento altamente recomendável!)"
-  elsif score > 20
+  elsif score >= 20
   print result = " (investimento recomendável)"
-  elsif score > 10
+  elsif score >= 10
   print result = " (razoável)"
-  elsif score > 5
+  elsif score >= 5
   print result = " (ruim)"
   else
   print result = " (não recomendado!)"
