@@ -32,7 +32,7 @@ news = 10 if news > 10
 # cálculos
 svalue = ((Math::log((10**10)-value) - 23.0258) * 25000)**(10)
 if nohist == true
-  volat = 10
+  volat = 10.0
   else
   volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25
 end
