@@ -3,7 +3,7 @@ file.write(Time.now, "\n")
 
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.92\n"
+                        v. 0.93\n"
 loop do
 
 # inputs
@@ -27,6 +27,7 @@ c12 = c12.to_f
 print "Insira o saldo das dez últimas notícias (boas-ruins) dentro
 dos últimos 3 meses: "
 news = (gets.chomp).to_i
+news = 10 if news > 10
 
 # cálculos
 svalue = ((Math::log((10**10)-value) - 23.0258) * 25000)**(10)
@@ -41,7 +42,7 @@ if fator < 7
   elsif fator > 21
   fator = 21.0
 end
-cresc = ((c3 + c6 + c12)/fator).abs**(1.0/3) * 2
+cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2
 cresc *= -1 if (c3+c6+c12)/fator < 0
 if c3 < c6/2.0 && c6 < c12/2.0
   penal = true
@@ -111,6 +112,14 @@ if news >= 10
   print " (ruins)\n"
   else
   print " (péssimas!)\n"
+end
+print "Alerta:"
+if penal == true
+  print " em declínio!\n"
+  elsif climb == true
+  print " tendência de alta!\n"
+  else
+  print " nenhum\n"
 end
 print "Score final: #{score}"
 if score >= 30
