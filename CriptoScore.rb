@@ -37,9 +37,9 @@ if nohist == true
 end
 fator = 5.5 + volat
 if fator < 7
-  fator = 7
+  fator = 7.0
   elsif fator > 21
-  fator = 21
+  fator = 21.0
 end
 cresc = ((c3 + c6 + c12)/fator).abs**(1.0/3) * 2
 cresc *= -1 if (c3+c6+c12)/fator < 0
