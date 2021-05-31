@@ -45,9 +45,9 @@ end
 cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2
 cresc *= -1 if (c3+c6+c12)/fator < 0
 if c3 < c6/2.0 && c6 < c12/2.0
-  penal = true
+  dip = true
   else
-  penal = false
+  dip = false
 end
 if c3 > c6/2.0 && c3 > c12/4.0
   climb = true
@@ -55,7 +55,7 @@ if c3 > c6/2.0 && c3 > c12/4.0
   climb = false
 end
 score = cresc + svalue + news - volat
-if penal == true
+if dip == true
   score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 
   elsif climb == true
   score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0)
@@ -114,7 +114,7 @@ if news >= 10
   print " (péssimas!)\n"
 end
 print "Alerta:"
-if penal == true
+if dip == true
   print " em declínio!\n"
   elsif climb == true
   print " tendência de alta!\n"
