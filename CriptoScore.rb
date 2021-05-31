@@ -120,7 +120,7 @@ if score >= 30
   elsif score >= 10
   print result = " (razoável)"
   elsif score >= 5
-  print result = " (ruim)"
+  print result = " (duvidoso)"
   else
   print result = " (não recomendado!)"
 end
