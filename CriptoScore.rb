@@ -23,8 +23,8 @@ if c6 == "" || c12 == ""
 end
 c6 = c6.to_f
 c12 = c12.to_f
-print "Insira o saldo das dez últimas notícias (boas-ruins) dentro
-dos últimos 3 meses: "
+print "Insira o saldo das dez últimas notícias (boas - ruins)
+dentro dos últimos 3 meses: "
 news = (gets.chomp).to_i
 news = 10 if news > 10
 
