@@ -1,14 +1,13 @@
-file = File.new("criptoscore.log", 'a')
-file.write(Time.now, "\n")
-
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.93\n"
+                        v. 0.94\n"
 loop do
 
 # inputs
 print "\nInsira o nome da moeda: "
 name = (gets.chomp).upcase
+file = File.new("criptoscore.log", 'a') # criando arquivo de texto
+file.write(Time.now, "\n")
 print "Insira o valor atual da moeda em R$: "
 value = (gets.chomp).to_f
 print "Insira o crescimento em % nos últimos 3 meses: "
@@ -17,7 +16,7 @@ print "Insira o crescimento em % nos últimos 6 meses: "
 c6 = gets.chomp
 print "Insira o crescimento em % nos últimos 12 meses: "
 c12 = gets.chomp
-if c6 == "" || c12 == ""
+if c6 == "" || c12 == "" # sem histórico
   nohist = true
   else
   nohist = false
@@ -30,35 +29,40 @@ news = (gets.chomp).to_i
 news = 10 if news > 10
 
 # cálculos
-svalue = ((Math::log((10**10)-value) - 23.0258) * 25000)**(10)
-if nohist == true
-  volat = 10.0
+svalue = Math.log(500000) - Math.log(value) # avaliação do valor unitário da moeda
+if svalue > 10
+  svalue = 10 + Math.sqrt(svalue-10)
+  elsif svalue < 0
+  svalue *= 2
+end
+if nohist == true # ajustando volatilidade caso não haja histórico
+  volat = 10
   else
   volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25
 end
-fator = 5.5 + volat
+fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
 if fator < 7
   fator = 7.0
   elsif fator > 21
   fator = 21.0
 end
-cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2
-cresc *= -1 if (c3+c6+c12)/fator < 0
+cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+cresc *= -1 if (c3+c6+c12)/fator < 0 # valores negativos
 if c3 < c6/2.0 && c6 < c12/2.0
-  dip = true
+  dip = true # mergulho
   else
   dip = false
 end
 if c3 > c6/2.0 && c3 > c12/4.0
-  climb = true
+  climb = true # alto crescimento no último trimestre
   else
   climb = false
 end
-score = cresc + svalue + news - volat
+score = cresc + svalue + news - volat # avaliação final
 if dip == true
-  score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 
+  score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 # penalidade em caso de mergulho
   elsif climb == true
-  score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0)
+  score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0) # bônus em caso de alto crescimento
 end
 score = score.round(2)
 
@@ -134,7 +138,7 @@ if score >= 30
   print result = " (não recomendado!)"
 end
 print "\n"
-file.write("#{name} (R$ #{value}): #{score} #{result}", "\n")
+file.write("#{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
 print "\nCalcular outra criptomoeda? (s/n) "
 lp = (gets.chomp).upcase
 file.write("\n") if lp == "N"
