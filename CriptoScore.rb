@@ -16,8 +16,8 @@ print "Insira o crescimento em % nos últimos 6 meses: "
 c6 = gets.chomp
 print "Insira o crescimento em % nos últimos 12 meses: "
 c12 = gets.chomp
-if c6 == "" || c12 == "" # sem histórico
-  nohist = true
+if c6 == "" || c12 == ""
+  nohist = true # sem histórico
   else
   nohist = false
 end
