@@ -34,14 +34,11 @@ dentro dos últimos 3 meses: "
 news = gets.chomp
 if news == ""
   nonews = true # sem saldo de notícias
+  news = 5
   else
   nonews = false
-end
-if nonews == false
   news = news.to_i
   news = 10 if news > 10
-  else
-  news = 5
 end
 
 # CÁLCULOS
