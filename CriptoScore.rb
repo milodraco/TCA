@@ -25,7 +25,7 @@ dos últimos 3 meses sobre a cripto e somar +1 para
 cada notícia boa, -1 para cada notícia ruim e 0 para
 notícias neutras ou irrelevantes. Use por própria
 conta e risco.\n"
- exit
+  exit
 end
 print "Insira o valor atual da moeda em R$: "
 value = gets.chomp.to_f
