@@ -11,7 +11,7 @@ value = (gets.chomp).to_f
 print "Insira o crescimento em % nos últimos 3 meses: "
 c3 = gets.chomp
 if c3 == ""
-  print "ERRO: CRESCIMENTO DOS ÚLTIMOS TRIMESTRE NÃO INSERIDO\n"
+  print "ERRO: CRESCIMENTO DO ÚLTIMO TRIMESTRE NÃO INSERIDO\n"
   exit
   else
   c3 = c3.to_f
