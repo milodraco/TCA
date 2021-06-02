@@ -97,9 +97,9 @@ if svalue > 10
   elsif svalue > 4
   print " (razoável)\n"
   elsif svalue > 0
-  print " (ruim)\n"
+  print " (oneroso)\n"
   else
-  print " (muito ruim!)\n"
+  print " (muito oneroso!)\n"
 end
 print "Crescimento: #{cresc.round(2)}"
 if cresc > 15
