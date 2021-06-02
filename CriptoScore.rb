@@ -195,7 +195,7 @@ end
 print "\n"
 file.write("#{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
 print "\nCalcular outra criptomoeda? (s/n) "
-lp = (gets.chomp).upcase
+lp = gets.chomp.upcase
 if lp == "N"
   file.write("\n") 
   exit
