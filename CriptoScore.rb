@@ -51,7 +51,7 @@ end
 if nohist == true
   volat = 10 # volatilidade caso não haja histórico
   else
-  volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25
+  volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25 # avaliação da volatilidade
 end
 fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
 if fator < 7
