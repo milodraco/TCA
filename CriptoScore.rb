@@ -144,3 +144,6 @@ lp = (gets.chomp).upcase
 file.write("\n") if lp == "N"
 exit if lp == "N"
 end
+
+# ajustar os cálculos para quando não houver o histórico completo de crescimento
+# adicionar alertas de 'histórico incompleto' e 'saldo de notícias desconhecido'
