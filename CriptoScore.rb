@@ -1,11 +1,32 @@
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.96\n"
+                        v. 0.97\n"
 loop do
 
 # INPUTS
 print "\nInsira o nome da moeda: "
 name = gets.chomp.upcase
+if name == "?" || name == "AJUDA"
+  print "
+O algoritmo calcula uma nota para uma criptomoeda de
+acordo com os dados inseridos, ajudando o usuário a
+decidir em qual cripto investir.
+
+Instruções: basta rodar o arquivo .rb no terminal do
+Linux ou em outro SO e inserir as informações da
+criptomoeda desejada. Exemplo no Linux: se o arquivo
+estiver na pasta pessoal, basta abrir o terminal e
+digitar 'ruby CriptoScore.rb'. Lembre de usar ponto
+em vez de vírgula nas casas decimais. Para calcular
+o saldo de notícias, você pode escolher qualquer
+plataforma para verificar as notícias (recomendo o
+app Delta), basta ler as dez notícias mais recentes
+dos últimos 3 meses sobre a cripto e somar +1 para
+cada notícia boa, -1 para cada notícia ruim e 0 para
+notícias neutras ou irrelevantes. Use por própria
+conta e risco.\n"
+ exit
+end
 print "Insira o valor atual da moeda em R$: "
 value = gets.chomp.to_f
 print "Insira o crescimento em % nos últimos 3 meses: "
