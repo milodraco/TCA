@@ -147,3 +147,4 @@ end
 
 # ajustar os cálculos para quando não houver o histórico completo de crescimento
 # adicionar alertas de 'histórico incompleto' e 'saldo de notícias desconhecido'
+# adicionar erro caso c3 seja vazio
