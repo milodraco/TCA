@@ -16,7 +16,7 @@ Instruções: basta rodar o arquivo .rb no terminal do
 Linux ou em outro SO e inserir as informações da
 criptomoeda desejada. Exemplo no Linux: se o arquivo
 estiver na pasta pessoal, basta abrir o terminal e
-digitar 'ruby CriptoScore.rb'. Lembre de usar ponto
+digitar <<ruby CriptoScore.rb>>. Lembre de usar ponto
 em vez de vírgula nas casas decimais. Para calcular
 o saldo de notícias, você pode escolher qualquer
 plataforma para verificar as notícias (recomendo o
