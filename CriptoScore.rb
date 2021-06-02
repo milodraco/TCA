@@ -116,16 +116,18 @@ if cresc > 15
   print " (negativo!)\n"
 end
 print "Volatilidade: #{volat.round(2)}"
-if volat > 10
-  print " (muito alta!)\n"
-  elsif volat > 7
-  print " (alta)\n"
-  elsif volat > 4
-  print " (razoável)\n"
-  elsif volat > 0
-  print " (estável)\n"
-  else
-  print " (nula!)\n"
+if nohist == false
+  if volat > 10
+    print " (muito alta!)\n"
+    elsif volat > 7
+    print " (alta)\n"
+    elsif volat > 4
+    print " (razoável)\n"
+    elsif volat > 0
+    print " (estável)\n"
+    else
+    print " (nula!)\n"
+  end
 end
 if nonews == false
   print "Notícias: #{news.round}"
@@ -141,20 +143,22 @@ if nonews == false
     print " (péssimas!)\n"
   end
 end
-print "Alertas:"
-if dip == true
-  print " em declínio!"
-  print "," if nohist == true || nonews == true
-  elsif climb == true
-  print " tendência de alta!"
-  print "," if nohist == true || nonews == true
+if dip==true || climb==true || nohist==true || nonews==true
+  print "Alertas:"
+  if dip == true
+    print " em declínio!"
+    print "," if nohist == true || nonews == true
+    elsif climb == true
+    print " tendência de alta!"
+    print "," if nohist == true || nonews == true
+  end
+  if nohist == true
+    print " histórico incompleto"
+    print "," if nonews == true
+  end
+  print " notícias desconhecidas" if nonews == true
+  print "\n"
 end
-if nohist == true
-  print " histórico incompleto"
-  print "," if nonews == true
-end
-print " notícias desconhecidas" if nonews == true
-print "\n"
 print "Score final: #{score}"
 if score >= 30
   print result = " (investimento altamente recomendável!)"
