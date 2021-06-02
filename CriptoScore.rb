@@ -1,6 +1,6 @@
 print "Calculador de score para criptomoedas
                         por Milo Draco
-                        v. 0.95\n"
+                        v. 0.96\n"
 loop do
 
 # INPUTS
