@@ -46,7 +46,11 @@ if fator < 7
   elsif fator > 21
   fator = 21.0
 end
-cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+if nohist == false
+  cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+  else
+  cresc = c3.abs**(1/3.0) * 2
+end
 cresc *= -1 if (c3+c6+c12)/fator < 0 # valores negativos
 if c3 < c6/2.0 && c6 < c12/2.0
   dip = true # mergulho
@@ -145,6 +149,6 @@ file.write("\n") if lp == "N"
 exit if lp == "N"
 end
 
-# ajustar os cálculos para quando não houver o histórico completo de crescimento
+# esconder as notícias caso não inseridas e atribuir valor de 5.0
 # adicionar alertas de 'histórico incompleto' e 'saldo de notícias desconhecido'
 # adicionar erro caso c3 seja vazio
