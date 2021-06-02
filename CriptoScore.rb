@@ -5,9 +5,9 @@ loop do
 
 # INPUTS
 print "\nInsira o nome da moeda: "
-name = (gets.chomp).upcase
+name = gets.chomp.upcase
 print "Insira o valor atual da moeda em R$: "
-value = (gets.chomp).to_f
+value = gets.chomp.to_f
 print "Insira o crescimento em % nos últimos 3 meses: "
 c3 = gets.chomp
 if c3 == ""
@@ -49,7 +49,7 @@ if svalue > 10
   svalue *= 2
 end
 if nohist == true
-  volat = 10 # volatilidade caso não haja histórico
+  volat = 10.0 # volatilidade caso não haja histórico
   else
   volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25 # avaliação da volatilidade
 end
@@ -64,7 +64,7 @@ if nohist == false
   else
   cresc = c3.abs**(1/3.0) * 2
 end
-cresc *= -1 if (c3+c6+c12)/fator < 0 # valores negativos
+cresc *= -1 if c3+c6+c12 < 0 # valores negativos
 if nohist == false
   if c3 < c6/2.0 && c6 < c12/2.0
     dip = true # mergulho
@@ -115,8 +115,8 @@ if cresc > 15
   else
   print " (negativo!)\n"
 end
-print "Volatilidade: #{volat.round(2)}"
 if nohist == false
+  print "Volatilidade: #{volat.round(2)}"
   if volat > 10
     print " (muito alta!)\n"
     elsif volat > 7
@@ -179,4 +179,5 @@ if lp == "N"
   file.write("\n") 
   exit
 end
+
 end
