@@ -52,14 +52,19 @@ if nohist == false
   cresc = c3.abs**(1/3.0) * 2
 end
 cresc *= -1 if (c3+c6+c12)/fator < 0 # valores negativos
-if c3 < c6/2.0 && c6 < c12/2.0
-  dip = true # mergulho
+if nohist == false
+  if c3 < c6/2.0 && c6 < c12/2.0
+    dip = true # mergulho
+    else
+    dip = false
+  end
+  if c3 > c6/2.0 && c3 > c12/4.0
+    climb = true # alto crescimento no último trimestre
+    else
+    climb = false
+  end
   else
   dip = false
-end
-if c3 > c6/2.0 && c3 > c12/4.0
-  climb = true # alto crescimento no último trimestre
-  else
   climb = false
 end
 score = cresc + svalue + news - volat # avaliação final
