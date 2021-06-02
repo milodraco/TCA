@@ -48,8 +48,8 @@ if svalue > 10
   elsif svalue < 0
   svalue *= 2
 end
-if nohist == true # ajustando volatilidade caso não haja histórico
-  volat = 10
+if nohist == true
+  volat = 10 # volatilidade caso não haja histórico
   else
   volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25
 end
@@ -61,10 +61,8 @@ if fator < 7
 end
 if nohist == false
   cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
-  puts "HC"
   else
   cresc = c3.abs**(1/3.0) * 2
-  puts "HI"
 end
 cresc *= -1 if (c3+c6+c12)/fator < 0 # valores negativos
 if nohist == false
