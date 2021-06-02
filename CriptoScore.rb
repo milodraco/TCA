@@ -164,20 +164,17 @@ if nonews == false
     print " (péssimas!)\n"
   end
 end
-if dip==true || climb==true || nohist==true || nonews==true
+warn = [] # alertas
+warn << "em declínio!" if dip == true
+warn << "tendência de alta!" if climb == true
+warn << "histórico incompleto" if nohist == true
+warn << "notícias desconhecidas" if nonews == true
+if warn.length > 0
   print "Alertas:"
-  if dip == true
-    print " em declínio!"
-    print "," if nohist == true || nonews == true
-    elsif climb == true
-    print " tendência de alta!"
-    print "," if nohist == true || nonews == true
+  warn.each do |a|
+    print " ", a
+    print "," if a != warn[-1]
   end
-  if nohist == true
-    print " histórico incompleto"
-    print "," if nonews == true
-  end
-  print " notícias desconhecidas" if nonews == true
   print "\n"
 end
 print "Score final: #{score}"
