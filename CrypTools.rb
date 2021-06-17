@@ -333,11 +333,11 @@ print "\nProbabilidade de lucro: #{chance.round(2)}%
 Volatilidade: #{volat.round(2)}%"
 if chance < 20 || volat > 100 # alertas
   print "\nAlertas: "
-  if chance < 20 && volat > 100
+  if chance < 20 && volat > 300
     print "alta volatilidade!, baixa probabilidade de lucro!"
     elsif chance < 20
     print "baixa probabilidade de lucro!"
-    elsif volat > 100
+    elsif volat > 300
     print "alta volatilidade!"
   end
 end
