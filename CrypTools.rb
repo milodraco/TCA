@@ -29,7 +29,7 @@ notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
 t3 = "* Trading: o algoritmo calcula sinais para fazer
 swing trading. Ideal para investidores experientes que
 estão acostumados a fazer trading. Pode ser utilizado
-em conjunto com análise fundamente e análise gráfica
+em conjunto com análise fundamental e análise gráfica
 para aumentar as chances de lucro. Tenha em mente que
 o trading envolve alto risco de prejuízo financeiro,
 use este algoritmo por própria conta e risco.
