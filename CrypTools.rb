@@ -1,44 +1,97 @@
-print "Calculador de score para criptomoedas
-                        por Milo Draco
-                        v. 0.97\n"
-loop do
+print "\n"
+["C", "r", "y", "p", "T", "o", "o", "l", "s"].each do |l|
+  print l
+  sleep 0.1
+end
+sleep 0.25
+print " v. 0.98"
+sleep 0.5
+print "\n                        por Milo Draco\n"
+sleep 1
 
+t1 = "\nInstruções gerais: basta rodar o arquivo .rb no terminal do
+Linux ou em outro SO e inserir as informações da
+transação desejada. Exemplo no Linux: se o arquivo
+estiver na pasta pessoal, basta abrir o terminal e
+digitar <<ruby CrypTools.rb>>. Lembre de usar ponto
+em vez de vírgula nas casas decimais.\n"
+t2 = "* Holding: o algoritmo calcula uma nota para uma
+criptomoeda de acordo com os dados inseridos, ajudando
+o usuário a decidir em qual cripto investir para obter
+lucro a longo prazo. Ideal para poupanças (savings e
+earn) e stakings).
+Instruções: Para calcular o saldo de notícias, você
+pode escolher qualquer plataforma para verificar as
+notícias (recomendo o app Delta), basta ler as dez
+notícias mais recentes dos últimos 3 meses sobre a
+cripto e somar +1 para cada notícia boa, -1 para cada
+notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
+t3 = "* Trading: o algoritmo calcula sinais para fazer
+swing trading. Ideal para investidores experientes que
+estão acostumados a fazer trading. Pode ser utilizado
+em conjunto com análise fundamente e análise gráfica
+para aumentar as chances de lucro. Tenha em mente que
+o trading envolve alto risco de prejuízo financeiro,
+use este algoritmo por própria conta e risco.
+Instruções: insira todos os dados corretamente. Ao
+analisar o gráfico, você precisará primeiro visualizar
+as velas com intervalo de 1 hora. Se constatar que o
+mínimo de velas completas negativas foi atingido, passe
+a analisar o gráfico com velas em intervalo de 1 minuto.
+Ao constatar que o mínimo de velas completas negativas
+foi atingido, é sinal de compra. Por exemplo, se o
+resultado for 2 velas negativas de horas e 3 velas
+nevativas de minutos, o momento de compra será após
+uma sequência de 2 velas negativas de intervalos de 1
+hora e uma sequência de 3 velas negativas de intervalos
+de 1 minuto.
+Lembre-se: nenhum método garante o lucro, opere com
+trading somente se souber o que está fazendo.\n"
+
+if !File.exist?("cryptools.log") # checando se arquivo de log existe
+  print t1 # tutorial
+  gets
+  print t2
+  gets
+  print t3
+  gets
+end
+file = File.new("cryptools.log", 'a') # criando arquivo de log
+file.write(Time.now, "\n")
+
+print "\n"
+loop do
+  print "Digite H para HOLDING ou T para TRADING: "
+  $opt = gets.chomp.upcase
+if $opt == "?" || $opt == "AJUDA"
+  print t1 # tutorial
+  gets
+  print t2
+  gets
+  print t3
+  gets
+end
+  break if $opt == "H" || $opt == "T"
+end
+
+if $opt == "H"
+  
+# HOLDING
+print "\n-=-=-=-=-=-=-=-=-HOLDING-=-=-=-=-=-=-=-=-\n"
+loop do
 # INPUTS
 print "\nInsira o nome da moeda: "
 name = gets.chomp.upcase
-if name == "?" || name == "AJUDA"
-  print "
-O algoritmo calcula uma nota para uma criptomoeda de
-acordo com os dados inseridos, ajudando o usuário a
-decidir em qual cripto investir.
-
-Instruções: basta rodar o arquivo .rb no terminal do
-Linux ou em outro SO e inserir as informações da
-criptomoeda desejada. Exemplo no Linux: se o arquivo
-estiver na pasta pessoal, basta abrir o terminal e
-digitar <<ruby CriptoScore.rb>>. Lembre de usar ponto
-em vez de vírgula nas casas decimais. Para calcular
-o saldo de notícias, você pode escolher qualquer
-plataforma para verificar as notícias (recomendo o
-app Delta), basta ler as dez notícias mais recentes
-dos últimos 3 meses sobre a cripto e somar +1 para
-cada notícia boa, -1 para cada notícia ruim e 0 para
-notícias neutras ou irrelevantes. Use por própria
-conta e risco.\n"
-  exit
-end
 print "Insira o valor atual da moeda em R$: "
 value = gets.chomp.to_f
 print "Insira o crescimento em % nos últimos 3 meses: "
 c3 = gets.chomp
 if c3 == ""
-  print "ERRO: CRESCIMENTO DO ÚLTIMO TRIMESTRE NÃO INSERIDO\n"
+  print "ERRO: CRESCIMENTO DO ÚLTIMO TRIMESTRE NÃO INSERIDO!\n"
   exit
   else
   c3 = c3.to_f
 end
-file = File.new("criptoscore.log", 'a') # criando arquivo de texto
-file.write(Time.now, "\n")
 print "Insira o crescimento em % nos últimos 6 meses: "
 c6 = gets.chomp
 print "Insira o crescimento em % nos últimos 12 meses: "
@@ -197,5 +250,108 @@ if lp == "N"
   file.write("\n") 
   exit
 end
+end
 
+elsif $opt == "T"
+
+# TRADING
+print "\n-=-=-=-=-=-=-=-=-TRADING-=-=-=-=-=-=-=-=-
+
+ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
+PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
+QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
+O LUCRO.\n"
+
+loop do
+# INPUTS
+print "\nInsira o par que será negociado (ex: BTC/USDT): "
+par = gets.chomp.upcase
+print "Insira a quantia que será investida (em BRL ou USD): "
+banca = gets.chomp.to_f
+print "Insira o crescimento da criptomoeda no último mês (30
+dias): "
+c1 = gets.chomp.to_f
+print "Insira o crescimento da criptomoeda no último trimestre: "
+c3 = gets.chomp.to_f
+print "Insira o crescimento da criptomoeda no último semestre: "
+c6 = gets.chomp.to_f
+if (c3*2)+(c6/2.0) < 0 || (c1*6)+(c3*2) < 0
+  print "ERRO: RENDIMENTO NEGATIVO!\n"
+  exit
+end
+print "Insira o perfil (moderado: 1, agressivo: 2, ultra
+agressivo: 3): "
+perfil = gets.chomp.to_i
+if perfil != 1 && perfil != 2 && perfil != 3
+  print "ERRO: PERFIL INVÁLIDO!\n"
+  exit
+end
+
+# CÁLCULOS
+seqh = 10 - (Math.sqrt((c3 * 2) + (c6 / 2.0)) / 10.0) # sequência de velas de horas
+seqh = 2 + ((seqh - 2)/2.0) if perfil >= 2 && seqh > 2
+seqh = seqh.round
+seqh = 0 if seqh < 0
+seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
+seqm = 3 + ((seqm - 3)/2.0) if perfil == 3 && seqm > 3
+seqm = seqm.round
+seqm = 1 if seqm < 1
+stop = banca * (1 + (Math::log(c3 + (c1 * 3.0)) / 100.0)) # sinal de venda
+stop *= 1 + (((perfil - 1) * 2.5) / 100.0)
+stop = stop.round
+lucro = (((stop / banca.to_f) - 1) * 100).round(2) # porcentagem de lucro
+volat = ((c1 - (c3 / 3.0)).abs + (c3 - (c6 / 2.0)).abs + (c1 - (c6 / 6.0)).abs) / 3.0 # volatilidade
+if c1 > 0
+  x1 = Math.sqrt(c1)
+  else
+  x1 = c1 / 3.0
+end
+if c3 > 0
+  x3 = Math.sqrt(c3 / 3.0)
+  else
+  x3 = c3
+end
+if c6 > 0
+  x6 = Math::log(c6) * 2
+  else
+  x6 = c6
+end
+chance = x1 + x3 + x6 + ((3 - perfil) * 5) - (Math.sqrt(volat) - 20) # probabilidade de lucro
+if chance > 50
+  chance = 50 + Math.sqrt(chance - 50)
+  elsif chance < 5
+  chance = 5 - Math::log(volat)
+end
+if chance > 70
+  chance = 70.0
+  elsif chance < 1
+  chance = 1.0
+end
+
+# RESULTADO
+print "\nProbabilidade de lucro: #{chance.round(2)}%
+Volatilidade: #{volat.round(2)}%"
+if chance < 20 || volat > 100 # alertas
+  print "\nAlertas: "
+  if chance < 20 && volat > 100
+    print "alta volatilidade!, baixa probabilidade de lucro!"
+    elsif chance < 20
+    print "baixa probabilidade de lucro!"
+    elsif volat > 100
+    print "alta volatilidade!"
+  end
+end
+print "\nSinais:
+* Comprar após #{seqh} velas negativas de horas e #{seqm} velas
+negativas de minutos;
+* Vender quando a quantia atingir o valor de $ #{stop}.00
+(+#{lucro}%).\n"
+file.write("$ #{banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $ #{stop} (+#{lucro}%)", "\n") # escrevendo log
+print "\nCalcular outra negociação? (s/n) "
+lp = gets.chomp.upcase
+if lp == "N"
+  file.write("\n")
+  exit
+end
+end
 end
