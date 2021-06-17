@@ -9,11 +9,11 @@ sleep 0.5
 print "\n                        por Milo Draco\n"
 sleep 1
 
-t1 = "\nInstruções gerais: basta rodar o arquivo .rb no terminal
-do Linux ou em outro SO e inserir as informações da
+t1 = "\nInstruções gerais: execute o arquivo .rb no terminal
+do Linux ou em outro SO e insira as informações da
 transação desejada. Exemplo no Linux: se o arquivo
 estiver na pasta pessoal, basta abrir o terminal e
-digitar <<ruby CrypTools.rb>>. Lembre de usar ponto
+digitar 'ruby CrypTools.rb'. Lembre de usar ponto
 em vez de vírgula nas casas decimais.\n"
 t2 = "* Holding: o algoritmo calcula uma nota para uma
 criptomoeda de acordo com os dados inseridos, ajudando
