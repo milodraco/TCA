@@ -41,5 +41,7 @@ uma sequência de 2 velas negativas de intervalos de 1
 hora e uma sequência de 3 velas negativas de intervalos
 de 1 minuto.
 
+* Stop-loss: calcula o stop-loss de uma negociação.
+
 Lembre-se: nenhum método garante o lucro, opere com
 trading somente se souber o que está fazendo.
