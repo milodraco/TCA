@@ -399,29 +399,23 @@ end
 
 # CÁLCULOS
 if var < 0
-  varf = -1 * Math.sqrt(var.abs)
+  varf = -1 * Math.sqrt(var.abs) # variação ponderada
   elsif var == 0
   varf = var
   else
   varf = Math::log(var)
 end
-sl1 = ((m3 + m7) / 2.0) * (1 + (varf / 100.0))
-sl2 = value * (1 - (0.03 * perfil))
+sl1 = ((m3 + m7) / 2.0) * (1 + (varf / 100.0)) # stop-loss de acordo com os mínimos
+sl2 = value * (1 - (0.03 * perfil)) # stop-loss de acordo com o valor atual
 loss = [sl1, sl2].min
-if (banca - ((banca / value.to_f) * loss)) / banca.to_f > 0.1 && perfil == 1
-  loss = value * 0.9
-  alert = true
-  elsif (banca - ((banca / value.to_f) * loss)) / banca.to_f > 0.2 && perfil == 2
-  loss = value * 0.8
-  alert = true
-  elsif (banca - ((banca / value.to_f) * loss)) / banca.to_f > 0.3 && perfil == 3
-  loss = value * 0.7
-  alert = true
+if (banca - ((banca / value.to_f) * loss)) / banca.to_f > perfil / 10.0
+  loss = value * (1 - (perfil / 10.0)) # porcentagem máxima de acordo com perfil
+  alert = true # alerta de ajuste limitante
   else
   alert = false
 end
-risk = banca - ((banca / value.to_f) * loss)
-riskp = risk / banca.to_f
+risk = banca - ((banca / value.to_f) * loss) # quantia em risco
+riskp = risk / banca.to_f # porcentagem em risco
 
 # RESULTADO
 if loss >= 1
@@ -430,12 +424,12 @@ if loss >= 1
   print "\nStop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%)"
 end
 print "\nQuantia em risco: $#{risk.round(2)}\n"
+print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
 if loss >= 1
   file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n") # escrevendo log
   else
   file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n")
 end
-print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
 n += 1
 print "\nCalcular outro stop-loss? (s/n) "
 lp = gets.chomp.upcase
