@@ -340,8 +340,8 @@ if chance > 50
 end
 if chance > 70
   chance = 70.0
-  elsif chance < 1
-  chance = 1.0
+  elsif chance < 0.1
+  chance = 0.1
 end
 
 # RESULTADO
@@ -375,7 +375,7 @@ end
 end
 
 elsif $opt == "3" # STOP-LOSS
-
+print "\n-=-=-=-=-=-=-=-STOP-LOSS-=-=-=-=-=-=-=-\n"
 loop do
 
 # INPUTS
