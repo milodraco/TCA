@@ -91,7 +91,7 @@ loop do
 # INPUTS
 print "\nInsira o nome da moeda: "
 name = gets.chomp.upcase
-print "Insira o valor unitário atual da moeda (em BRL ou USD): "
+print "Insira o valor unitário atual da moeda (em BRL): "
 value = gets.chomp.to_f
 print "Insira a variação percentual do valor unitário do ativo
 nos últimos 3 meses: "
