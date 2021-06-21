@@ -97,7 +97,7 @@ print "Insira a variação percentual do valor unitário do ativo
 nos últimos 3 meses: "
 c3 = gets.chomp
 if c3 == ""
-  print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDO!\n"
+  print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!\n"
   exit
   else
   c3 = c3.to_f
