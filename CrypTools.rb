@@ -374,7 +374,7 @@ end
 end
 
 elsif $opt == "3" # STOP-LOSS
-print "\n-=-=-=-=-=-=-=-STOP-LOSS-=-=-=-=-=-=-=-\n"
+print "\n-=-=-=-=-=-=-=-=STOP-LOSS=-=-=-=-=-=-=-=-\n"
 loop do
 
 # INPUTS
