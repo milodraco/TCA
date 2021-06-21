@@ -64,8 +64,7 @@ file = File.new("cryptools.log", 'a') # criando arquivo de log
 file.write(Time.now, "\n")
 n = 1
 
-print "\n"
-  print "1. Holding
+print "\n1. Holding
 2. Trading
 3. Stop-loss\n\n"
 loop do
