@@ -419,16 +419,13 @@ riskp = risk / banca.to_f # porcentagem em risco
 # RESULTADO
 if loss >= 1
   print "\nStop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%)"
+  file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n") # escrevendo log
   else
   print "\nStop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%)"
+  file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n")
 end
 print "\nQuantia em risco: $#{risk.round(2)}\n"
 print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
-if loss >= 1
-  file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n") # escrevendo log
-  else
-  file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n")
-end
 n += 1
 print "\nCalcular outro stop-loss? (s/n) "
 lp = gets.chomp.upcase
