@@ -89,9 +89,9 @@ if $opt == "1"
 print "\n-=-=-=-=-=-=-=-=-HOLDING-=-=-=-=-=-=-=-=-\n"
 loop do
 # INPUTS
-print "\nInsira o nome da moeda: "
+print "\nInsira o nome do ativo: "
 name = gets.chomp.upcase
-print "Insira o valor unitário atual da moeda (em BRL): "
+print "Insira o valor unitário atual do ativo (em BRL): "
 value = gets.chomp.to_f
 print "Insira a variação percentual do valor unitário do ativo
 nos últimos 3 meses: "
