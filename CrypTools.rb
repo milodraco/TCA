@@ -244,15 +244,15 @@ if warn.length > 0
 end
 print "Score final: #{score}"
 if score >= 30
-  print result = " (investimento altamente recomendável!)"
+  print result = " (investimento altamente promissor!)"
   elsif score >= 20
-  print result = " (investimento recomendável)"
+  print result = " (investimento promissor)"
   elsif score >= 10
   print result = " (razoável)"
   elsif score >= 5
   print result = " (duvidoso)"
   else
-  print result = " (não recomendado!)"
+  print result = " (não recomendável!)"
 end
 print "\n"
 file.write("#{n}. #{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
