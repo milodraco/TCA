@@ -43,5 +43,9 @@ de 1 minuto.
 
 * Stop-loss: calcula o stop-loss de uma negociação.
 
-Lembre-se: nenhum método garante o lucro, opere com
+* Calculadora: calcula a variação percentual do valor de
+um ativo.
+
+Lembre-se: nenhum método garante o lucro, assim como
+nenhum elimina a possibilidade de prejuízo. Opere com
 trading somente se souber o que está fazendo.
