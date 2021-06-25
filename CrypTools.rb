@@ -4,7 +4,7 @@ print "\n"
   sleep 0.1
 end
 sleep 0.25
-print " v. 0.99"
+print " v. 1.0"
 sleep 0.5
 print "\n                        por Milo Draco\n"
 sleep 1
@@ -47,7 +47,11 @@ hora e uma sequência de 3 velas negativas de intervalos
 de 1 minuto.\n"
 t4 = "* Stop-loss: calcula o stop-loss de uma negociação.
 
-Lembre-se: nenhum método garante o lucro, opere com
+* Calculadora: calcula a variação percentual do valor de
+um ativo.
+
+Lembre-se: nenhum método garante o lucro, assim como
+nenhum elimina a possibilidade de prejuízo. Opere com
 trading somente se souber o que está fazendo.\n"
 
 if !File.exist?("cryptools.log") # checando se arquivo de log existe
@@ -66,7 +70,8 @@ n = 1
 
 print "\n1. Holding
 2. Trading
-3. Stop-loss\n\n"
+3. Stop-loss
+4. Calculadora\n\n"
 loop do
 print "Insira uma opção: "
   $opt = gets.chomp.upcase
@@ -80,7 +85,7 @@ if $opt == "?" || $opt == "AJUDA"
   print t4
   gets
 end
-  break if $opt == "1" || $opt == "2" || $opt == "3"
+  break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4"
 end
 
 if $opt == "1"
@@ -419,15 +424,42 @@ riskp = risk / banca.to_f # porcentagem em risco
 # RESULTADO
 if loss >= 1
   print "\nStop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%)"
-  file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n") # escrevendo log
+  file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n") # escrevendo log
   else
   print "\nStop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%)"
-  file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}", "\n")
+  file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n")
 end
 print "\nQuantia em risco: $#{risk.round(2)}\n"
 print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
 n += 1
 print "\nCalcular outro stop-loss? (s/n) "
+lp = gets.chomp.upcase
+if lp == "N"
+  file.write("\n")
+  exit
+end
+end
+
+elsif $opt == "4" # CALCULADORA
+print "\n-=-=-=-=-=-=-=-CALCULADORA-=-=-=-=-=-=-=-\n"
+loop do
+# INPUTS
+print "\nInsira o par a ser calculado (ex: BTC/BRL): "
+par = gets.chomp.upcase
+print "Insira o valor inicial do ativo: "
+v1 = gets.chomp.to_f
+print "Insira o valor final do ativo: "
+v2 = gets.chomp.to_f
+var = (((v2 / v1) - 1) * 100).round(2)
+if var > 0
+  print "\nVariação: +#{var}%\n"
+  file.write("Variação do par #{par}: +#{var}%\n")
+  else
+  print "\nVariação: #{var}%\n"
+  file.write("Variação do par #{par}: #{var}%\n")
+end
+n += 1
+print "\nCalcular outra variação? (s/n) "
 lp = gets.chomp.upcase
 if lp == "N"
   file.write("\n")
