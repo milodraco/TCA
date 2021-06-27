@@ -446,17 +446,23 @@ loop do
 # INPUTS
 print "\nInsira o par a ser calculado (ex: BTC/BRL): "
 par = gets.chomp.upcase
+print "Insira o período da variação (ex: 7 dias): "
+tempo = gets.chomp.downcase
 print "Insira o valor inicial do ativo: "
 v1 = gets.chomp.to_f
 print "Insira o valor final do ativo: "
 v2 = gets.chomp.to_f
+
+# CÁLCULOS
 var = (((v2 / v1) - 1) * 100).round(2)
+
+# RESULTADO
 if var > 0
   print "\nVariação: +#{var}%\n"
-  file.write("Variação do par #{par}: +#{var}%\n")
+  file.write("Variação do par #{par} em #{tempo}: +#{var}%\n")
   else
   print "\nVariação: #{var}%\n"
-  file.write("Variação do par #{par}: #{var}%\n")
+  file.write("Variação do par #{par} em #{tempo}: #{var}%\n")
 end
 n += 1
 print "\nCalcular outra variação? (s/n) "
