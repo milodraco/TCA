@@ -1,12 +1,12 @@
 print "\n"
-["C", "r", "y", "p", "T", "o", "o", "l", "s"].each do |l|
+["CrypTools"].split.each do |l|
   print l
   sleep 0.1
 end
 sleep 0.25
 print " v. 1.0"
 sleep 0.5
-print "\n                        por Milo Draco\n"
+print "\n                        por Milo_Draco\n"
 sleep 1
 
 t1 = "\nInstruções gerais: execute o arquivo .rb no terminal
