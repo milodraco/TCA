@@ -1,6 +1,6 @@
 CrypTools
 
-Escrito por Milo Draco
+Escrito por Milo_Draco
 
 Instruções gerais: execute o arquivo .rb no terminal
 do Linux ou em outro SO e insira as informações da
