@@ -148,6 +148,7 @@ if news == ""
   nonews = false
   news = news.to_i
   news = 10 if news > 10
+  news = -10 if news < -10
 end
 
 # CÁLCULOS
