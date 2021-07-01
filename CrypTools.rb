@@ -1,21 +1,19 @@
 print "\n"
-["CrypTools"].split.each do |l|
+("CrypTools v. 1.1").split("").each do |l|
   print l
   sleep 0.1
 end
-sleep 0.25
-print " v. 1.0"
 sleep 0.5
 print "\n                        por Milo_Draco\n"
 sleep 1
 
-t1 = "\nInstruções gerais: execute o arquivo .rb no terminal
+$T1 = "\nInstruções gerais: execute o arquivo .rb no terminal
 do Linux ou em outro SO e insira as informações da
 transação desejada. Exemplo no Linux: se o arquivo
 estiver na pasta pessoal, basta abrir o terminal e
 digitar 'ruby CrypTools.rb'. Lembre de usar ponto
 em vez de vírgula nas casas decimais.\n"
-t2 = "* Holding: o algoritmo calcula uma nota para uma
+$T2 = "1. Holding: o algoritmo calcula uma nota para uma
 criptomoeda de acordo com os dados inseridos, ajudando
 o usuário a decidir em qual cripto investir para obter
 lucro a longo prazo. Ideal para poupanças (savings e
@@ -26,7 +24,7 @@ notícias (recomendo o app Delta), basta ler as dez
 notícias mais recentes dos últimos 3 meses sobre a
 cripto e somar +1 para cada notícia boa, -1 para cada
 notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
-t3 = "* Trading: o algoritmo calcula sinais para fazer
+$T3 = "2. Trading: o algoritmo calcula sinais para fazer
 swing trading. Ideal para investidores experientes que
 estão acostumados a fazer trading. Pode ser utilizado
 em conjunto com análise fundamental e análise gráfica
@@ -45,47 +43,66 @@ nevativas de minutos, o momento de compra será após
 uma sequência de 2 velas negativas de intervalos de 1
 hora e uma sequência de 3 velas negativas de intervalos
 de 1 minuto.\n"
-t4 = "* Stop-loss: calcula o stop-loss de uma negociação.
+$T4 = "3. Stop-loss: calcula o stop-loss de uma negociação.
 
-* Calculadora: calcula a variação percentual do valor de
+4. Calculadora: calcula a variação percentual do valor de
 um ativo.
 
 Lembre-se: nenhum método garante o lucro, assim como
 nenhum elimina a possibilidade de prejuízo. Opere com
 trading somente se souber o que está fazendo.\n"
+Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
+PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
+QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
+O LUCRO."
 
-if !File.exist?("cryptools.log") # checando se arquivo de log existe
-  print t1 # tutorial
+def tutorial # tutorial
+  $T1.split("\n").each do |l|
+    print l + "\n"
+    sleep 0.2
+  end
   gets
-  print t2
+  $T2.split("\n").each do |l|
+    print l + "\n"
+    sleep 0.2
+  end
   gets
-  print t3
+  $T3.split("\n").each do |l|
+    print l + "\n"
+    sleep 0.2
+  end
   gets
-  print t4
+  $T4.split("\n").each do |l|
+    print l + "\n"
+    sleep 0.2
+  end
   gets
 end
+
+if !File.exist?("cryptools.log") # checando se arquivo de log existe
+  tutorial
+end
 file = File.new("cryptools.log", 'a') # criando arquivo de log
-file.write(Time.now, "\n")
+time = Time.now
+file.write("\nRegistros de #{time.day}/#{time.month}/#{time.year}, às #{time.hour}:#{time.min}:\n")
 n = 1
 
-print "\n1. Holding
-2. Trading
-3. Stop-loss
-4. Calculadora\n\n"
+loop do
+
+print "\n"
+["1. Holding", "2. Trading", "3. Stop-loss", "4. Calculadora"].each do |l|
+  print l, "\n"
+  sleep 0.1
+end
+print "\n"
+
 loop do
 print "Insira uma opção: "
   $opt = gets.chomp.upcase
 if $opt == "?" || $opt == "AJUDA"
-  print t1 # tutorial
-  gets
-  print t2
-  gets
-  print t3
-  gets
-  print t4
-  gets
+  tutorial
 end
-  break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4"
+  break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4" || $opt == "SAIR"
 end
 
 if $opt == "1"
@@ -102,8 +119,9 @@ print "Insira a variação percentual do valor unitário do ativo
 nos últimos 3 meses: "
 c3 = gets.chomp
 if c3 == ""
-  print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!\n"
-  exit
+  print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!"
+  gets
+  break
   else
   c3 = c3.to_f
 end
@@ -260,25 +278,24 @@ if score >= 30
   print result = " (não recomendável!)"
 end
 print "\n"
-file.write("#{n}. #{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
+file.write("	#{n}. #{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
 n += 1
 print "\nCalcular outra criptomoeda? (s/n) "
 lp = gets.chomp.upcase
 if lp == "N"
-  file.write("\n") 
-  exit
+  break
 end
 end
 
 elsif $opt == "2"
 
 # TRADING
-print "\n-=-=-=-=-=-=-=-=-TRADING-=-=-=-=-=-=-=-=-
+print "\n-=-=-=-=-=-=-=-=-TRADING-=-=-=-=-=-=-=-=-\n"
 
-ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
-PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
-QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
-O LUCRO.\n"
+Alerta.split("\n").each do |l|
+  print l + "\n"
+  sleep 0.2
+end
 
 loop do
 # INPUTS
@@ -296,15 +313,17 @@ print "Insira a variação percentual do valor unitário do ativo
 no último semestre: "
 c6 = gets.chomp.to_f
 if (c3*2)+(c6/2.0) < 0 || (c1*6)+(c3*2) < 0
-  print "ERRO: VARIAÇÃO NEGATIVA!\n"
-  exit
+  print "ERRO: VARIAÇÃO NEGATIVA!"
+  gets
+  break
 end
 print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
 agressivo: 3): "
 perfil = gets.chomp.to_i
 if perfil != 1 && perfil != 2 && perfil != 3
-  print "ERRO: PERFIL INVÁLIDO!\n"
-  exit
+  print "ERRO: PERFIL INVÁLIDO!"
+  gets
+  break
 end
 
 # CÁLCULOS
@@ -368,13 +387,12 @@ negativas de minutos;
 (+#{lucro}%).
 Lembre-se de definir o stop-loss para controlar o risco
 da negociação.\n"
-file.write("#{n}. $#{banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{stop} (+#{lucro}%)", "\n") # escrevendo log
+file.write("	#{n}. $#{banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{stop} (+#{lucro}%)", "\n") # escrevendo log
 n += 1
 print "\nCalcular outra negociação? (s/n) "
 lp = gets.chomp.upcase
 if lp == "N"
-  file.write("\n")
-  exit
+  break
 end
 end
 
@@ -397,8 +415,9 @@ print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
 agressivo: 3): "
 perfil = gets.chomp.to_i
 if perfil != 1 && perfil != 2 && perfil != 3
-  print "ERRO: PERFIL INVÁLIDO!\n"
-  exit
+  print "ERRO: PERFIL INVÁLIDO!"
+  gets
+  break
 end
 
 # CÁLCULOS
@@ -424,10 +443,10 @@ riskp = risk / banca.to_f # porcentagem em risco
 # RESULTADO
 if loss >= 1
   print "\nStop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%)"
-  file.write("#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n") # escrevendo log
+  file.write("	#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n") # escrevendo log
   else
   print "\nStop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%)"
-  file.write("#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n")
+  file.write("	#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n")
 end
 print "\nQuantia em risco: $#{risk.round(2)}\n"
 print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
@@ -435,8 +454,7 @@ n += 1
 print "\nCalcular outro stop-loss? (s/n) "
 lp = gets.chomp.upcase
 if lp == "N"
-  file.write("\n")
-  exit
+  break
 end
 end
 
@@ -459,18 +477,31 @@ var = (((v2 / v1) - 1) * 100).round(2)
 # RESULTADO
 if var > 0
   print "\nVariação: +#{var}%\n"
-  file.write("Variação do par #{par} em #{tempo}: +#{var}%\n")
+  file.write("	#{n}. Variação do par #{par} em #{tempo}: +#{var}%\n")
   else
   print "\nVariação: #{var}%\n"
-  file.write("Variação do par #{par} em #{tempo}: #{var}%\n")
+  file.write("	#{n}. Variação do par #{par} em #{tempo}: #{var}%\n")
 end
 n += 1
 print "\nCalcular outra variação? (s/n) "
 lp = gets.chomp.upcase
 if lp == "N"
-  file.write("\n")
-  exit
+  break
 end
 end
 
+elsif $opt == "SAIR" # EXIT
+  
+  print "\n"
+  fim = "Todo o registro foi salvo no arquivo de log.
+Lembre-se: é recomendável que se consulte um profissional
+antes de fazer qualquer investimento. Até mais!\n"
+  fim.split("\n").each do |l|
+    print l + "\n"
+    sleep 0.2
+  end
+  sleep 5	
+  exit
+
 end # fim do if
+end # fim do loop
