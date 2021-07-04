@@ -1,5 +1,5 @@
 print "\n"
-("CrypTools v. 1.1").split("").each do |l|
+("CrypTools v. 1.2").split("").each do |l|
   print l
   sleep 0.1
 end
@@ -89,7 +89,7 @@ n = 1
 
 loop do
 
-print "\n"
+print "\n_________________________________________\n\n"
 ["1. Holding", "2. Trading", "3. Stop-loss", "4. Calculadora"].each do |l|
   print l, "\n"
   sleep 0.1
@@ -108,7 +108,7 @@ end
 if $opt == "1"
   
 # HOLDING
-print "\n-=-=-=-=-=-=-=-=-HOLDING-=-=-=-=-=-=-=-=-\n"
+print "\n_________________HOLDING_________________\n"
 loop do
 # INPUTS
 print "\nInsira o nome do ativo: "
@@ -291,7 +291,7 @@ end
 elsif $opt == "2"
 
 # TRADING
-print "\n-=-=-=-=-=-=-=-=-TRADING-=-=-=-=-=-=-=-=-\n"
+print "\n_________________TRADING_________________\n"
 
 Alerta.split("\n").each do |l|
   print l + "\n"
@@ -313,8 +313,8 @@ c3 = gets.chomp.to_f
 print "Insira a variação percentual do valor unitário do ativo
 no último semestre: "
 c6 = gets.chomp.to_f
-if (c3*2)+(c6/2.0) < 0 || (c1*6)+(c3*2) < 0
-  print "ERRO: VARIAÇÃO NEGATIVA!"
+if (c3*2)+(c6/2.0) < 0 || (c1*6)+(c3*2) < 0 || ((c3 * 2)+(c6/2.0)) <= 0 || ((c1*6)+(c3*2.0)) <= 0 || (c3+(c1*3)) <= 0
+  print "ERRO: ATIVO EM DECLÍNIO OU VARIAÇÃO NULA!"
   gets
   break
 end
@@ -364,8 +364,8 @@ if chance > 50
 end
 if chance > 70
   chance = 70.0
-  elsif chance < 0.1
-  chance = 0.1
+  elsif chance < 0
+  chance = 0
 end
 
 # RESULTADO
@@ -398,7 +398,7 @@ end
 end
 
 elsif $opt == "3" # STOP-LOSS
-print "\n-=-=-=-=-=-=-=-=STOP-LOSS=-=-=-=-=-=-=-=-\n"
+print "\n________________STOP-LOSS________________\n"
 loop do
 
 # INPUTS
@@ -460,7 +460,7 @@ end
 end
 
 elsif $opt == "4" # CALCULADORA
-print "\n-=-=-=-=-=-=-=-CALCULADORA-=-=-=-=-=-=-=-\n"
+print "\n_______________CALCULADORA_______________\n"
 loop do
 # INPUTS
 print "\nInsira o par a ser calculado (ex: BTC/BRL): "
