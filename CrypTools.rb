@@ -313,7 +313,7 @@ c3 = gets.chomp.to_f
 print "Insira a variação percentual do valor unitário do ativo
 no último semestre: "
 c6 = gets.chomp.to_f
-if (c3*2)+(c6/2.0) < 0 || (c1*6)+(c3*2) < 0 || ((c3 * 2)+(c6/2.0)) <= 0 || ((c1*6)+(c3*2.0)) <= 0 || (c3+(c1*3)) <= 0
+if (c3*2)+(c6/2.0) < 0 || (c3+(c1*3.0)) <= 0
   print "ERRO: ATIVO EM DECLÍNIO OU VARIAÇÃO NULA!"
   gets
   break
@@ -332,7 +332,11 @@ seqh = 10 - (Math.sqrt((c3 * 2) + (c6 / 2.0)) / 10.0) # sequência de velas de h
 seqh = 2 + ((seqh - 2)/2.0) if perfil >= 2 && seqh > 2
 seqh = seqh.round
 seqh = 0 if seqh < 0
-seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
+if (c1*6)+(c3*2) >= 0
+  seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
+  else
+  seqm = 10 + (Math.sqrt(((c1 * 6) + (c3 * 2.0)).abs) / 10.0)
+end
 seqm = 3 + ((seqm - 3)/2.0) if perfil == 3 && seqm > 3
 seqm = seqm.round
 seqm = 1 if seqm < 1
