@@ -1,5 +1,5 @@
 print "\n"
-("CrypTools v. 1.2").split("").each do |l|
+("CrypTools v. 1.3").split("").each do |l|
   print l
   sleep 0.1
 end
@@ -84,7 +84,7 @@ if !File.exist?("cryptools.log") # checando se arquivo de log existe
 end
 file = File.new("cryptools.log", 'a') # criando arquivo de log
 time = Time.now
-file.write("\nRegistros de #{time.day}/#{time.month}/#{time.year}, às #{time.hour}:#{time.min}:\n")
+file.write("\nRegistros de #{"%02d" % time.day}/#{"%02d" % time.month}/#{time.year}, às #{"%02d" % time.hour}:#{"%02d" % time.min}:\n")
 n = 1
 
 loop do
@@ -279,7 +279,11 @@ if score >= 30
   print result = " (não recomendável!)"
 end
 print "\n"
-file.write("	#{n}. #{name} (R$ #{value}): #{score}#{result}", "\n") # escrevendo log
+if value >= 1
+  file.write("	#{n}. #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
+  else
+  file.write("	#{n}. #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
+end
 n += 1
 print "\nCalcular outra criptomoeda? (s/n) "
 lp = gets.chomp.upcase
@@ -388,11 +392,11 @@ end
 print "\nSinais:
 * Comprar após #{seqh} velas negativas de horas e #{seqm} velas
 negativas de minutos;
-* Vender quando a quantia atingir o valor de $#{stop}.00
+* Vender quando a quantia atingir o valor de $#{"%.2f" % stop}
 (+#{lucro}%).
 Lembre-se de definir o stop-loss para controlar o risco
 da negociação.\n"
-file.write("	#{n}. $#{banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{stop} (+#{lucro}%)", "\n") # escrevendo log
+file.write("	#{n}. $#{"%.2f" % banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{"%.2f" % stop} (+#{lucro}%)", "\n") # escrevendo log
 n += 1
 print "\nCalcular outra negociação? (s/n) "
 lp = gets.chomp.upcase
@@ -447,13 +451,13 @@ riskp = risk / banca.to_f # porcentagem em risco
 
 # RESULTADO
 if loss >= 1
-  print "\nStop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%)"
-  file.write("	#{n}. Stop-loss: $#{loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n") # escrevendo log
+  print "\nStop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%)"
+  file.write("	#{n}. Stop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n") # escrevendo log
   else
-  print "\nStop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%)"
-  file.write("	#{n}. Stop-loss: $#{loss.round(10)} (#{(riskp * -100).round(2)}%), risco: $#{risk.round(2)}\n")
+  print "\nStop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%)"
+  file.write("	#{n}. Stop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n")
 end
-print "\nQuantia em risco: $#{risk.round(2)}\n"
+print "\nQuantia em risco: $#{"%.2f" % risk.round(2)}\n"
 print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
 n += 1
 print "\nCalcular outro stop-loss? (s/n) "
