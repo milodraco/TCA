@@ -1,11 +1,11 @@
 print "\n                    "
-("CrypTools v. 1.31").split("").each do |l|
+("CrypTools v. 1.4").split("").each do |l|
   print l
   sleep 0.1
 end
-sleep 0.5
-print "\n                      por Milo_Draco\n"
-sleep 1
+sleep 0.3
+print "\n                     por Milo_Draco\n"
+sleep 0.8
 
 $T1 = "\nInstruções gerais: execute o arquivo .rb no terminal
 do Linux ou em outro SO e insira as informações da
@@ -59,22 +59,22 @@ O LUCRO."
 def tutorial # tutorial
   $T1.split("\n").each do |l|
     print l + "\n"
-    sleep 0.2
+    sleep 0.1
   end
   gets
   $T2.split("\n").each do |l|
     print l + "\n"
-    sleep 0.2
+    sleep 0.1
   end
   gets
   $T3.split("\n").each do |l|
     print l + "\n"
-    sleep 0.2
+    sleep 0.1
   end
   gets
   $T4.split("\n").each do |l|
     print l + "\n"
-    sleep 0.2
+    sleep 0.1
   end
   gets
 end
@@ -196,10 +196,26 @@ dentro dos últimos 3 meses: "
     climb = false
   end
   score = cresc + svalue + news - volat # avaliação final
-  if dip == true || top == true
-    score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 # penalidade em caso de mergulho ou em caso de possibilidade de queda
-  elsif climb == true
-    score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0) # bônus em caso de alto crescimento
+  if dip == true # penalidade em caso de mergulho
+    if score >= 0
+      score -= score * 0.1
+    else
+      score += score * 0.1
+    end
+    puts score * 0.1
+  elsif top == true # penalidade em caso de possibilidade de queda
+    if score >= 0
+      score -= score * 0.2
+    else
+      score += score * 0.2
+    end
+    puts score * 0.2
+  elsif climb == true # bônus em caso de alto crescimento
+    if score >= 0
+      score += score * 0.1
+    else
+      score -= score * 0.1
+    end
   end
   score = score.round(2)
 
@@ -261,11 +277,11 @@ dentro dos últimos 3 meses: "
   warn = [] # alertas
   warn << "provável desvalorização!" if top == true
   warn << "em declínio!" if dip == true
-  warn << "valorização exponencial!" if climb == true
+  warn << "tendência de alta!" if climb == true
   warn << "histórico incompleto" if nohist == true
   warn << "notícias desconhecidas" if nonews == true
   if warn.length > 0
-    print "Alertas:"
+    print "Alertas:  "  
     warn.each do |a|
       print " ", a
       print "," if a != warn[-1]
@@ -305,7 +321,7 @@ dentro dos últimos 3 meses: "
 
   Alerta.split("\n").each do |l|
     print l + "\n"
-    sleep 0.2
+    sleep 0.1
   end
 
   loop do
@@ -384,9 +400,9 @@ agressivo: 3): "
 
   # RESULTADO
   print "\nProbabilidade de lucro: #{"%4s" % chance.round(2) + "%"}
-Volatilidade: #{"%14s" % volat.round(2) + "%"}"
+Volatilidade: #{"%15s" % volat.round(2) + "%"}"
   if chance < 20 || volat > 300 # alertas
-    print "\nAlertas: "
+    print "\nAlertas:   "
     if chance < 20 && volat > 300
       print "alta volatilidade!, baixa probabilidade de lucro!"
     elsif chance < 20
@@ -457,14 +473,14 @@ agressivo: 3): "
 
   # RESULTADO
   if loss >= 1
-    print "\nStop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%)"
+    print "\nStop-loss: #{"%15s" % "$" + ("%.2f" % loss.round(2))} (#{(riskp * -100).round(2)}%)"
     file.write("	#{n}. Stop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n") # escrevendo log
   else
-    print "\nStop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%)"
+    print "\nStop-loss: #{"%15s" % "$" + ("%.8f" % loss)} (#{(riskp * -100).round(2)}%)"
     file.write("	#{n}. Stop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n")
   end
-  print "\nQuantia em risco: $#{"%.2f" % risk.round(2)}\n"
-  print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
+  print "\nQuantia em risco: #{"%7s" % "$" + ("%.2f" % risk.round(2))}\n"
+  print "ALERTA:  VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
   n += 1
   print "\nCalcular outro stop-loss? (s/n) "
   lp = gets.chomp.upcase
@@ -491,10 +507,10 @@ agressivo: 3): "
 
   # RESULTADO
   if var > 0
-    print "\nVariação: +#{var}%\n"
+    print "\nVariação:    +#{var}%\n"
     file.write("	#{n}. Variação do par #{par} em #{tempo}: +#{var}%\n")
   else
-    print "\nVariação: #{var}%\n"
+    print "\nVariação:    #{var}%\n"
     file.write("	#{n}. Variação do par #{par} em #{tempo}: #{var}%\n")
   end
   n += 1
@@ -513,9 +529,9 @@ Lembre-se: é recomendável que se consulte um profissional
 antes de fazer qualquer investimento. Até mais!\n"
     fim.split("\n").each do |l|
       print l + "\n"
-      sleep 0.2
+      sleep 0.1
     end
-    sleep 5	
+    sleep 4
     exit
 
   end # fim do if
