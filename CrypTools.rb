@@ -1,10 +1,10 @@
-print "\n"
-("CrypTools v. 1.3").split("").each do |l|
+print "\n                    "
+("CrypTools v. 1.31").split("").each do |l|
   print l
   sleep 0.1
 end
 sleep 0.5
-print "\n                        por Milo_Draco\n"
+print "\n                      por Milo_Draco\n"
 sleep 1
 
 $T1 = "\nInstruções gerais: execute o arquivo .rb no terminal
@@ -51,7 +51,7 @@ um ativo.
 Lembre-se: nenhum método garante o lucro, assim como
 nenhum elimina a possibilidade de prejuízo. Opere com
 trading somente se souber o que está fazendo.\n"
-Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
+  Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
 PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
 QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
 O LUCRO."
@@ -89,428 +89,434 @@ n = 1
 
 loop do
 
-print "\n_________________________________________\n\n"
-["1. Holding", "2. Trading", "3. Stop-loss", "4. Calculadora"].each do |l|
-  print l, "\n"
-  sleep 0.1
-end
-print "\n"
-
-loop do
-print "Insira uma opção: "
-  $opt = gets.chomp.upcase
-if $opt == "?" || $opt == "AJUDA"
-  tutorial
-end
-  break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4" || $opt == "SAIR"
-end
-
-if $opt == "1"
-  
-# HOLDING
-print "\n_________________HOLDING_________________\n"
-loop do
-# INPUTS
-print "\nInsira o nome do ativo: "
-name = gets.chomp.upcase
-print "Insira o valor unitário atual do ativo (em BRL): "
-value = gets.chomp.to_f
-print "Insira a variação percentual do valor unitário do ativo
-nos últimos 3 meses: "
-c3 = gets.chomp
-if c3 == ""
-  print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!"
-  gets
-  break
-  else
-  c3 = c3.to_f
-end
-print "Insira a variação percentual do valor unitário do ativo
-nos últimos 6 meses: "
-c6 = gets.chomp
-print "Insira a variação percentual do valor unitário do ativo
-nos últimos 12 meses: "
-c12 = gets.chomp
-if c6 == "" || c12 == ""
-  nohist = true # sem histórico
-  else
-  nohist = false
-end
-c6 = c6.to_f
-c12 = c12.to_f
-print "Insira o saldo das dez últimas notícias (boas - ruins)
-dentro dos últimos 3 meses: "
-news = gets.chomp
-if news == ""
-  nonews = true # sem saldo de notícias
-  news = 5
-  else
-  nonews = false
-  news = news.to_i
-  news = 10 if news > 10
-  news = -10 if news < -10
-end
-
-# CÁLCULOS
-svalue = Math.log(500000) - Math.log(value) # avaliação do valor unitário da moeda
-if svalue > 10
-  svalue = 10 + Math.sqrt(svalue-10)
-  elsif svalue < 0
-  svalue *= 2
-end
-if nohist == true
-  volat = 10.0 # volatilidade caso não haja histórico
-  else
-  volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25 # avaliação da volatilidade
-end
-fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
-if fator < 7
-  fator = 7.0
-  elsif fator > 21
-  fator = 21.0
-end
-if nohist == false
-  cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
-  else
-  cresc = c3.abs**(1/3.0) * 2
-end
-cresc *= -1 if c3+c6+c12 < 0 # valores negativos
-if nohist == false
-  if c3 < c6/2.0 && c6 < c12/2.0
-    dip = true # mergulho
-    else
-    dip = false
+  print "\n_________________________________________________________\n\n"
+  ["1. Holding", "2. Trading", "3. Stop-loss", "4. Calculadora"].each do |l|
+    print l, "\n"
+    sleep 0.1
   end
-  if c3 > c6/2.0 && c3 > c12/4.0
-    climb = true # alto crescimento no último trimestre
+  print "\n"
+
+  loop do
+    print "Insira uma opção: "
+    $opt = gets.chomp.upcase
+    if $opt == "?" || $opt == "AJUDA"
+      tutorial
+    end
+    break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4" || $opt == "SAIR"
+  end
+
+  if $opt == "1"
+
+  # HOLDING
+  print "\n_________________________HOLDING_________________________\n"
+  loop do
+  # INPUTS
+  print "\nInsira o nome do ativo: "
+  name = gets.chomp.upcase
+  print "Insira o valor unitário atual do ativo (em BRL): "
+  value = gets.chomp.to_f
+  print "Insira a variação percentual do valor unitário do ativo
+nos últimos 3 meses: "
+  c3 = gets.chomp
+  if c3 == ""
+    print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!"
+    gets
+    break
+  else
+    c3 = c3.to_f
+  end
+  print "Insira a variação percentual do valor unitário do ativo
+nos últimos 6 meses: "
+  c6 = gets.chomp
+  print "Insira a variação percentual do valor unitário do ativo
+nos últimos 12 meses: "
+  c12 = gets.chomp
+  if c6 == "" || c12 == ""
+    nohist = true # sem histórico
+  else
+    nohist = false
+  end
+  c6 = c6.to_f
+  c12 = c12.to_f
+  print "Insira o saldo das dez últimas notícias (boas - ruins)
+dentro dos últimos 3 meses: "
+  news = gets.chomp
+  if news == ""
+    nonews = true # sem saldo de notícias
+    news = 5
+  else
+    nonews = false
+    news = news.to_i
+    news = 10 if news > 10
+    news = -10 if news < -10
+  end
+
+  # CÁLCULOS
+  svalue = Math.log(500000) - Math.log(value) # avaliação do valor unitário da moeda
+  if svalue > 10
+    svalue = 10 + Math.sqrt(svalue-10)
+  elsif svalue < 0
+    svalue *= 2
+  end
+  if nohist == true
+    volat = 10.0 # volatilidade caso não haja histórico
+  else
+    volat = (((c3 * 2) - c6).abs + ((c6 * 2) - c12).abs)**0.25 # avaliação da volatilidade
+  end
+  fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
+  if fator < 7
+    fator = 7.0
+  elsif fator > 21
+    fator = 21.0
+  end
+  if nohist == false
+    cresc = ((c3 + c6 + c12)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+  else
+    cresc = c3.abs**(1/3.0) * 2
+  end
+  cresc *= -1 if c3+c6+c12 < 0 # valores negativos
+  if nohist == false
+    if c3 < c6/2.0 && c6 < c12/2.0
+      dip = true # mergulho
     else
+      dip = false
+    end
+    if c3 > c6/2.0 && c3 > c12/4.0 && c3 < c12 && c3/2.0 < c6
+      climb = true # alto crescimento no último trimestre
+      top = false # ativo em alta, possibilidade de queda
+    elsif c3 >= c12 && c3/2.0 >= c6
+      climb = false
+      top = true
+    else
+      climb = false
+      top = false
+    end
+  else
+    dip = false
     climb = false
   end
-  else
-  dip = false
-  climb = false
-end
-score = cresc + svalue + news - volat # avaliação final
-if dip == true
-  score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 # penalidade em caso de mergulho
+  score = cresc + svalue + news - volat # avaliação final
+  if dip == true || top == true
+    score -= ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**0.25 # penalidade em caso de mergulho ou em caso de possibilidade de queda
   elsif climb == true
-  score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0) # bônus em caso de alto crescimento
-end
-score = score.round(2)
+    score += ((c3 - (c6/2.0)) + (c6 - (c12/2.0))).abs**(1/3.0) # bônus em caso de alto crescimento
+  end
+  score = score.round(2)
 
-# RESULTADO
-print "\nValor: #{svalue.round(2)}"
-if svalue > 10
-  print " (excelente!)\n"
+  # RESULTADO
+  print "\nValor: #{"%13s" % svalue.round(2)}"
+  if svalue > 10
+    print " (excelente!)\n"
   elsif svalue > 7
-  print " (bom)\n"
+    print " (bom)\n"
   elsif svalue > 4
-  print " (razoável)\n"
-  elsif svalue > 0
-  print " (oneroso)\n"
-  else
-  print " (muito oneroso!)\n"
-end
-print "Desempenho: #{cresc.round(2)}"
-if cresc > 15
-  print " (excelente!)\n"
-  elsif cresc > 10
-  print " (bom)\n"
-  elsif cresc > 5
-  print " (razoável)\n"
-  elsif cresc > 0
-  print " (baixo)\n"
-  elsif cresc == 0
-  print " (nulo)\n"
-  else
-  print " (negativo!)\n"
-end
-if nohist == false
-  print "Volatilidade: #{volat.round(2)}"
-  if volat > 10
-    print " (muito alta!)\n"
-    elsif volat > 7
-    print " (alta)\n"
-    elsif volat > 4
     print " (razoável)\n"
+  elsif svalue > 0
+    print " (oneroso)\n"
+  else
+    print " (muito oneroso!)\n"
+  end
+  print "Desempenho: #{"%8s" % cresc.round(2)}"
+  if cresc > 15
+    print " (excelente!)\n"
+  elsif cresc > 10
+    print " (bom)\n"
+  elsif cresc > 5
+    print " (razoável)\n"
+  elsif cresc > 0
+    print " (baixo)\n"
+  elsif cresc == 0
+    print " (nulo)\n"
+  else
+    print " (negativo!)\n"
+  end
+  if nohist == false
+    print "Volatilidade: #{"%6s" % volat.round(2)}"
+    if volat > 10
+      print " (muito alta!)\n"
+    elsif volat > 7
+      print " (alta)\n"
+    elsif volat > 4
+      print " (razoável)\n"
     elsif volat > 0
-    print " (estável)\n"
+      print " (estável)\n"
     else
-    print " (nula!)\n"
+      print " (nula!)\n"
+    end
   end
-end
-if nonews == false
-  print "Notícias: #{news.round}"
-  if news >= 10
-    print " (promissoras!)\n"
+  if nonews == false
+    print "Notícias: #{"%10s" % news.round}"
+    if news >= 10
+      print " (promissoras!)\n"
     elsif news >= 7
-    print " (boas)\n"
+      print " (boas)\n"
     elsif news >= 4
-    print " (razoáveis)\n"
+      print " (razoáveis)\n"
     elsif news >= 0
-    print " (ruins)\n"
+      print " (ruins)\n"
     else
-    print " (péssimas!)\n"
+      print " (péssimas!)\n"
+    end
   end
-end
-warn = [] # alertas
-warn << "em declínio!" if dip == true
-warn << "tendência de alta!" if climb == true
-warn << "histórico incompleto" if nohist == true
-warn << "notícias desconhecidas" if nonews == true
-if warn.length > 0
-  print "Alertas:"
-  warn.each do |a|
-    print " ", a
-    print "," if a != warn[-1]
+  warn = [] # alertas
+  warn << "provável desvalorização!" if top == true
+  warn << "em declínio!" if dip == true
+  warn << "valorização exponencial!" if climb == true
+  warn << "histórico incompleto" if nohist == true
+  warn << "notícias desconhecidas" if nonews == true
+  if warn.length > 0
+    print "Alertas:"
+    warn.each do |a|
+      print " ", a
+      print "," if a != warn[-1]
+    end
+    print "\n"
   end
-  print "\n"
-end
-print "Score final: #{score}"
-if score >= 30
-  print result = " (investimento altamente promissor!)"
+  print "Score final: #{"%7s" % score}"
+  if score >= 30
+    print result = " (investimento altamente promissor!)"
   elsif score >= 20
-  print result = " (investimento promissor)"
+    print result = " (investimento promissor)"
   elsif score >= 10
-  print result = " (razoável)"
+    print result = " (razoável)"
   elsif score >= 5
-  print result = " (duvidoso)"
+    print result = " (duvidoso)"
   else
-  print result = " (não recomendável!)"
-end
-print "\n"
-if value >= 1
-  file.write("	#{n}. #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
-  else
-  file.write("	#{n}. #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
-end
-n += 1
-print "\nCalcular outra criptomoeda? (s/n) "
-lp = gets.chomp.upcase
-if lp == "N"
-  break
-end
-end
-
-elsif $opt == "2"
-
-# TRADING
-print "\n_________________TRADING_________________\n"
-
-Alerta.split("\n").each do |l|
-  print l + "\n"
-  sleep 0.2
-end
-
-loop do
-# INPUTS
-print "\nInsira o par que será negociado (ex: BTC/USDT): "
-par = gets.chomp.upcase
-print "Insira a quantia que será investida (em BRL ou USD): "
-banca = gets.chomp.to_f
-print "Insira a variação percentual do valor unitário do ativo
-no último mês (30 dias): "
-c1 = gets.chomp.to_f
-print "Insira a variação percentual do valor unitário do ativo
-no último trimestre: "
-c3 = gets.chomp.to_f
-print "Insira a variação percentual do valor unitário do ativo
-no último semestre: "
-c6 = gets.chomp.to_f
-if (c3*2)+(c6/2.0) < 0 || (c3+(c1*3.0)) <= 0
-  print "ERRO: ATIVO EM DECLÍNIO OU VARIAÇÃO NULA!"
-  gets
-  break
-end
-print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
-agressivo: 3): "
-perfil = gets.chomp.to_i
-if perfil != 1 && perfil != 2 && perfil != 3
-  print "ERRO: PERFIL INVÁLIDO!"
-  gets
-  break
-end
-
-# CÁLCULOS
-seqh = 10 - (Math.sqrt((c3 * 2) + (c6 / 2.0)) / 10.0) # sequência de velas de horas
-seqh = 2 + ((seqh - 2)/2.0) if perfil >= 2 && seqh > 2
-seqh = seqh.round
-seqh = 0 if seqh < 0
-if (c1*6)+(c3*2) >= 0
-  seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
-  else
-  seqm = 10 + (Math.sqrt(((c1 * 6) + (c3 * 2.0)).abs) / 10.0)
-end
-seqm = 3 + ((seqm - 3)/2.0) if perfil == 3 && seqm > 3
-seqm = seqm.round
-seqm = 1 if seqm < 1
-stop = banca * (1 + (Math::log(c3 + (c1 * 3.0)) / 100.0)) # sinal de venda
-stop *= 1 + (((perfil - 1) * 2.5) / 100.0)
-stop = stop.round
-lucro = (((stop / banca.to_f) - 1) * 100).round(2) # porcentagem de lucro
-volat = ((c1 - (c3 / 3.0)).abs + (c3 - (c6 / 2.0)).abs + (c1 - (c6 / 6.0)).abs) / 3.0 # volatilidade
-if c1 > 0
-  x1 = Math.sqrt(c1)
-  else
-  x1 = c1 / 3.0
-end
-if c3 > 0
-  x3 = Math.sqrt(c3 / 3.0)
-  else
-  x3 = c3
-end
-if c6 > 0
-  x6 = Math::log(c6) * 2
-  else
-  x6 = c6
-end
-chance = x1 + x3 + x6 + ((3 - perfil) * 5) - (Math.sqrt(volat) - 20) # probabilidade de lucro
-if chance > 50
-  chance = 50 + Math.sqrt(chance - 50)
-  elsif chance < 5
-  chance = 5 - Math::log(volat)
-end
-if chance > 70
-  chance = 70.0
-  elsif chance < 0
-  chance = 0
-end
-
-# RESULTADO
-print "\nProbabilidade de lucro: #{chance.round(2)}%
-Volatilidade: #{volat.round(2)}%"
-if chance < 20 || volat > 300 # alertas
-  print "\nAlertas: "
-  if chance < 20 && volat > 300
-    print "alta volatilidade!, baixa probabilidade de lucro!"
-    elsif chance < 20
-    print "baixa probabilidade de lucro!"
-    elsif volat > 300
-    print "alta volatilidade!"
+    print result = " (não recomendável!)"
   end
-end
-print "\nSinais:
-* Comprar após #{seqh} velas negativas de horas e #{seqm} velas
-negativas de minutos;
-* Vender quando a quantia atingir o valor de $#{"%.2f" % stop}
-(+#{lucro}%).
-Lembre-se de definir o stop-loss para controlar o risco
-da negociação.\n"
-file.write("	#{n}. $#{"%.2f" % banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{"%.2f" % stop} (+#{lucro}%)", "\n") # escrevendo log
-n += 1
-print "\nCalcular outra negociação? (s/n) "
-lp = gets.chomp.upcase
-if lp == "N"
-  break
-end
-end
-
-elsif $opt == "3" # STOP-LOSS
-print "\n________________STOP-LOSS________________\n"
-loop do
-
-# INPUTS
-print "\nInsira a quantia total investida (em BRL ou USD): "
-banca = gets.chomp.to_f
-print "Insira o valor unitário do ativo no momento da compra: "
-value = gets.chomp.to_f
-print "Insira o menor valor unitário do ativo nos últimos 3 dias: "
-m3 = gets.chomp.to_f
-print "Insira o menor valor unitário do ativo nos últimos 7 dias: "
-m7 = gets.chomp.to_f
-print "Insira a variação percentual do ativo nos últimos 3 dias: "
-var = gets.chomp.to_f
-print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
-agressivo: 3): "
-perfil = gets.chomp.to_i
-if perfil != 1 && perfil != 2 && perfil != 3
-  print "ERRO: PERFIL INVÁLIDO!"
-  gets
-  break
-end
-
-# CÁLCULOS
-if var < 0
-  varf = -1 * Math.sqrt(var.abs) # variação ponderada
-  elsif var == 0
-  varf = var
-  else
-  varf = Math::log(var)
-end
-sl1 = ((m3 + m7) / 2.0) * (1 + (varf / 100.0)) # stop-loss de acordo com os mínimos
-sl2 = value * (1 - (0.03 * perfil)) # stop-loss de acordo com o valor atual
-loss = [sl1, sl2].min
-if (banca - ((banca / value.to_f) * loss)) / banca.to_f > perfil / 10.0
-  loss = value * (1 - (perfil / 10.0)) # porcentagem máxima de acordo com perfil
-  alert = true # alerta de ajuste limitante
-  else
-  alert = false
-end
-risk = banca - ((banca / value.to_f) * loss) # quantia em risco
-riskp = risk / banca.to_f # porcentagem em risco
-
-# RESULTADO
-if loss >= 1
-  print "\nStop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%)"
-  file.write("	#{n}. Stop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n") # escrevendo log
-  else
-  print "\nStop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%)"
-  file.write("	#{n}. Stop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n")
-end
-print "\nQuantia em risco: $#{"%.2f" % risk.round(2)}\n"
-print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
-n += 1
-print "\nCalcular outro stop-loss? (s/n) "
-lp = gets.chomp.upcase
-if lp == "N"
-  break
-end
-end
-
-elsif $opt == "4" # CALCULADORA
-print "\n_______________CALCULADORA_______________\n"
-loop do
-# INPUTS
-print "\nInsira o par a ser calculado (ex: BTC/BRL): "
-par = gets.chomp.upcase
-print "Insira o período da variação (ex: 7 dias): "
-tempo = gets.chomp.downcase
-print "Insira o valor inicial do ativo: "
-v1 = gets.chomp.to_f
-print "Insira o valor final do ativo: "
-v2 = gets.chomp.to_f
-
-# CÁLCULOS
-var = (((v2 / v1) - 1) * 100).round(2)
-
-# RESULTADO
-if var > 0
-  print "\nVariação: +#{var}%\n"
-  file.write("	#{n}. Variação do par #{par} em #{tempo}: +#{var}%\n")
-  else
-  print "\nVariação: #{var}%\n"
-  file.write("	#{n}. Variação do par #{par} em #{tempo}: #{var}%\n")
-end
-n += 1
-print "\nCalcular outra variação? (s/n) "
-lp = gets.chomp.upcase
-if lp == "N"
-  break
-end
-end
-
-elsif $opt == "SAIR" # EXIT
-  
   print "\n"
-  fim = "Todo o registro foi salvo no arquivo de log.
-Lembre-se: é recomendável que se consulte um profissional
-antes de fazer qualquer investimento. Até mais!\n"
-  fim.split("\n").each do |l|
+  if value >= 1
+    file.write("	#{n}. #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
+  else
+    file.write("	#{n}. #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
+  end
+  n += 1
+  print "\nCalcular outra criptomoeda? (s/n) "
+  lp = gets.chomp.upcase
+  if lp == "N"
+    break
+  end
+  end
+
+  elsif $opt == "2"
+
+  # TRADING
+  print "\n_________________________TRADING_________________________\n"
+
+  Alerta.split("\n").each do |l|
     print l + "\n"
     sleep 0.2
   end
-  sleep 5	
-  exit
 
-end # fim do if
+  loop do
+  # INPUTS
+  print "\nInsira o par que será negociado (ex: BTC/USDT): "
+  par = gets.chomp.upcase
+  print "Insira a quantia que será investida (em BRL ou USD): "
+  banca = gets.chomp.to_f
+  print "Insira a variação percentual do valor unitário do ativo
+no último mês (30 dias): "
+  c1 = gets.chomp.to_f
+  print "Insira a variação percentual do valor unitário do ativo
+no último trimestre: "
+  c3 = gets.chomp.to_f
+  print "Insira a variação percentual do valor unitário do ativo
+no último semestre: "
+  c6 = gets.chomp.to_f
+  if (c3*2)+(c6/2.0) < 0 || (c3+(c1*3.0)) <= 0
+    print "ERRO: ATIVO EM DECLÍNIO OU VARIAÇÃO NULA!"
+    gets
+    break
+  end
+  print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
+agressivo: 3): "
+  perfil = gets.chomp.to_i
+  if perfil != 1 && perfil != 2 && perfil != 3
+    print "ERRO: PERFIL INVÁLIDO!"
+    gets
+    break
+  end
+
+  # CÁLCULOS
+  seqh = 10 - (Math.sqrt((c3 * 2) + (c6 / 2.0)) / 10.0) # sequência de velas de horas
+  seqh = 2 + ((seqh - 2)/2.0) if perfil >= 2 && seqh > 2
+  seqh = seqh.round
+  seqh = 0 if seqh < 0
+  if (c1*6)+(c3*2) >= 0
+    seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
+  else
+    seqm = 10 + (Math.sqrt(((c1 * 6) + (c3 * 2.0)).abs) / 10.0)
+  end
+  seqm = 3 + ((seqm - 3)/2.0) if perfil == 3 && seqm > 3
+  seqm = seqm.round
+  seqm = 1 if seqm < 1
+  stop = banca * (1 + (Math::log(c3 + (c1 * 3.0)) / 100.0)) # sinal de venda
+  stop *= 1 + (((perfil - 1) * 3) / 100.0)
+  stop = stop.round
+  lucro = (((stop / banca.to_f) - 1) * 100).round(2) # porcentagem de lucro
+  volat = ((c1 - (c3 / 3.0)).abs + (c3 - (c6 / 2.0)).abs + (c1 - (c6 / 6.0)).abs) / 3.0 # volatilidade
+  if c1 > 0
+    x1 = Math.sqrt(c1)
+  else
+    x1 = c1 / 3.0
+  end
+  if c3 > 0
+    x3 = Math.sqrt(c3 / 3.0)
+  else
+    x3 = c3
+  end
+  if c6 > 0
+    x6 = Math::log(c6) * 2
+  else
+    x6 = c6
+  end
+  chance = x1 + x3 + x6 + ((3 - perfil) * 5) - (Math.sqrt(volat) - 20) # probabilidade de lucro
+  if chance > 50
+    chance = 50 + Math.sqrt(chance - 50)
+  elsif chance < 5
+    chance = 5 - Math::log(volat)
+  end
+  if chance > 70
+    chance = 70.0
+  elsif chance < 0
+    chance = 0
+  end
+
+  # RESULTADO
+  print "\nProbabilidade de lucro: #{"%4s" % chance.round(2) + "%"}
+Volatilidade: #{"%14s" % volat.round(2) + "%"}"
+  if chance < 20 || volat > 300 # alertas
+    print "\nAlertas: "
+    if chance < 20 && volat > 300
+      print "alta volatilidade!, baixa probabilidade de lucro!"
+    elsif chance < 20
+      print "baixa probabilidade de lucro!"
+    elsif volat > 300
+      print "alta volatilidade!"
+    end
+  end
+  print "\nSinais:
+  * Comprar após #{seqh} velas negativas de horas e #{seqm} velas
+  negativas de minutos;
+  * Vender quando a quantia atingir o valor de $#{"%.2f" % stop}
+  (+#{lucro}%).
+Lembre-se de definir o stop-loss para controlar o risco
+da negociação.\n"
+  file.write("	#{n}. $#{"%.2f" % banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{"%.2f" % stop} (+#{lucro}%)", "\n") # escrevendo log
+  n += 1
+  print "\nCalcular outra negociação? (s/n) "
+  lp = gets.chomp.upcase
+  if lp == "N"
+    break
+  end
+  end
+
+  elsif $opt == "3" # STOP-LOSS
+    print "\n________________________STOP-LOSS________________________\n"
+    loop do
+
+  # INPUTS
+  print "\nInsira a quantia total investida (em BRL ou USD): "
+  banca = gets.chomp.to_f
+  print "Insira o valor unitário do ativo no momento da compra: "
+  value = gets.chomp.to_f
+  print "Insira o menor valor unitário do ativo nos últimos 3 dias: "
+  m3 = gets.chomp.to_f
+  print "Insira o menor valor unitário do ativo nos últimos 7 dias: "
+  m7 = gets.chomp.to_f
+  print "Insira a variação percentual do ativo nos últimos 3 dias: "
+  var = gets.chomp.to_f
+  print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
+agressivo: 3): "
+  perfil = gets.chomp.to_i
+  if perfil != 1 && perfil != 2 && perfil != 3
+    print "ERRO: PERFIL INVÁLIDO!"
+    gets
+    break
+  end
+
+  # CÁLCULOS
+  if var < 0
+    varf = -1 * Math.sqrt(var.abs) # variação ponderada
+  elsif var == 0
+    varf = var
+  else
+    varf = Math::log(var)
+  end
+  sl1 = ((m3 + m7) / 2.0) * (1 + (varf / 100.0)) # stop-loss de acordo com os mínimos
+  sl2 = value * (1 - (0.03 * perfil)) # stop-loss de acordo com o valor atual
+  loss = [sl1, sl2].min
+  if (banca - ((banca / value.to_f) * loss)) / banca.to_f > perfil / 10.0
+    loss = value * (1 - (perfil / 10.0)) # porcentagem máxima de acordo com perfil
+    alert = true # alerta de ajuste limitante
+  else
+    alert = false
+  end
+  risk = banca - ((banca / value.to_f) * loss) # quantia em risco
+  riskp = risk / banca.to_f # porcentagem em risco
+
+  # RESULTADO
+  if loss >= 1
+    print "\nStop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%)"
+    file.write("	#{n}. Stop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n") # escrevendo log
+  else
+    print "\nStop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%)"
+    file.write("	#{n}. Stop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n")
+  end
+  print "\nQuantia em risco: $#{"%.2f" % risk.round(2)}\n"
+  print "ALERTA: VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
+  n += 1
+  print "\nCalcular outro stop-loss? (s/n) "
+  lp = gets.chomp.upcase
+  if lp == "N"
+    break
+  end
+  end
+
+  elsif $opt == "4" # CALCULADORA
+    print "\n_______________________CALCULADORA_______________________\n"
+    loop do
+  # INPUTS
+  print "\nInsira o par a ser calculado (ex: BTC/BRL): "
+  par = gets.chomp.upcase
+  print "Insira o período da variação (ex: 7 dias): "
+  tempo = gets.chomp.downcase
+  print "Insira o valor inicial do ativo: "
+  v1 = gets.chomp.to_f
+  print "Insira o valor final do ativo: "
+  v2 = gets.chomp.to_f
+
+  # CÁLCULOS
+  var = (((v2 / v1) - 1) * 100).round(2)
+
+  # RESULTADO
+  if var > 0
+    print "\nVariação: +#{var}%\n"
+    file.write("	#{n}. Variação do par #{par} em #{tempo}: +#{var}%\n")
+  else
+    print "\nVariação: #{var}%\n"
+    file.write("	#{n}. Variação do par #{par} em #{tempo}: #{var}%\n")
+  end
+  n += 1
+  print "\nCalcular outra variação? (s/n) "
+  lp = gets.chomp.upcase
+  if lp == "N"
+    break
+  end
+  end
+
+  elsif $opt == "SAIR" # EXIT
+
+    print "\n"
+    fim = "Todo o registro foi salvo no arquivo de log.
+Lembre-se: é recomendável que se consulte um profissional
+antes de fazer qualquer investimento. Até mais!\n"
+    fim.split("\n").each do |l|
+      print l + "\n"
+      sleep 0.2
+    end
+    sleep 5	
+    exit
+
+  end # fim do if
 end # fim do loop
