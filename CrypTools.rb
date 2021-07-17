@@ -1,5 +1,5 @@
 print "\n                    "
-("CrypTools v. 1.4").split("").each do |l|
+("CrypTools v. 1.5").split("").each do |l|
   print l
   sleep 0.1
 end
@@ -196,21 +196,13 @@ dentro dos últimos 3 meses: "
     climb = false
   end
   score = cresc + svalue + news - volat # avaliação final
-  if dip == true # penalidade em caso de mergulho
-    if score >= 0
-      score -= score * 0.1
-    else
-      score += score * 0.1
-    end
-    puts score * 0.1
-  elsif top == true # penalidade em caso de possibilidade de queda
+  if top == true # penalidade em caso de possibilidade de resistência
     if score >= 0
       score -= score * 0.2
     else
       score += score * 0.2
     end
-    puts score * 0.2
-  elsif climb == true # bônus em caso de alto crescimento
+  elsif climb == true || dip == true # bônus em caso de crescimento seguro ou de mergulho (possível suporte)
     if score >= 0
       score += score * 0.1
     else
@@ -275,8 +267,8 @@ dentro dos últimos 3 meses: "
     end
   end
   warn = [] # alertas
-  warn << "provável desvalorização!" if top == true
-  warn << "em declínio!" if dip == true
+  warn << "resistência próxima!" if top == true
+  warn << "suporte próximo!" if dip == true
   warn << "tendência de alta!" if climb == true
   warn << "histórico incompleto" if nohist == true
   warn << "notícias desconhecidas" if nonews == true
