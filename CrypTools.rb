@@ -302,9 +302,9 @@ dentro dos últimos 3 meses: "
   end
   print "\n"
   if value >= 1
-    file.write("  #{n}. Holding de #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
+    file.write("  #{n}. Holding de #{name} (R$#{"%.2f" % value.round(2)}): #{score}#{result}", "\n") # escrevendo log
   else
-    file.write("  #{n}. Holding de #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
+    file.write("  #{n}. Holding de #{name} (R$#{"%.8f" % value.round(8)}): #{score}#{result}", "\n")
   end
   n += 1
   print "\nCalcular outro investimento? (s/n) "
