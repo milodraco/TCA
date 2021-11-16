@@ -38,9 +38,9 @@ zonas de compra. Caso esteja, espere o valor do ativo
 se aproximar de alguma resistência ou pela aparição de
 algum padrão de vela de reversão para então comprar.
 Exemplos de padrões de vela de reversão:
-  * Dragonfly Doji ('Libélula')
-  * Hammer ('Martelo')
-  * Tweezer Bottom ('Fundo Duplo')
+  * Dragonfly Doji ('Libélula');
+  * Hammer ('Martelo');
+  * Tweezer Bottom ('Fundo Duplo').
 Se quiser saber mais sobre velas japanesas, clique nos
 sítios abaixo:
 https://www.financebrokerage.com/pt-br/padroes-de-graficos/
@@ -386,7 +386,7 @@ Volatilidade: #{"%16s" % ("%.2f" % volat.round(2)) + "%"}"
     file.write("  #{n}. Sinal para #{par}: #{seq} horas (chance de #{chance.round}%), zona 1: de $#{"%.8f" % zonas[1].round(8)} a $#{"%.8f" % zonas[0].round(8)}, zona 2: de $#{"%.8f" % zonas[2].round(8)} a $#{"%.8f" % zonas[1].round(8)}, zona 1: de $#{"%.8f" % zonas[3].round(8)} a $#{"%.8f" % zonas[2].round(8)}", "\n") # escrevendo log
   end
   print "Sinal:
-  * Esperar por #{seq} velas negativas de horas consecutivas
+  * Esperar por #{seq} velas negativas de horas consecutivas;
   * Comprar quando alguma resistência for atingida ou quando
     confirmar alguma vela com padrão de reversão, desde que
     o valor esteja dentro das zonas de compra.
