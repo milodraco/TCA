@@ -349,7 +349,7 @@ no último trimestre: "
   zonas = [max - (dif * 0.382), max - (dif * 0.5), max - (dif * 0.618), max - (dif * 0.786)] # zonas da retração de Fibonacci
   cvar = [c24*30, c1, c3/3.0] # variação
   volat = cvar.max - cvar.min # volatilidade
-  chance = (c1 * 3) + (c3 / 5.0) - (volat / 5.0) - (c24 / 3.0).abs # probabilidade de lucro
+  chance = (c1 * 2) + (c3 / 5.0) - (volat / 5.0) - (c24 / 3.0).abs # probabilidade de lucro
   if chance > 50
     chance = 50 + Math.sqrt(chance - 50) # diminuindo chances altas
   elsif chance < 1
