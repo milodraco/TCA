@@ -17,7 +17,7 @@ $T2 = "1. Holding: o algoritmo calcula uma nota para uma
 criptomoeda de acordo com os dados inseridos, ajudando
 o usuário a decidir em qual cripto investir para obter
 lucro a longo prazo. Ideal para poupanças (savings e
-earns) e stakings.
+earnings) e stakings.
 Instruções: Para calcular o saldo de notícias, você
 pode escolher qualquer plataforma para verificar as
 notícias (recomendo o app Delta), basta ler as dez
