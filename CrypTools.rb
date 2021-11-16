@@ -276,7 +276,7 @@ dentro dos últimos 3 meses: "
   end
   warn = [] # alertas
   warn << "resistência próxima!" if top == true
-  warn << "suporte próximo!" if dip == true
+  warn << "momento de compra!" if dip == true
   warn << "tendência de alta!" if climb == true
   warn << "histórico incompleto" if nohist == true
   warn << "notícias desconhecidas" if nonews == true
