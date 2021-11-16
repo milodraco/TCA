@@ -1,5 +1,5 @@
 print "\n                    "
-("CrypTools v. 1.5").split("").each do |l|
+("CrypTools v. 1.6").split("").each do |l|
   print l
   sleep 0.1
 end
@@ -7,7 +7,7 @@ sleep 0.3
 print "\n                     por Milo_Draco\n"
 sleep 0.8
 
-$T1 = "\nInstruções gerais: execute o arquivo .rb no terminal
+$T1 = "\nInstruções gerais: execute o arquivo '.rb' no terminal
 do Linux ou em outro SO e insira as informações da
 transação desejada. Exemplo no Linux: se o arquivo
 estiver na pasta pessoal, basta abrir o terminal e
@@ -17,7 +17,7 @@ $T2 = "1. Holding: o algoritmo calcula uma nota para uma
 criptomoeda de acordo com os dados inseridos, ajudando
 o usuário a decidir em qual cripto investir para obter
 lucro a longo prazo. Ideal para poupanças (savings e
-earn) e stakings.
+earns) e stakings.
 Instruções: Para calcular o saldo de notícias, você
 pode escolher qualquer plataforma para verificar as
 notícias (recomendo o app Delta), basta ler as dez
@@ -26,31 +26,40 @@ cripto e somar +1 para cada notícia boa, -1 para cada
 notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
 $T3 = "2. Trading: o algoritmo calcula sinais para fazer
 swing trading. Ideal para investidores experientes que
-estão acostumados a fazer trading. Pode ser utilizado
-em conjunto com análise fundamental e análise gráfica
-para aumentar as chances de lucro. Tenha em mente que
+estão acostumados a fazer trading. Tenha em mente que
 o trading envolve alto risco de prejuízo financeiro,
 use este algoritmo por própria conta e risco.
 Instruções: insira todos os dados corretamente. Ao
-analisar o gráfico, você precisará primeiro visualizar
-as velas com intervalo de 1 hora. Se constatar que o
-mínimo de velas completas negativas foi atingido, passe
-a analisar o gráfico com velas em intervalo de 1 minuto.
-Ao constatar que o mínimo de velas completas negativas
-foi atingido, é sinal de compra. Por exemplo, se o
-resultado for 2 velas negativas de horas e 3 velas
-nevativas de minutos, o momento de compra será após
-uma sequência de 2 velas negativas de intervalos de 1
-hora e uma sequência de 3 velas negativas de intervalos
-de 1 minuto.\n"
-$T4 = "3. Stop-loss: calcula o stop-loss de uma negociação.
+analisar o gráfico, você precisará  visualizar as velas
+com intervalo de 1 hora. Se constatar que o mínimo de
+velas negativas consecutivas foi atingido, verifique se
+o valor atual da criptomoeda está dentro de alguma das
+zonas de compra. Caso esteja, espere o valor do ativo
+se aproximar de alguma resistência ou pela aparição de
+algum padrão de vela de reversão para então comprar.
+Exemplos de padrões de vela de reversão:
+  * Dragonfly Doji ('Libélula')
+  * Hammer ('Martelo')
+  * Tweezer Bottom ('Fundo Duplo')
+Se quiser saber mais sobre velas japanesas, clique nos
+sítios abaixo:
+https://www.financebrokerage.com/pt-br/padroes-de-graficos/
+https://www.investirnabolsa.com/curso-cfd/velas-japonesas/
+https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/\n"
+$T4 = "3. Stops: calcula os limites de ganho e de perda de
+uma negociação, além do possível lucro e do risco de
+prejuízo. A sugestão é aplicar a agressividade de acordo
+com a zona em que o ativo se encontrava no momento da
+compra: 'arrojado' para a zona 1, 'agressivo' para a
+zona 2 e 'berserk' para a zona 3.
 
 4. Calculadora: calcula a variação percentual do valor de
 um ativo.
 
 Lembre-se: nenhum método garante o lucro, assim como
-nenhum elimina a possibilidade de prejuízo. Opere com
-trading somente se souber o que está fazendo.\n"
+nenhum elimina a possibilidade de prejuízo. Opere somente
+se estiver ciente dos riscos envolvidos e consulte um
+profissional em caso de dúvida.\n"
   Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
 PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
 QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
@@ -83,14 +92,16 @@ if !File.exist?("cryptools.log") # checando se arquivo de log existe
   tutorial
 end
 file = File.new("cryptools.log", 'a') # criando arquivo de log
-time = Time.now
-file.write("\nRegistros de #{"%02d" % time.day}/#{"%02d" % time.month}/#{time.year}, às #{"%02d" % time.hour}:#{"%02d" % time.min}:\n")
-n = 1
+time = Time.now # data e hora atual
+file.write("\nRegistros de #{"%02d" % time.day}/#{"%02d" % time.month}/#{time.year}, às #{"%02d" % time.hour}:#{"%02d" % time.min}:\n") # escrevendo cabeçalho com data e hora
+file.close # fechando arquivo para salvar
+file = File.new("cryptools.log", 'a') # reabrindo arquivo de log
+n = 1 # contador
 
 loop do
 
   print "\n_________________________________________________________\n\n"
-  ["1. Holding", "2. Trading", "3. Stop-loss", "4. Calculadora"].each do |l|
+  ["1. Holding", "2. Trading", "3. Stops", "4. Calculadora", "5. Ler registro", "6. Apagar registro", "7. Ajuda", "9. Sair"].each do |l|
     print l, "\n"
     sleep 0.1
   end
@@ -98,14 +109,11 @@ loop do
 
   loop do
     print "Insira uma opção: "
-    $opt = gets.chomp.upcase
-    if $opt == "?" || $opt == "AJUDA"
-      tutorial
-    end
-    break if $opt == "1" || $opt == "2" || $opt == "3" || $opt == "4" || $opt == "SAIR"
+    $opt = gets.chomp.to_i
+    break if [1, 2, 3, 4, 5, 6, 7, 9].include?($opt)
   end
 
-  if $opt == "1"
+  if $opt == 1
 
   # HOLDING
   print "\n_________________________HOLDING_________________________\n"
@@ -294,19 +302,21 @@ dentro dos últimos 3 meses: "
   end
   print "\n"
   if value >= 1
-    file.write("	#{n}. #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
+    file.write("  #{n}. Holding de #{name} (R$#{"%.2f" % value}): #{score}#{result}", "\n") # escrevendo log
   else
-    file.write("	#{n}. #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
+    file.write("  #{n}. Holding de #{name} (R$#{"%.8f" % value}): #{score}#{result}", "\n")
   end
   n += 1
-  print "\nCalcular outra criptomoeda? (s/n) "
+  print "\nCalcular outro investimento? (s/n) "
   lp = gets.chomp.upcase
   if lp == "N"
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
     break
   end
   end
 
-  elsif $opt == "2"
+  elsif $opt == 2
 
   # TRADING
   print "\n_________________________TRADING_________________________\n"
@@ -320,107 +330,80 @@ dentro dos últimos 3 meses: "
   # INPUTS
   print "\nInsira o par que será negociado (ex: BTC/USDT): "
   par = gets.chomp.upcase
-  print "Insira a quantia que será investida (em BRL ou USD): "
-  banca = gets.chomp.to_f
+  print "Insira a variação percentual do valor unitário do ativo
+nas últimas 24 horas: "
+  c24 = gets.chomp.to_f
   print "Insira a variação percentual do valor unitário do ativo
 no último mês (30 dias): "
   c1 = gets.chomp.to_f
   print "Insira a variação percentual do valor unitário do ativo
 no último trimestre: "
   c3 = gets.chomp.to_f
-  print "Insira a variação percentual do valor unitário do ativo
-no último semestre: "
-  c6 = gets.chomp.to_f
-  if (c3*2)+(c6/2.0) < 0 || (c3+(c1*3.0)) <= 0
-    print "ERRO: ATIVO EM DECLÍNIO OU VARIAÇÃO NULA!"
-    gets
-    break
-  end
-  print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
-agressivo: 3): "
-  perfil = gets.chomp.to_i
-  if perfil != 1 && perfil != 2 && perfil != 3
-    print "ERRO: PERFIL INVÁLIDO!"
-    gets
-    break
-  end
-
+  print "Insira o maior valor unitário do ativo nos últimos 7 dias:\n"
+  max = gets.chomp.to_f
+  print "Insira o menor valor unitário do ativo nos últimos 7 dias:\n"
+  min = gets.chomp.to_f
+  
   # CÁLCULOS
-  seqh = 10 - (Math.sqrt((c3 * 2) + (c6 / 2.0)) / 10.0) # sequência de velas de horas
-  seqh = 2 + ((seqh - 2)/2.0) if perfil >= 2 && seqh > 2
-  seqh = seqh.round
-  seqh = 0 if seqh < 0
-  if (c1*6)+(c3*2) >= 0
-    seqm = 10 - (Math.sqrt((c1 * 6) + (c3 * 2.0)) / 10.0) # sequência de velas de minutos
-  else
-    seqm = 10 + (Math.sqrt(((c1 * 6) + (c3 * 2.0)).abs) / 10.0)
-  end
-  seqm = 3 + ((seqm - 3)/2.0) if perfil == 3 && seqm > 3
-  seqm = seqm.round
-  seqm = 1 if seqm < 1
-  stop = banca * (1 + (Math::log(c3 + (c1 * 3.0)) / 100.0)) # sinal de venda
-  stop *= 1 + (((perfil - 1) * 3) / 100.0)
-  stop = stop.round
-  lucro = (((stop / banca.to_f) - 1) * 100).round(2) # porcentagem de lucro
-  volat = ((c1 - (c3 / 3.0)).abs + (c3 - (c6 / 2.0)).abs + (c1 - (c6 / 6.0)).abs) / 3.0 # volatilidade
-  if c1 > 0
-    x1 = Math.sqrt(c1)
-  else
-    x1 = c1 / 3.0
-  end
-  if c3 > 0
-    x3 = Math.sqrt(c3 / 3.0)
-  else
-    x3 = c3
-  end
-  if c6 > 0
-    x6 = Math::log(c6) * 2
-  else
-    x6 = c6
-  end
-  chance = x1 + x3 + x6 + ((3 - perfil) * 5) - (Math.sqrt(volat) - 20) # probabilidade de lucro
+  dif = max - min # diferença entre suporte e resistência
+  zonas = [max - (dif * 0.382), max - (dif * 0.5), max - (dif * 0.618), max - (dif * 0.786)] # zonas da retração de Fibonacci
+  cvar = [c24*30, c1, c3/3.0] # variação
+  volat = cvar.max - cvar.min # volatilidade
+  chance = (c1 * 3) + (c3 / 5.0) - (volat / 5.0) - (c24 / 3.0).abs # probabilidade de lucro
   if chance > 50
-    chance = 50 + Math.sqrt(chance - 50)
-  elsif chance < 5
-    chance = 5 - Math::log(volat)
+    chance = 50 + Math.sqrt(chance - 50) # diminuindo chances altas
+  elsif chance < 1
+    chance = 1.0 # chance mínima
   end
-  if chance > 70
-    chance = 70.0
-  elsif chance < 0
-    chance = 0
-  end
+  chance = 75.0 if chance > 75 # chance máxima
+  seq = (10 - (chance / 10.0)).round # sequência de velas negativas
 
   # RESULTADO
-  print "\nProbabilidade de lucro: #{"%4s" % chance.round(2) + "%"}
-Volatilidade: #{"%15s" % volat.round(2) + "%"}"
-  if chance < 20 || volat > 300 # alertas
-    print "\nAlertas:   "
-    if chance < 20 && volat > 300
-      print "alta volatilidade!, baixa probabilidade de lucro!"
-    elsif chance < 20
-      print "baixa probabilidade de lucro!"
-    elsif volat > 300
-      print "alta volatilidade!"
+  print "\nProbabilidade de lucro: #{"%3s" % + ("%.2f" % chance.round(2)) + "%"}
+Volatilidade: #{"%16s" % ("%.2f" % volat.round(2)) + "%"}"
+  warn = [] # alertas
+  warn << "baixa probabilidade de lucro!" if chance < 25
+  warn << "alta volatilidade!" if volat > 100
+  if warn.length > 0
+    print "\nAlertas:  "
+    warn.each do |a|
+      print " ", a
+      print "," if a != warn[-1]
     end
+    print "\n"
   end
-  print "\nSinais:
-  * Comprar após #{seqh} velas negativas de horas e #{seqm} velas
-  negativas de minutos;
-  * Vender quando a quantia atingir o valor de $#{"%.2f" % stop}
-  (+#{lucro}%).
-Lembre-se de definir o stop-loss para controlar o risco
-da negociação.\n"
-  file.write("	#{n}. $#{"%.2f" % banca} em #{par}: #{seqh} horas e #{seqm} min negativos, vender em $#{"%.2f" % stop} (+#{lucro}%)", "\n") # escrevendo log
+  if min >= 1
+    print "\nZonas de compra:
+  * Zona 1:   $#{"%.2f" % zonas[1].round(2)} a $#{"%.2f" % zonas[0].round(2)}
+  * Zona 2:   $#{"%.2f" % zonas[2].round(2)} a $#{"%.2f" % zonas[1].round(2)}
+  * Zona 3:   $#{"%.2f" % zonas[3].round(2)} a $#{"%.2f" % zonas[2].round(2)}\n"
+    file.write("  #{n}. Sinal para #{par}: #{seq} horas (chance de #{chance.round(2)}%), zona 1: de $#{"%.2f" % zonas[1].round(2)} a $#{"%.2f" % zonas[0].round(2)}, zona 2: de $#{"%.2f" % zonas[2].round(2)} a $#{"%.2f" % zonas[1].round(2)}, zona 3: de $#{"%.2f" % zonas[3].round(2)} a $#{"%.2f" % zonas[2].round(2)}", "\n") # escrevendo log
+  else
+    print "\nZonas de compra:
+  * Zona 1:   $#{"%.8f" % zonas[1].round(8)} a $#{"%.8f" % zonas[0].round(8)}
+  * Zona 2:   $#{"%.8f" % zonas[2].round(8)} a $#{"%.8f" % zonas[1].round(8)}
+  * Zona 3:   $#{"%.8f" % zonas[3].round(8)} a $#{"%.8f" % zonas[2].round(8)}\n"
+    file.write("  #{n}. Sinal para #{par}: #{seq} horas (chance de #{chance.round}%), zona 1: de $#{"%.8f" % zonas[1].round(8)} a $#{"%.8f" % zonas[0].round(8)}, zona 2: de $#{"%.8f" % zonas[2].round(8)} a $#{"%.8f" % zonas[1].round(8)}, zona 1: de $#{"%.8f" % zonas[3].round(8)} a $#{"%.8f" % zonas[2].round(8)}", "\n") # escrevendo log
+  end
+  print "Sinal:
+  * Esperar por #{seq} velas negativas de horas consecutivas
+  * Comprar quando alguma resistência for atingida ou quando
+    confirmar alguma vela com padrão de reversão, desde que
+    o valor esteja dentro das zonas de compra.
+Lembre-se de definir o stop-gain e o stop-loss após a compra
+para controlar o risco da negociação.\n"
   n += 1
   print "\nCalcular outra negociação? (s/n) "
   lp = gets.chomp.upcase
   if lp == "N"
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
     break
   end
   end
 
-  elsif $opt == "3" # STOP-LOSS
-    print "\n________________________STOP-LOSS________________________\n"
+  elsif $opt == 3 # STOPS
+    print "\n________________________STOPS____________________________\n"
     loop do
 
   # INPUTS
@@ -428,60 +411,73 @@ da negociação.\n"
   banca = gets.chomp.to_f
   print "Insira o valor unitário do ativo no momento da compra: "
   value = gets.chomp.to_f
-  print "Insira o menor valor unitário do ativo nos últimos 3 dias: "
-  m3 = gets.chomp.to_f
-  print "Insira o menor valor unitário do ativo nos últimos 7 dias: "
-  m7 = gets.chomp.to_f
-  print "Insira a variação percentual do ativo nos últimos 3 dias: "
-  var = gets.chomp.to_f
-  print "Insira seu perfil (moderado: 1, agressivo: 2, ultra
-agressivo: 3): "
+  print "Insira o maior valor unitário do ativo nos últimos 3 dias:\n"
+  max3 = gets.chomp.to_f
+  print "Insira o maior valor unitário do ativo nos últimos 7 dias:\n"
+  max7 = gets.chomp.to_f
+  print "Insira o menor valor unitário do ativo nos últimos 3 dias:\n"
+  min3 = gets.chomp.to_f
+  print "Insira o menor valor unitário do ativo nos últimos 7 dias:\n"
+  min7 = gets.chomp.to_f
+  print "Insira a agressividade da negociação (arrojada 1, agressiva 2,
+berserk 3): "
+  sperfil = ["arrojado", "agressivo", "berserk"] # strings dos perfis
   perfil = gets.chomp.to_i
   if perfil != 1 && perfil != 2 && perfil != 3
-    print "ERRO: PERFIL INVÁLIDO!"
+    print "ERRO: PERFIL INVÁLIDO!" # erro para perfis inválidos
     gets
     break
   end
 
   # CÁLCULOS
-  if var < 0
-    varf = -1 * Math.sqrt(var.abs) # variação ponderada
-  elsif var == 0
-    varf = var
-  else
-    varf = Math::log(var)
+  dif = max7 - min7 # diferença entre suporte e resistência
+  if perfil == 1
+    sg = max3 # stop-gain
+    sl = min3 # stop-loss
+  elsif perfil == 2
+    sg = max7
+    sl = min7
+  elsif perfil == 3
+    sg = max7 + (max7 - max3)
+    sl = max7 - (dif * 1.618)
   end
-  sl1 = ((m3 + m7) / 2.0) * (1 + (varf / 100.0)) # stop-loss de acordo com os mínimos
-  sl2 = value * (1 - (0.03 * perfil)) # stop-loss de acordo com o valor atual
-  loss = [sl1, sl2].min
-  if (banca - ((banca / value.to_f) * loss)) / banca.to_f > perfil / 10.0
-    loss = value * (1 - (perfil / 10.0)) # porcentagem máxima de acordo com perfil
-    alert = true # alerta de ajuste limitante
-  else
-    alert = false
-  end
-  risk = banca - ((banca / value.to_f) * loss) # quantia em risco
-  riskp = risk / banca.to_f # porcentagem em risco
+  sl = 0.00000001 if sl < 0.00000001
+  gainp = (sg / value.to_f) - 1 # porcentagem de lucro
+  lossp = (1 - (sl / value.to_f)).to_f # porcentagem em risco
+  lucro = (banca * (1 + gainp)) - banca # lucro
+  risk = banca - (banca * (1 - lossp)) # quantia em risco
 
   # RESULTADO
-  if loss >= 1
-    print "\nStop-loss: #{"%15s" % "$" + ("%.2f" % loss.round(2))} (#{(riskp * -100).round(2)}%)"
-    file.write("	#{n}. Stop-loss: $#{"%.2f" % loss.round(2)} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n") # escrevendo log
-  else
-    print "\nStop-loss: #{"%15s" % "$" + ("%.8f" % loss)} (#{(riskp * -100).round(2)}%)"
-    file.write("	#{n}. Stop-loss: $#{"%.8f" % loss} (#{(riskp * -100).round(2)}%), risco: $#{"%.2f" % risk.round(2)}\n")
+  if gainp.nan? || lossp.nan?
+    print "ERRO: VALORES INVÁLIDOS!"
+    gets
+    break
   end
-  print "\nQuantia em risco: #{"%7s" % "$" + ("%.2f" % risk.round(2))}\n"
-  print "ALERTA:  VOLATILIDADE ALTA TRAZ ALTO RISCO DE PREJUÍZO!\n" if alert == true
+  if value >= 1
+    print "\nStops (pelo valor unitário):
+  * Limite de ganho (stop-gain): $#{"%.2f" % sg.round(2)} (+#{(gainp * 100).round}%)
+  * Limite de perda (stop-loss): $#{"%.2f" % sl.round(2)} (-#{(lossp * 100).round}%)\n"
+    file.write("  #{n}. Stops (#{sperfil[perfil - 1]}): stop-gain de $#{"%.2f" % sg.round(2)} (+#{(gainp * 100).round}%), stop-loss de $#{"%.2f" % sl.round(2)} (-#{(lossp * 100).round}%), lucro de $#{"%.2f" % lucro.round(2)} e risco em $#{"%.2f" % risk.round(2)}\n") # escrevendo log
+  else
+    print "\nStops (pelo valor unitário):
+  * Limite de ganho (stop-gain): $#{"%.8f" % sg.round(8)} (+#{(gainp * 100).round}%)
+  * Limite de perda (stop-loss): $#{"%.8f" % sl.round(8)} (-#{(lossp * 100).round}%)\n"
+    file.write("  #{n}. Stops (#{sperfil[perfil - 1]}): stop-gain de $#{"%.8f" % sg.round(8)} (+#{(gainp * 100).round}%), stop-loss de $#{"%.8f" % sl.round(8)} (-#{(lossp * 100).round}%), lucro de $#{"%.2f" % lucro.round(2)} e risco em $#{"%.2f" % risk.round(2)}\n") # escrevendo log
+  end
+  print "Lucro absoluto: #{"%18s" % "$" + ("%.2f" % lucro.round(2))}
+Quantia em risco: #{"%16s" % "$" + ("%.2f" % risk.round(2))}\n"
+  print "Alerta:  risco superior ao lucro!\n" if gainp < lossp.abs
   n += 1
-  print "\nCalcular outro stop-loss? (s/n) "
+  print "\nCalcular outros limites? (s/n) "
   lp = gets.chomp.upcase
   if lp == "N"
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
     break
   end
   end
 
-  elsif $opt == "4" # CALCULADORA
+  elsif $opt == 4 # CALCULADORA
     print "\n_______________________CALCULADORA_______________________\n"
     loop do
   # INPUTS
@@ -509,21 +505,47 @@ agressivo: 3): "
   print "\nCalcular outra variação? (s/n) "
   lp = gets.chomp.upcase
   if lp == "N"
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
     break
+    end
   end
-  end
+  
+  elsif $opt == 5 # IMPRIMIR ARQUIVO DE LOG
+    log = File.open("cryptools.log") # lendo arquivo de log
+    print "\n________________________REGISTRO_________________________\n"
+    log.read.split("\n\n").reverse.each do |l|
+      puts l
+      gets
+    end
 
-  elsif $opt == "SAIR" # EXIT
+  elsif $opt == 6 # DELETAR ARQUIVO DE LOG ____________________________
+    print "\nDeletar arquivo de registro? (s/n) "
+    sure = gets.chomp.upcase
+    if sure == "S"
+      file.close
+      File.delete("cryptools.log")
+      file = File.new("cryptools.log", 'a') # criando arquivo de log
+      file.write("\nRegistros de #{"%02d" % time.day}/#{"%02d" % time.month}/#{time.year}, às #{"%02d" % time.hour}:#{"%02d" % time.min}:\n") # escrevendo cabeçalho com data e hora
+      file.close
+      print "Arquivo deletado com sucesso!"
+      gets
+    end
 
+  elsif $opt == 7 # TUTORIAL
+    print "\n__________________________AJUDA__________________________\n"
+    tutorial
+
+  elsif $opt == 9 # EXIT
     print "\n"
-    fim = "Todo o registro foi salvo no arquivo de log.
+    fim = "Todo o registro foi salvo no arquivo 'cryptools.log'.
 Lembre-se: é recomendável que se consulte um profissional
 antes de fazer qualquer investimento. Até mais!\n"
     fim.split("\n").each do |l|
       print l + "\n"
       sleep 0.1
     end
-    sleep 4
+    gets
     exit
 
   end # fim do if
