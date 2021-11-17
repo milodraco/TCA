@@ -35,7 +35,7 @@ com intervalo de 1 hora. Se constatar que o mínimo de
 velas negativas consecutivas foi atingido, verifique se
 o valor atual da criptomoeda está dentro de alguma das
 zonas de compra. Caso esteja, espere o valor do ativo
-se aproximar de alguma resistência ou pela aparição de
+se aproximar de algum suporte ou pela aparição de
 algum padrão de vela de reversão para então comprar.
 Exemplos de padrões de vela de reversão:
   * Dragonfly Doji ('Libélula');
@@ -387,7 +387,7 @@ Volatilidade: #{"%16s" % ("%.2f" % volat.round(2)) + "%"}"
   end
   print "Sinal:
   * Esperar por #{seq} velas negativas de horas consecutivas;
-  * Comprar quando alguma resistência for atingida ou quando
+  * Comprar quando algum suporte for atingida ou quando
     confirmar alguma vela com padrão de reversão, desde que
     o valor esteja dentro das zonas de compra.
 Lembre-se de definir o stop-gain e o stop-loss após a compra
