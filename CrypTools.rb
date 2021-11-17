@@ -41,7 +41,7 @@ Exemplos de padrões de vela de reversão:
   * Dragonfly Doji ('Libélula');
   * Hammer ('Martelo');
   * Tweezer Bottom ('Fundo Duplo').
-Se quiser saber mais sobre velas japanesas, clique nos
+Se quiser saber mais sobre velas japonesas, clique nos
 sítios abaixo:
 https://www.financebrokerage.com/pt-br/padroes-de-graficos/
 https://www.investirnabolsa.com/curso-cfd/velas-japonesas/
