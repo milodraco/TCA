@@ -1,69 +1,30 @@
-print "\n                    "
-("CrypTools v. 1.6").split("").each do |l|
+print "\n                              "
+("CrypTools v. 1.7").split("").each do |l|
   print l
   sleep 0.1
 end
 sleep 0.3
-print "\n                     por Milo_Draco\n"
+print "\n                               por Milo_Draco\n"
 sleep 0.8
 
-$T1 = "\nInstruções gerais: execute o arquivo '.rb' no terminal
-do Linux ou em outro SO e insira as informações da
-transação desejada. Exemplo no Linux: se o arquivo
-estiver na pasta pessoal, basta abrir o terminal e
-digitar 'ruby CrypTools.rb'. Lembre de usar ponto
-em vez de vírgula nas casas decimais.\n"
-$T2 = "1. Holding: o algoritmo calcula uma nota para uma
-criptomoeda de acordo com os dados inseridos, ajudando
-o usuário a decidir em qual cripto investir para obter
-lucro a longo prazo. Ideal para poupanças (savings e
-earnings) e stakings.
-Instruções: Para calcular o saldo de notícias, você
-pode escolher qualquer plataforma para verificar as
-notícias (recomendo o app Delta), basta ler as dez
-notícias mais recentes dos últimos 3 meses sobre a
-cripto e somar +1 para cada notícia boa, -1 para cada
-notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
-$T3 = "2. Trading: o algoritmo calcula sinais para fazer
-swing trading. Ideal para investidores experientes que
-estão acostumados a fazer trading. Tenha em mente que
-o trading envolve alto risco de prejuízo financeiro,
-use este algoritmo por própria conta e risco.
-Instruções: insira todos os dados corretamente. Ao
-analisar o gráfico, você precisará  visualizar as velas
-com intervalo de 1 hora. Se constatar que o mínimo de
-velas negativas consecutivas foi atingido, verifique se
-o valor atual da criptomoeda está dentro de alguma das
-zonas de compra. Caso esteja, espere o valor do ativo
-se aproximar de algum suporte ou pela aparição de
-algum padrão de vela de reversão para então comprar.
-Exemplos de padrões de vela de reversão:
+$T1 = "\nInstruções gerais: execute o arquivo '.rb' no terminal do Linux ou em outro SO e insira as informações da transação desejada. Exemplo no Linux: se o arquivo estiver na pasta pessoal, basta abrir o terminal e digitar 'ruby CrypTools.rb'. Lembre de usar ponto em vez de vírgula nas casas decimais.\n"
+$T2 = "1. Holding: o algoritmo calcula uma nota para uma criptomoeda de acordo com os dados inseridos, ajudando o usuário a decidir em qual cripto investir para obter lucro a longo prazo. Ideal para poupanças (savings e earnings) e stakings. 
+Instruções: Para calcular o saldo de notícias, você pode escolher qualquer plataforma para verificar as notícias (recomendo o app Delta), basta ler as dez notícias mais recentes dos últimos 3 meses sobre a cripto e somar +1 para cada notícia boa, -1 para cada notícia ruim e 0 para notícias neutras ou irrelevantes.\n"
+$T3 = "2. Trading: o algoritmo calcula sinais para fazer swing trading. Ideal para investidores experientes que estão acostumados a fazer trading. Tenha em mente que o trading envolve alto risco de prejuízo financeiro, use este algoritmo por própria conta e risco.
+Instruções: insira todos os dados corretamente. Ao analisar o gráfico, você precisará  visualizar as velas com intervalo de 1 hora. Se constatar que o mínimo de velas negativas consecutivas foi atingido, verifique se o valor atual da criptomoeda está dentro de alguma das zonas de compra. Caso esteja, espere o valor do ativo se aproximar de algum suporte ou pela aparição de algum padrão de vela de reversão para então comprar. Exemplos de padrões de vela de reversão:
   * Dragonfly Doji ('Libélula');
   * Hammer ('Martelo');
   * Tweezer Bottom ('Fundo Duplo').
-Se quiser saber mais sobre velas japonesas, clique nos
-sítios abaixo:
+Se quiser saber mais sobre velas japonesas, clique nos sítios abaixo:
 https://www.financebrokerage.com/pt-br/padroes-de-graficos/
 https://www.investirnabolsa.com/curso-cfd/velas-japonesas/
 https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/\n"
-$T4 = "3. Stops: calcula os limites de ganho e de perda de
-uma negociação, além do possível lucro e do risco de
-prejuízo. A sugestão é aplicar a agressividade de acordo
-com a zona em que o ativo se encontrava no momento da
-compra: 'arrojado' para a zona 1, 'agressivo' para a
-zona 2 e 'berserk' para a zona 3.
+$T4 = "3. Stops: calcula os limites de ganho e de perda de uma negociação, além do possível lucro e do risco de prejuízo. A sugestão é aplicar a agressividade de acordo com a zona em que o ativo se encontrava no momento da compra: 'arrojado' para a zona 1, 'agressivo' para a zona 2 e 'berserk' para a zona 3.
 
-4. Calculadora: calcula a variação percentual do valor de
-um ativo.
+4. Calculadora: calcula a variação percentual do valor de um ativo.
 
-Lembre-se: nenhum método garante o lucro, assim como
-nenhum elimina a possibilidade de prejuízo. Opere somente
-se estiver ciente dos riscos envolvidos e consulte um
-profissional em caso de dúvida.\n"
-  Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE
-PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA
-QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR
-O LUCRO."
+Lembre-se: nenhum método garante o lucro, assim como nenhum elimina a possibilidade de prejuízo. Opere somente se estiver ciente dos riscos envolvidos e consulte um profissional em caso de dúvida.\n"
+  Alerta = "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR O LUCRO."
 
 def tutorial # tutorial
   $T1.split("\n").each do |l|
@@ -100,7 +61,7 @@ n = 1 # contador
 
 loop do
 
-  print "\n_________________________________________________________\n\n"
+  print "\n___________________________________________________________________\n\n"
   ["1. Holding", "2. Trading", "3. Stops", "4. Calculadora", "5. Ler registro", "6. Apagar registro", "7. Ajuda", "9. Sair"].each do |l|
     print l, "\n"
     sleep 0.1
@@ -116,15 +77,14 @@ loop do
   if $opt == 1
 
   # HOLDING
-  print "\n_________________________HOLDING_________________________\n"
+  print "\n______________________________HOLDING______________________________\n"
   loop do
   # INPUTS
-  print "\nInsira o nome do ativo: "
+  print "\nInsira o NOME do ativo: "
   name = gets.chomp.upcase
-  print "Insira o valor unitário atual do ativo (em BRL): "
+  print "Insira o VALOR UNITÁRIO atual do ativo (em BRL): "
   value = gets.chomp.to_f
-  print "Insira a variação percentual do valor unitário do ativo
-nos últimos 3 meses: "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo no último TRIMESTRE: "
   c3 = gets.chomp
   if c3 == ""
     print "ERRO: VARIAÇÃO DO ÚLTIMO TRIMESTRE NÃO INSERIDA!"
@@ -133,11 +93,9 @@ nos últimos 3 meses: "
   else
     c3 = c3.to_f
   end
-  print "Insira a variação percentual do valor unitário do ativo
-nos últimos 6 meses: "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo no último SEMESTRE: "
   c6 = gets.chomp
-  print "Insira a variação percentual do valor unitário do ativo
-nos últimos 12 meses: "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo nos últimos 12 MESES: "
   c12 = gets.chomp
   if c6 == "" || c12 == ""
     nohist = true # sem histórico
@@ -146,8 +104,7 @@ nos últimos 12 meses: "
   end
   c6 = c6.to_f
   c12 = c12.to_f
-  print "Insira o saldo das dez últimas notícias (boas - ruins)
-dentro dos últimos 3 meses: "
+  print "Insira o saldo das dez últimas NOTÍCIAS (boas - ruins) dentro dos últimos 3 meses: "
   news = gets.chomp
   if news == ""
     nonews = true # sem saldo de notícias
@@ -319,7 +276,7 @@ dentro dos últimos 3 meses: "
   elsif $opt == 2
 
   # TRADING
-  print "\n_________________________TRADING_________________________\n"
+  print "\n______________________________TRADING______________________________\n"
 
   Alerta.split("\n").each do |l|
     print l + "\n"
@@ -330,18 +287,15 @@ dentro dos últimos 3 meses: "
   # INPUTS
   print "\nInsira o par que será negociado (ex: BTC/USDT): "
   par = gets.chomp.upcase
-  print "Insira a variação percentual do valor unitário do ativo
-nas últimas 24 horas: "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo nas últimas 24 HORAS: "
   c24 = gets.chomp.to_f
-  print "Insira a variação percentual do valor unitário do ativo
-no último mês (30 dias): "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo no último MÊS (30 dias): "
   c1 = gets.chomp.to_f
-  print "Insira a variação percentual do valor unitário do ativo
-no último trimestre: "
+  print "Insira a VARIAÇÃO percentual do valor unitário do ativo no último TRIMESTRE: "
   c3 = gets.chomp.to_f
-  print "Insira o maior valor unitário do ativo nos últimos 7 dias:\n"
+  print "Insira o MAIOR valor unitário do ativo nos últimos 7 dias:\n"
   max = gets.chomp.to_f
-  print "Insira o menor valor unitário do ativo nos últimos 7 dias:\n"
+  print "Insira o MENOR valor unitário do ativo nos últimos 7 dias:\n"
   min = gets.chomp.to_f
   
   # CÁLCULOS
@@ -387,11 +341,8 @@ Volatilidade: #{"%16s" % ("%.2f" % volat.round(2)) + "%"}"
   end
   print "Sinal:
   * Esperar por #{seq} velas negativas de horas consecutivas;
-  * Comprar quando algum suporte for atingida ou quando
-    confirmar alguma vela com padrão de reversão, desde que
-    o valor esteja dentro das zonas de compra.
-Lembre-se de definir o stop-gain e o stop-loss após a compra
-para controlar o risco da negociação.\n"
+  * Comprar quando algum suporte for atingida ou quando confirmar alguma vela com padrão de reversão, desde que o valor esteja dentro das zonas de compra.
+Lembre-se de definir o stop-gain e o stop-loss após a compra para controlar o risco da negociação.\n"
   n += 1
   print "\nCalcular outra negociação? (s/n) "
   lp = gets.chomp.upcase
@@ -403,27 +354,31 @@ para controlar o risco da negociação.\n"
   end
 
   elsif $opt == 3 # STOPS
-    print "\n________________________STOPS____________________________\n"
+    print "\n_____________________________STOPS_________________________________\n"
     loop do
 
   # INPUTS
-  print "\nInsira a quantia total investida (em BRL ou USD): "
+  print "\nInsira a quantia TOTAL investida (em BRL ou USD): "
   banca = gets.chomp.to_f
-  print "Insira o valor unitário do ativo no momento da compra: "
+  print "Insira o VALOR UNITÁRIO do ativo no momento da compra: "
   value = gets.chomp.to_f
-  print "Insira o maior valor unitário do ativo nos últimos 3 dias:\n"
+  print "Insira o MAIOR valor unitário do ativo nos últimos 3 DIAS:\n"
   max3 = gets.chomp.to_f
-  print "Insira o maior valor unitário do ativo nos últimos 7 dias:\n"
+  print "Insira o MAIOR valor unitário do ativo nos últimos 7 DIAS:\n"
   max7 = gets.chomp.to_f
-  print "Insira o menor valor unitário do ativo nos últimos 3 dias:\n"
+  print "Insira o MENOR valor unitário do ativo nos últimos 3 DIAS:\n"
   min3 = gets.chomp.to_f
-  print "Insira o menor valor unitário do ativo nos últimos 7 dias:\n"
+  print "Insira o MENOR valor unitário do ativo nos últimos 7 DIAS:\n"
   min7 = gets.chomp.to_f
-  print "Insira a agressividade da negociação (arrojada 1, agressiva 2,
-berserk 3): "
-  sperfil = ["arrojado", "agressivo", "berserk"] # strings dos perfis
+  if max3 < value || max7 < value || min3 > value || min7 > value || min7 > min3 || max3 > max7
+    print "ERRO: VALORES INVÁLIDOS!" # erro para valores errados
+    gets
+    break
+  end
+  print "Insira a agressividade da negociação (arrojada 1, agressiva 2, berserk 3, kamikaze 4): "
+  sperfil = ["arrojado", "agressivo", "berserk", "kamikaze"] # strings dos perfis
   perfil = gets.chomp.to_i
-  if perfil != 1 && perfil != 2 && perfil != 3
+  if ![1,2,3,4].include?(perfil)
     print "ERRO: PERFIL INVÁLIDO!" # erro para perfis inválidos
     gets
     break
@@ -433,27 +388,34 @@ berserk 3): "
   dif = max7 - min7 # diferença entre suporte e resistência
   if perfil == 1
     sg = max3 # stop-gain
-    sl = min3 # stop-loss
+    sl = (min3 + min7) / 2.0 # stop-loss
   elsif perfil == 2
     sg = max7
     sl = min7
   elsif perfil == 3
-    sg = max7 + (max7 - max3)
+    sg = [max7 + (max7 - max3), max7 * 1.236].min
     sl = max7 - (dif * 1.618)
+  elsif perfil == 4
+    sg = [max7 + (max7 - max3), max7 * 1.236].max
+    sl = max7 - (dif * 2.618)
   end
-  sl = 0.00000001 if sl < 0.00000001
+  if sl / value.to_f > 0.95
+    sl = value * 0.95 # stop-loss mínimo de 5%
+  elsif sl < 0.00000001
+    sl = 0.00000001 # evitando o stop-loss negativo
+  end
   gainp = (sg / value.to_f) - 1 # porcentagem de lucro
   lossp = (1 - (sl / value.to_f)).to_f # porcentagem em risco
+  if gainp.nan? || lossp.nan?
+    print "ERRO: VALORES INVÁLIDOS!" # erro para valores em branco
+    gets
+    break
+  end
   lucro = (banca * (1 + gainp)) - banca # lucro
   risk = banca - (banca * (1 - lossp)) # quantia em risco
 
   # RESULTADO
-  if gainp.nan? || lossp.nan?
-    print "ERRO: VALORES INVÁLIDOS!"
-    gets
-    break
-  end
-  if value >= 1
+  if sl >= 1
     print "\nStops (pelo valor unitário):
   * Limite de ganho (stop-gain): $#{"%.2f" % sg.round(2)} (+#{(gainp * 100).round}%)
   * Limite de perda (stop-loss): $#{"%.2f" % sl.round(2)} (-#{(lossp * 100).round}%)\n"
@@ -466,7 +428,7 @@ berserk 3): "
   end
   print "Lucro absoluto: #{"%18s" % "$" + ("%.2f" % lucro.round(2))}
 Quantia em risco: #{"%16s" % "$" + ("%.2f" % risk.round(2))}\n"
-  print "Alerta:  risco superior ao lucro!\n" if gainp < lossp.abs
+  print "Alerta:  risco muito superior ao lucro!\n" if lucro < risk * 2
   n += 1
   print "\nCalcular outros limites? (s/n) "
   lp = gets.chomp.upcase
@@ -478,16 +440,16 @@ Quantia em risco: #{"%16s" % "$" + ("%.2f" % risk.round(2))}\n"
   end
 
   elsif $opt == 4 # CALCULADORA
-    print "\n_______________________CALCULADORA_______________________\n"
+    print "\n____________________________CALCULADORA____________________________\n"
     loop do
   # INPUTS
-  print "\nInsira o par a ser calculado (ex: BTC/BRL): "
+  print "\nInsira o PAR a ser calculado (ex: BTC/BRL): "
   par = gets.chomp.upcase
-  print "Insira o período da variação (ex: 7 dias): "
+  print "Insira o PERÍODO da variação (ex: 7 dias): "
   tempo = gets.chomp.downcase
-  print "Insira o valor inicial do ativo: "
+  print "Insira o valor INICIAL do ativo: "
   v1 = gets.chomp.to_f
-  print "Insira o valor final do ativo: "
+  print "Insira o valor FINAL do ativo: "
   v2 = gets.chomp.to_f
 
   # CÁLCULOS
@@ -513,7 +475,7 @@ Quantia em risco: #{"%16s" % "$" + ("%.2f" % risk.round(2))}\n"
   
   elsif $opt == 5 # IMPRIMIR ARQUIVO DE LOG
     log = File.open("cryptools.log") # lendo arquivo de log
-    print "\n________________________REGISTRO_________________________\n"
+    print "\n_____________________________REGISTRO______________________________\n"
     log.read.split("\n\n").reverse.each do |l|
       puts l
       gets
@@ -533,14 +495,12 @@ Quantia em risco: #{"%16s" % "$" + ("%.2f" % risk.round(2))}\n"
     end
 
   elsif $opt == 7 # TUTORIAL
-    print "\n__________________________AJUDA__________________________\n"
+    print "\n_______________________________AJUDA_______________________________\n"
     tutorial
 
   elsif $opt == 9 # EXIT
     print "\n"
-    fim = "Todo o registro foi salvo no arquivo 'cryptools.log'.
-Lembre-se: é recomendável que se consulte um profissional
-antes de fazer qualquer investimento. Até mais!\n"
+    fim = "Todo o registro foi salvo no arquivo 'cryptools.log'. Lembre-se: é recomendável que se consulte um profissional antes de fazer qualquer investimento. Até mais!\n"
     fim.split("\n").each do |l|
       print l + "\n"
       sleep 0.1
