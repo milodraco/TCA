@@ -393,10 +393,10 @@ Lembre-se de definir o stop-gain e o stop-loss após a compra para controlar o r
     sg = max7
     sl = min7
   elsif perfil == 3
-    sg = [max7 + (max7 - max3), max7 * 1.236].min
+    sg = [max7 + (max7 - max3), max7 + (dif * 0.236)].min
     sl = max7 - (dif * 1.618)
   elsif perfil == 4
-    sg = [max7 + (max7 - max3), max7 * 1.236].max
+    sg = [max7 + (max7 - max3), max7 + (dif * 0.236)].max
     sl = max7 - (dif * 2.618)
   end
   if sl / value.to_f > 0.95
