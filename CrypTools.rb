@@ -1,5 +1,5 @@
 print "\n                              "
-("CrypTools v. 2.0b").split("").each do |l|
+("CrypTools v. 2.0").split("").each do |l|
   print l
   sleep 0.05
 end
@@ -83,7 +83,7 @@ def chart(a, d) # HISTÓRICO
   request["x-rapidapi-key"] = $api
   response = http.request(request)
   if eval(response.read_body)[:prices] == nil
-    print "\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
+    print "\n\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
     gets
     exit
   end
@@ -158,6 +158,7 @@ API = #{$api}\n\n"
         fator = 21.0
       end
       cresc = ((var90 + var182 + var365)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+      cresc = 20 + Math.sqrt(cresc - 20) if cresc > 20
       cresc *= -1 if var90 + var182 + var365 < 0 # valores negativos
       score = (cresc * 2) + svalue - ((volat - 5) * 2) - (moment * 2) # avaliação final
 
@@ -296,10 +297,14 @@ API = #{$api}\n\n"
       chance = (var30 * 2) + (var90 / 5.0) - (volat / 5.0) - (var1 / 3.0).abs # probabilidade de lucro
       if chance > 50
         chance = 50 + Math.sqrt(chance - 50) # diminuindo chances altas
-      elsif chance < 1
-        chance = 1.0 # chance mínima
+      elsif chance < 10
+        chance = 10 - Math.sqrt(10 - chance) # aumentando chances baixas
       end
-      chance = 75.0 if chance > 75 # chance máxima
+      if chance < 1
+        chance = 1.0 # chance mínima
+      elsif chance > 75
+        chance = 75.0 # chance máxima
+      end
       seq = (10 - (chance / 10.0)).round # sequência de velas negativas
 
       # MODO DEV
@@ -594,13 +599,13 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       # RESULTADO
       if Time.now.min == 0 # final da hora
         print "\n  > Resumo da hora:
-    * Abertura:   #{fnum(hour[0], 1)}; fechamento: #{fnum(hour[-1], 1)};
-    * Máxima:   #{fnum(hour.max, 1)}; mínima: #{fnum(hour.min, 1)};
-    * Média:    #{fnum(media(hour)[0], 1)}; mediana: #{fnum(media(hour)[1], 1)}
-    * Volatilidade:   #{fnum(volat, 2)}
-    * Força:    #{fnum(fcompra + fvenda, 2)} (#{fnum(fcompra, 2)} de compra, #{fnum(fvenda.abs, 2)} de venda)"
+    * Abertura:   #{fnum(hour[0], 1)}; fechamento:   #{fnum(hour[-1], 1)};
+    * Máxima:   #{fnum(hour.max, 1)}; mínima:   #{fnum(hour.min, 1)};
+    * Média:    #{fnum(media(hour)[0], 1)}; mediana:   #{fnum(media(hour)[1], 1)};
+    * Volatilidade:   #{fnum(volat, 3)}%
+    * Força:    #{forca = fnum(fcompra + fvenda, 2)} (#{fnum(fcompra, 3)}% de compra, #{fnum(fvenda.abs, 3)}% de venda)"
         if price <= zonas[0] # checando zonas de compra
-          print "\n    * Zona de compra: "
+          print "\n    * Zona de compra:   "
           if price <= zonas[0] && price > zonas[1]
             print "zona 1 (entre 38.2% e 50% abaixo do topo)"
           elsif price <= zonas[1] && price > zonas[2]
@@ -619,14 +624,15 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         else
           print "NEUTRO (0.0%); "
         end
-        print "variação total: "
-        print "#{fnum((((price / init.to_f) - 1) * 100), 2)};"
-        print " sequência de #{seq.abs} horas;" if seq > 1 || seq < -1
-        print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: " # início da hora
+        print "variação total:   "
+        print "#{var = fnum((((price / init.to_f) - 1) * 100), 2)};"
+        print " sequência de #{seq.abs} horas;" if seq.abs > 1
+        file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração total de #{var}, força de #{forca})")
+        print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}:   " # início da hora
         print "#{fnum(price, 1)} "
         print "(#{ativo.capitalize})..."
       else
-        print "\n    * #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (#{fnum((((price / hour[(-1 - (hour.length / 6.0)).round].to_f) - 1) * 100), 2)})..." # parcial a cada 10 minutos
+        print "\n    * #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}:   #{fnum(price, 1)} (#{fnum((((price / hour[(-1 - (hour.length / 6.0)).round].to_f) - 1) * 100), 2)})..." # parcial a cada 10 minutos
       end
       (590 - (ping2 - ping1).round).times do # esperando 10 minutos - ping
         begin # checando se tecla foi pressionada
@@ -639,6 +645,8 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       end
       break if $enter != false
     end # loop do monitor
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
 
   elsif $opt == 5 # CALCULADORA
     print "\n_________________________________CALCULADORA_________________________________\n"
@@ -727,7 +735,7 @@ Inserir uma opção: "
       loop do # loop de pesquisa
       print "\nInsira o termo para pesquisa: "
       search = gets.chomp # palavra para pesquisa
-      n = 1 # contador
+      found = 1 # contador
       list = eval(response.read_body) # lista de todos os ativos
       (0..list.length-1).each do |x|
         if dev == true
@@ -739,15 +747,15 @@ Inserir uma opção: "
         symbol = list[x][:symbol] # símbolo do ativo
         if name.downcase.include?(search.downcase) || symbol.downcase.include?(search.downcase) # checando se há correspondência
           print "\a" if dev == true # alerta sonoro para o modo dev
-          print "\n  #{n}. #{name} (#{symbol}): #{id}"
-          n += 1
+          print "\n  #{found}. #{name} (#{symbol}): #{id}"
+          found += 1
           sleep 0.1
         end
       end
-      if n == 1
+      if found == 1
         print "\nERRO: NENHUM ATIVO ENCONTRADO." 
       else
-        print "\n\n[Busca finalizada: #{n - 1} ativos encontrados]" 
+        print "\n\n[Busca finalizada: #{found - 1} ativos encontrados]" 
       end
       print "\n\nProcurar outro ativo? (s/n) "
       lp = gets.chomp.upcase
@@ -783,12 +791,15 @@ Inserir uma opção: "
 
   elsif $opt == 9 # TUTORIAL
     print "\n____________________________________AJUDA____________________________________\n\n"
-    tutorial = "Instruções gerais: execute o arquivo '.rb' no terminal do Linux ou em outro SO e insira as informações da transação desejada. Exemplo no Linux: se o arquivo estiver na pasta pessoal, basta abrir o terminal e digitar 'ruby CrypTools.rb'. Lembre de usar ponto em vez de vírgula nas casas decimais.
+    tutorial = "Instruções gerais: execute o arquivo '.rb' no terminal do Linux ou em outro SO e insira as informações da transação desejada. Exemplo no Linux: se o arquivo estiver na pasta pessoal, basta abrir o terminal e digitar 'ruby CrypTools.rb'. Lembre de usar ponto em vez de vírgula nas casas decimais. Se precisar de mais informações sobre o que são criptomoedas, acesse os sítios abaixo:
+https://www.infomoney.com.br/guias/criptomoedas/   https://economia.uol.com.br/faq/criptomoedas-o-que-e-como-funciona-bitcoin-e-mais.htm   https://www.forbes.com/advisor/investing/what-is-cryptocurrency/
+Caso não possua cadastro em nenhuma corretora de criptomoedas, considere se cadastrar na Binance, uma das maiores corretoras do mundo:
+https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O    
 1. Investimento ('holding'): o algoritmo avalia a criptomoeda, ajudando o usuário a decidir em qual cripto investir para obter lucro a longo prazo. Ideal para poupanças ('savings' e 'earnings') e 'stakings'.
 2. Negociação ('trading'): o algoritmo estipula sinais para fazer 'swing trading'. Ideal para investidores experientes que estão acostumados a fazer negociações. Tenha em mente que o trading envolve alto risco de prejuízo financeiro, use este algoritmo por própria conta e risco. Instruções: insira todos os dados corretamente. Ao analisar o gráfico, você precisará  visualizar as velas com intervalo de 1 hora. Se constatar que o mínimo de velas negativas consecutivas foi atingido, verifique se o valor atual da criptomoeda está dentro de alguma das zonas de compra. Caso esteja, espere o valor do ativo se aproximar de algum suporte ou pela aparição de algum padrão de vela de reversão para então comprar. Exemplos de padrões de vela de reversão: Dragonfly Doji ('Libélula'), Hammer ('Martelo') e  Tweezer Bottom ('Fundo Duplo'). Se quiser saber mais sobre velas japonesas, clique nos sítios abaixo:
 https://www.financebrokerage.com/pt-br/padroes-de-graficos/   https://www.investirnabolsa.com/curso-cfd/velas-japonesas/    https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/
 3. Limites ('stops'): calcula os limites de ganho e de perda de uma negociação, além do possível lucro e risco de prejuízo. A sugestão é aplicar a agressividade de acordo com a zona em que o ativo se encontrava no momento da compra: 'arrojado' para a zona 1, 'agressivo' para a zona 2 e 'berserk' para a zona 3.
-4. Monitor: monitora o valor da criptomoeda em intervalos de 10 minutos.  
+4. Monitor: monitora o valor da criptomoeda em intervalos de 10 minutos. É mostrado um resumo ao final de cada hora, com estatísticas e dados importantes. Atenção: as zonas de compra apresentadas nesse modo são para negociações ('trading').
 5. Calculadora: calcula a variação percentual do valor de um ativo.
 6. Registro: visualiza ou deleta o arquivo de registro.
 7. Procurar ativos: útil para descobrir o ID de alguma criptomoeda.
