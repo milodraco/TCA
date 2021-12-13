@@ -713,9 +713,7 @@ Inserir uma opção: "
       end
       print "\n\nProcurar outro ativo? (s/n) "
       lp = gets.chomp.upcase
-      if lp == "N"
-        break
-      end
+      break if lp == "N"
     end # loop da pesquisa
 
   elsif $opt == 8 # TESTANDO SERVIDOR
