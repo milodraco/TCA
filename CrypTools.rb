@@ -714,8 +714,6 @@ Inserir uma opção: "
       print "\n\nProcurar outro ativo? (s/n) "
       lp = gets.chomp.upcase
       if lp == "N"
-        file.close
-        file = File.new("cryptools.log", 'a') # criando arquivo de log
         break
       end
     end # loop da pesquisa
