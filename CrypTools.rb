@@ -1,5 +1,5 @@
 print "\n                              "
-("CrypTools v. 2.1").split("").each do |l|
+("CrypTools v. 2.2").split("").each do |l|
   print l
   sleep 0.05
 end
@@ -12,9 +12,10 @@ require 'uri'
 require 'net/http'
 require 'openssl'
 require 'open-uri'
+require 'json'
 
 # FUNÇÕES ****************************************************
-def internet? # checando conexão
+def internet? # CHECANDO CONEXÃO
   if open('https://rapidapi.com/') || open('https://www.coingecko.com/')
     return true
   else
@@ -22,7 +23,45 @@ def internet? # checando conexão
   end
 end
 
-def fnum(n, f) # formatação dos números
+def data(a) # DADOS DO CRIPTOATIVO
+  print "   [Importando dados do ativo... "
+  url = URI("https://coingecko.p.rapidapi.com/coins/" + a)
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  request = Net::HTTP::Get.new(url)
+  request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
+  request["x-rapidapi-key"] = $api
+  response = http.request(request)
+
+  # convertendo em array e substituindo caracteres
+  data = JSON.parse(response.read_body.gsub(":", ",").gsub("{", "[").gsub("}", "]"))[JSON.parse(response.read_body.gsub(":", ",").gsub("{", "[").gsub("}", "]")).index("market_data") + 1]
+  # removendo outras moedas além do USD
+  arr = ["current_price", "ath", "ath_change_percentage", "ath_date", "atl", "atl_change_percentage", "atl_date", "market_cap", "total_volume", "high_24h", "low_24h", "price_change_24h_in_currency", "price_change_percentage_1h_in_currency", "price_change_percentage_24h_in_currency", "price_change_percentage_7d_in_currency", "price_change_percentage_14d_in_currency", "price_change_percentage_30d_in_currency", "price_change_percentage_60d_in_currency", "price_change_percentage_200d_in_currency", "price_change_percentage_1y_in_currency", "market_cap_change_24h_in_currency", "market_cap_change_percentage_24h_in_currency"]
+  arr.each do |n|
+    next if data[data.index(n) + 1].class != Array || data[data.index(n)] == nil
+    temp = data[data.index(n) + 1]
+    data[data.index(n) + 1] = temp[temp.index("usd") + 1]
+  end
+
+  has = Hash.new # criando hash
+  for x in (0..data.length - 2)
+    next if x % 2 != 0 # pulando os elementos ímpares
+    has[data[x]] = data[x + 1] # adicionando os elementos da hash
+  end
+  
+  if has.class == Hash
+    print "#{has.length} entradas]\n"
+  else
+    print "falha]\n"
+    gets
+    exit
+  end
+  return has
+end
+
+def fnum(n, f) # FORMATANDO OS NÚMEROS
+  n = n.to_f
   if f == 1 # formato para moeda
     if n >= 1
       return "$#{"%.2f" % n.round(2)}"
@@ -35,12 +74,16 @@ def fnum(n, f) # formatação dos números
     else
       return "#{n.round(2)}%"
     end
-  else # formato geral
+  elsif f == 3 # formato geral
     if n.abs >= 1
       return "#{n.round(2)}"
     else
       return "#{n.round(8)}"
     end
+  elsif f == 4 # valores altos
+    return "#{n.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}"
+  else
+    return "[opção inválida]"
   end
 end
 
@@ -152,7 +195,8 @@ loop do # loop geral
     if $opt == 11
       dev = true 
       print "\n[Modo desenvolvedor ativado]
-API = #{$api}\n\n"
+API = #{$api}
+Data/hora: #{Time.now}\n\n"
     end
     break if (1..10).include?($opt)
   end
@@ -166,12 +210,16 @@ API = #{$api}\n\n"
       print "\nInsira o nome do ativo: "
       ativo = gets.chomp.downcase # nome do ativo
       print "\n"
+      dados = data(ativo) # dados do ativo
       c365 = chart(ativo, 365, true) # histórico anual
       c182 = chart(ativo, 182, true) # histórico semestral
       c90 = chart(ativo, 90, true) # histórico trimestral
+      value = c90[:prices][-1] # valor atual
+      sup = [dados["max_supply"].to_f, dados["total_supply"].to_f].max # suprimento total
+      supc = dados["circulating_supply"] # suprimento em circulação
 
       # CÁLCULOS
-      value = c90[:prices][-1] # valor atual
+      supp = (supc / sup.to_f) * 100 # percentual do suprimento
       var90 = ((value / c90[:prices][0]) - 1) * 100 # variação do trimestre
       var182 = ((value / c182[:prices][0]) - 1) * 100 # variação do semestre
       var365 = ((value / c365[:prices][0]) - 1) * 100 # variação do ano
@@ -179,12 +227,8 @@ API = #{$api}\n\n"
       dif = limit[1] - limit[0] # diferença entre mínimo e máximo do trimestre
       zona = [limit[1] - (dif * 0.5), limit[1] - (dif * 0.764)] # zona de compra
       moment = ((value - zona[1]).abs / value) * 10 # avaliação do momento de compra
-      svalue = Math.log(200000) - Math.log(value) # avaliação do valor unitário da moeda
-      if svalue > 10
-        svalue = 10 + Math.sqrt(svalue-10) # compressor
-      elsif svalue < 0
-        svalue *= 2 # dobrando valores negativos
-      end
+      moment *= Math::PI if value < zona[1]
+      ssup = Math.sqrt(supp) # score do suprimento em circulação
       volat = (((var90 * 2) - var182).abs + ((var182 * 2) - var365).abs)**0.25 # avaliação da volatilidade
       fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
       if fator < 7
@@ -198,12 +242,16 @@ API = #{$api}\n\n"
       cresc *= -1 if var90 + var182 + var365 < 0 # valores negativos
       cap = c90[:caps][-1] # capital atual
       scap = (Math.sqrt(Math.log(cap)) - 4) * 5 # score do capital atual
-      score = (cresc) + (scap * 2) + (svalue / 5.0) - (volat - 5) - (moment * 2) # avaliação final
+      if sup > 0
+        score = (cresc * 1) + (scap * 2) + (ssup * 0.5) - (volat - 5) - (moment * 1) # avaliação final
+      else
+        score = (cresc * 1.1) + (scap * 2.1) - (volat - 5) - (moment * 1) # avaliação sem suprimento
+      end
 
       # MODO DEV
       if dev ==  true
         print "\nVariáveis:\n"
-        %w(ativo value var90 var182 var365 limit dif zona moment svalue volat fator cresc cap scap score).each do |vn|
+        %w(ativo sup supc supp value var90 var182 var365 limit dif zona moment ssup volat fator cresc cap scap score).each do |vn|
           v = eval(vn)
           STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
         end
@@ -212,10 +260,17 @@ API = #{$api}\n\n"
       # RESULTADO
       print "\n  * Ativo (ID): #{ativo.capitalize}
   * Valor: #{fnum(value, 1)}
-  * Avaliação do valor: "
-      print ava(svalue, 10, 1)
-      print " (#{fnum(svalue, 3)})
-  * Variação anual: #{fnum(var365, 2)}
+  * Capitalização do mercado: #{fnum(cap, 4)}
+  * Avaliação da capitalização: "
+      print ava(scap, 10, 1)
+      print " (#{fnum(scap, 3)})\n"
+      if sup > 0
+        print "  * Suprimento: #{fnum(supc, 4)} / #{fnum(sup, 4)} (#{fnum(supp, 3)}%)
+  * Avaliação do suprimento: "
+        print ava(ssup, 10, 1)
+        print " (#{fnum(ssup, 3)})\n"
+      end
+      print "  * Variação anual: #{fnum(var365, 2)}
   * Avaliação da variação: "
       print ava(cresc, 10, 1)
       print " (#{fnum(cresc, 3)})
@@ -226,10 +281,6 @@ API = #{$api}\n\n"
   * Avaliação do momento: "
       print ava(moment, 5, 2)
       print " (#{moment.round(2)})
-  * Capitalização do mercado: #{cap.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}
-  * Avaliação da capitalização: "
-      print ava(scap, 10, 1)
-      print " (#{fnum(scap, 3)})
   * AVALIAÇÃO FINAL: "
       print ava(score, 30, 1)
       print " (#{fnum(score, 3)})\n"
@@ -473,12 +524,12 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     print "\nIniciando monitoramento do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (pressione ENTER para interromper):\n\n"
     c7 = chart(ativo, 7, true)
     print "   [Aguardando completar a primeira vela...]\n" if ![0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].include?(Time.now.min) # aviso de espera
-    init = nil
+    init = nil # valor inicial
+    tvar = [] # todas as variações
     loop do # loop para aguardar a hora certa
       $enter = false # variável para tecla pressionada
       while ![0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].include?(Time.now.min) do # loop enquanto minutos forem quebrados
         sleep 1
-        print "." if dev == true
         begin # checando se tecla é pressionada para cancelar
           $enter = STDIN.read_nonblock(1)
         rescue IO::WaitReadable
@@ -507,8 +558,10 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       zonas = [limit[1] - (dif * 0.382), limit[1] - (dif * 0.5), limit[1] - (dif * 0.618), limit[1] - (dif * 0.786)] # zonas da retração de Fibonacci
       if Time.now.min <= 2
         var = ((price / hour[0].to_f) - 1) * 100 # variação total da hora
+        tvar << var # inserindo a variação na array
+        vtm = media(tvar)[0] # variação total média
         vvol = ((vol / vols[0].to_f) - 1) * 100 # variação do volume da hora
-        vcap = ((cap / caps[0].to_f) - 1) * 100
+        vcap = ((cap / caps[0].to_f) - 1) * 100 # variação da capitalização
         vtotal = ((price / init.to_f) - 1) * 100 # variação desde o início
         fcompra = ((price - hour.min) / dif.to_f) * 100 # força de compra
         fvenda = ((price - hour.max) / dif.to_f) * 100 # força de venda
@@ -548,7 +601,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         end
         if Time.now.min <= 2
           print "\nVariáveis:\n"
-          %w(var vvol vcap vtotal fcompra fvenda forca meio fv volat polar).each do |vn|
+          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca meio fv volat polar).each do |vn|
             v = eval(vn)
             STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
           end
@@ -561,11 +614,12 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     * Abertura: #{fnum(hour[0], 1)};    Fechamento: #{fnum(hour[-1], 1)}    (#{fnum(var, 2)})
     * Máxima: #{fnum(hour.max, 1)};    Mínima: #{fnum(hour.min, 1)}
     * Média: #{fnum(media(hour)[0], 1)};    Mediana: #{fnum(media(hour)[1], 1)};    Meio: #{fnum(meio, 1)}
-    * Volume: $#{vol.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} (#{fnum(vvol, 2)})
-    * Capitalização: $#{cap.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} (#{fnum(vcap, 2)})
+    * Volume: $#{fnum(vol, 4)} (#{fnum(vvol, 2)})
+    * Capitalização: $#{fnum(cap, 4)} (#{fnum(vcap, 2)})
     * Volatilidade: #{fnum(volat, 3)}%
     * Força: #{fnum(forca, 2)};    Força + volume: #{fnum(fv, 2)}
     * Variação mista (cap. e valor): #{fnum((var + vcap) / 2.0, 2)}
+    * Variação total média: #{fnum(vtm, 2)}
     * Variação total: #{fnum(vtotal, 2)}"
         print "\n    * Sequência de #{seq.abs} horas;" if seq.abs > 1
         if price <= zonas[0] # checando zonas de compra
@@ -580,10 +634,10 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
             print "zona morta (menor que 78.6% abaixo do topo)"
           end
         end
-        file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração de #{fnum(var, 2)}, força de #{fnum(forca, 2)})\n")
-        print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{vol.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse}..." # INÍCIO DA HORA
+        file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração de #{fnum(var, 2)}, força+volume de #{fnum(fv, 2)})\n")
+        print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
       else
-        print "\n    * #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (#{fnum((((price / hour[(-1 - (hour.length / 12.0)).round].to_f) - 1) * 100), 2)});    Volume: $#{vol.round.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse} (#{fnum((((vols[-1] / vols[(-1 - (vols.length / 12.0)).round].to_f) - 1) * 100), 2)})..." # parcial a cada 10 minutos
+        print "\n    * #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (#{fnum((((price / hour[(-1 - (hour.length / 12.0)).round].to_f) - 1) * 100), 2)});    Volume: $#{fnum(vol, 4)} (#{fnum((((vols[-1] / vols[(-1 - (vols.length / 12.0)).round].to_f) - 1) * 100), 2)})..." # parcial a cada 10 minutos
       end
       (290 - (ping2 - ping1).round).times do # esperando 5 minutos - ping
         begin # checando se tecla foi pressionada
