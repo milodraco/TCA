@@ -559,6 +559,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       if Time.now.min <= 2
         var = ((price / hour[0].to_f) - 1) * 100 # variação total da hora
         tvar << var # inserindo a variação na array
+        tvar = tvar.drop(1) if tvar.length > 24 # limitando a 24 horas
         vtm = media(tvar)[0] # variação total média
         vvol = ((vol / vols[0].to_f) - 1) * 100 # variação do volume da hora
         vcap = ((cap / caps[0].to_f) - 1) * 100 # variação da capitalização
