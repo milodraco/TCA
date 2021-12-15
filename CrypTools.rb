@@ -260,7 +260,7 @@ Data/hora: #{Time.now}\n\n"
       # RESULTADO
       print "\n  * Ativo (ID): #{ativo.capitalize}
   * Valor: #{fnum(value, 1)}
-  * Capitalização do mercado: #{fnum(cap, 4)}
+  * Capitalização do mercado: $#{fnum(cap, 4)}
   * Avaliação da capitalização: "
       print ava(scap, 10, 1)
       print " (#{fnum(scap, 3)})\n"
@@ -575,21 +575,17 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         end
         volat = (dif / price.to_f) * 100 # volatilidade
         if price - hour[0] > 0 # hora positiva ou negativa?
-          polar = true # positiva
           if seq >= 0
             seq += 1
           else
             seq = 0
           end
         elsif price - hour[0] < 0
-          polar = false # negativa
           if seq <= 0
             seq -= 1
           else
             seq = 0
           end
-        else
-          polar = nil # sem variação
         end
       end
 
@@ -601,8 +597,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
           STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
         end
         if Time.now.min <= 2
-          print "\nVariáveis:\n"
-          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca meio fv volat polar).each do |vn|
+          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca meio fv volat).each do |vn|
             v = eval(vn)
             STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
           end
@@ -620,9 +615,9 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     * Volatilidade: #{fnum(volat, 3)}%
     * Força: #{fnum(forca, 2)};    Força + volume: #{fnum(fv, 2)}
     * Variação mista (cap. e valor): #{fnum((var + vcap) / 2.0, 2)}
-    * Variação total média: #{fnum(vtm, 2)}
+    * Variação média: #{fnum(vtm, 2)}
     * Variação total: #{fnum(vtotal, 2)}"
-        print "\n    * Sequência de #{seq.abs} horas;" if seq.abs > 1
+        print "\n    * Sequência de #{seq.abs} horas" if seq.abs > 1
         if price <= zonas[0] # checando zonas de compra
           print "\n    * Zona de compra: "
           if price <= zonas[0] && price > zonas[1]
@@ -801,14 +796,14 @@ https://www.infomoney.com.br/guias/criptomoedas/    https://economia.uol.com.br/
 Caso não possua cadastro em nenhuma corretora de criptomoedas, considere se cadastrar na Binance, uma das maiores corretoras do mundo:
 https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O
 1. Investimento ('holding'): o algoritmo avalia um determinado criptoativo, ajudando o usuário a decidir se deve investir para obter lucro a longo prazo. Ideal para poupanças ('savings' e 'earnings') e 'stakings'.
-1.1 Legendas: a) Zona de compra: faixa ideal de preço para compra de acordo com a Retração de Fibonacci.
+1.1 Legendas: a) Valor: valor unitário do ativo; Capitalização do mercado: 'market cap'; c) Suprimento: suprimento em circulação e suprimento total; d) Zona de compra: faixa ideal de preço para compra de acordo com a Retração de Fibonacci; e) Avaliação do momento: avaliação do valor atual de acordo com a zona de compra.
 2. Negociação ('trading'): o algoritmo estipula sinais para fazer 'swing trading'. Ideal para investidores experientes que estão acostumados a fazer negociações. Tenha em mente que o trading envolve alto risco de prejuízo financeiro, use este algoritmo por própria conta e risco. Instruções: insira todos os dados corretamente. Ao analisar o gráfico, você precisará  visualizar as velas com intervalo de 1 hora. Se constatar que o mínimo de velas negativas consecutivas foi atingido, verifique se o valor atual da criptomoeda está dentro de alguma das zonas de compra. Caso esteja, espere o valor do ativo se aproximar de algum suporte ou pela aparição de algum padrão de vela de reversão para então comprar. Exemplos de padrões de vela de reversão: Dragonfly Doji ('Libélula'), Hammer ('Martelo') e  Tweezer Bottom ('Fundo Duplo'). Se quiser saber mais sobre velas japonesas, clique nos sítios abaixo:
 https://www.financebrokerage.com/pt-br/padroes-de-graficos/    https://www.investirnabolsa.com/curso-cfd/velas-japonesas/    https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/
 2.1 Legendas: a) Média trimestral: média de todos os valores do último trimestre; b) Mediana: valor no centro de todos os valores do histórico do trimestre; c) Meio: média entre a máxima e a mínima do trimestre; d) Zonas de compra: melhores zonas de compra de acordo com a Retração de Fibonacci.
 3. Limites ('stops'): calcula os limites de ganho e de perda de uma negociação, além do possível lucro e risco de prejuízo. A sugestão é aplicar a agressividade de acordo com a zona em que o ativo se encontrava no momento da compra: 'arrojado' para a zona 1, 'agressivo' para a zona 2 e 'berserk' para a zona 3.
 3.1 Legendas: a) Limite de ganho: momento de venda em lucro; b) Limite de perda: momento de venda em prejuízo; c) Lucro absoluto: possibilidade de lucro em quantia absoluta, caso seja atingido o limite de ganho; d) Quantia em risco: quantidade em risco de prejuízo, caso seja atingido o limite de perda.
 4. Monitor: monitora o valor da criptomoeda em intervalos de 5 minutos. É mostrado um resumo ao final de cada hora, com estatísticas e dados importantes. Atenção: as zonas de compra apresentadas nesse modo são para negociações ('trading').
-4.1 Legendas: a) Abertura: valor do ativo no início da hora; b) Fechamento: valor do ativo no final da hora; c) Máxima: máximo valor atingido durante a hora; d) Mínima: mínimo valor atingido durante a hora; e) Média: média de todos os valores durante a hora; f) Mediana: valor no centro do conjunto de todos os valores da hora; g) Meio: média entre a máxima e a mínima; h) Volume: volume das últimas 24 horas; i) Força: força dos compradores ('bulls', valor positivo) contra a força dos vendedores ('bears', valor negativo); j) Força + volume: soma da força com a variação do volume durante a hora; k) Variação mista: média da variação do valor e da capitalização do mercado; l) Variação total: variação desde o início do monitoramento; m) Zona de compra: zonas de compra para negociações.
+4.1 Legendas: a) Abertura: valor do ativo no início da hora; b) Fechamento: valor do ativo no final da hora; c) Máxima: máximo valor atingido durante a hora; d) Mínima: mínimo valor atingido durante a hora; e) Média: média de todos os valores durante a hora; f) Mediana: valor no centro do conjunto de todos os valores da hora; g) Meio: média entre a máxima e a mínima; h) Volume: volume das últimas 24 horas; i) Força: força dos compradores ('bulls', valor positivo) contra a força dos vendedores ('bears', valor negativo); j) Força + volume: soma da força com a variação do volume durante a hora; k) Variação mista: média da variação do valor e da capitalização do mercado; l) Variação média: ḿédia das variações das horas desde o início do monitoramento; m) Variação total: variação total desde o início do monitoramento; m) Zona de compra: zonas de compra para negociações.
 5. Calculadora: calcula a variação percentual do valor de um ativo; 6. Registro: visualiza ou deleta o arquivo de registro; 7. Procurar ativos: útil para descobrir o ID de alguma criptomoeda; 8. Testar servidor: checa a conexão com o CoinGecko.
 Lembre-se: nenhum método garante o lucro, assim como nenhum elimina a possibilidade de prejuízo. Opere somente se estiver ciente dos riscos envolvidos e consulte um profissional em caso de dúvida.
 ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR O LUCRO."
