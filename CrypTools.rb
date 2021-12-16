@@ -39,25 +39,30 @@ def data(a) # DADOS DO CRIPTOATIVO
   # removendo outras moedas além do USD
   arr = ["current_price", "ath", "ath_change_percentage", "ath_date", "atl", "atl_change_percentage", "atl_date", "market_cap", "total_volume", "high_24h", "low_24h", "price_change_24h_in_currency", "price_change_percentage_1h_in_currency", "price_change_percentage_24h_in_currency", "price_change_percentage_7d_in_currency", "price_change_percentage_14d_in_currency", "price_change_percentage_30d_in_currency", "price_change_percentage_60d_in_currency", "price_change_percentage_200d_in_currency", "price_change_percentage_1y_in_currency", "market_cap_change_24h_in_currency", "market_cap_change_percentage_24h_in_currency"]
   arr.each do |n|
-    next if data[data.index(n) + 1].class != Array || data[data.index(n)] == nil
+    next if !data.include?(n) # pulando caso o elemento não esteja incluso
+    next if data[data.index(n) + 1].class != Array # pulando se não for array
     temp = data[data.index(n) + 1]
-    data[data.index(n) + 1] = temp[temp.index("usd") + 1]
+    if temp.include?("usd") # verificando se tem o valor em dólar
+      data[data.index(n) + 1] = temp[temp.index("usd") + 1].to_f
+    else
+      data[data.index(n) + 1] = 0.0
+    end
   end
 
-  has = Hash.new # criando hash
+  out = Hash.new # criando hash
   for x in (0..data.length - 2)
-    next if x % 2 != 0 # pulando os elementos ímpares
-    has[data[x]] = data[x + 1] # adicionando os elementos da hash
+    next if x % 2 != 0 # pulando posições ímpares
+    out[data[x]] = data[x + 1] # adicionando os elementos da hash
   end
   
-  if has.class == Hash
-    print "#{has.length} entradas]\n"
+  if out.class == Hash && out.length > 0
+    print "#{out.length} entradas]\n"
   else
     print "falha]\n"
     gets
     exit
   end
-  return has
+  return out
 end
 
 def fnum(n, f) # FORMATANDO OS NÚMEROS
@@ -228,7 +233,11 @@ Data/hora: #{Time.now}\n\n"
       zona = [limit[1] - (dif * 0.5), limit[1] - (dif * 0.764)] # zona de compra
       moment = ((value - zona[1]).abs / value) * 10 # avaliação do momento de compra
       moment *= Math::PI if value < zona[1]
-      ssup = Math.sqrt(supp) # score do suprimento em circulação
+      if supp > 0
+        ssup = Math.sqrt(supp) # score do suprimento em circulação
+      else
+        ssup = 0.0
+      end
       volat = (((var90 * 2) - var182).abs + ((var182 * 2) - var365).abs)**0.25 # avaliação da volatilidade
       fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
       if fator < 7
@@ -241,7 +250,11 @@ Data/hora: #{Time.now}\n\n"
       cresc = 20 + Math.sqrt(cresc - 20) if cresc > 20 # compressor
       cresc *= -1 if var90 + var182 + var365 < 0 # valores negativos
       cap = c90[:caps][-1] # capital atual
-      scap = (Math.sqrt(Math.log(cap)) - 4) * 5 # score do capital atual
+      if cap > 0
+        scap = (Math.sqrt(Math.log(cap)) - 4) * 5 # score do capital atual
+      else
+        scap = 0.0
+      end
       if sup > 0
         score = (cresc * 1) + (scap * 2) + (ssup * 0.5) - (volat - 5) - (moment * 1) # avaliação final
       else
