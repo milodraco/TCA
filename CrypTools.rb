@@ -1,5 +1,7 @@
+versao = 2.3
+
 print "\n                              "
-("CrypTools v. 2.2").split("").each do |l|
+("CrypTools v. " + versao.to_s).split("").each do |l|
   print l
   sleep 0.05
 end
@@ -55,7 +57,7 @@ def data(a) # DADOS DO CRIPTOATIVO
     out[data[x]] = data[x + 1] # adicionando os elementos da hash
   end
   
-  if out.class == Hash && out.length > 0
+  if out.length > 0
     print "#{out.length} entradas]\n"
   else
     print "falha]\n"
@@ -95,7 +97,7 @@ end
 def media(a) # MÉDIA E MEDIANA
   mid = a.length / 2
   sorted = a.sort
-  return [a.inject{ |sum, el| sum + el }.to_f / a.size, a.length.odd? ? sorted[mid] : 0.5 * (sorted[mid] + sorted[mid - 1])]
+  return [a.inject{ |sum, el| sum + el }.to_f / a.size, a.length.odd? ? sorted[mid] : 0.5 * (sorted[mid] + sorted[mid - 1]), (a.max + a.min) / 2.0]
 end
 
 def chart(a, d, p) # HISTÓRICO DO ATIVO
@@ -165,7 +167,7 @@ end
 # API ********************************************************
 apif = File.new("api.config", 'a+') # lendo arquivo de log
 $api = apif.read.chomp # chave da API
-if $api == "" || $api == nil
+while $api == "" || $api == nil
   print "\nERRO: CHAVE DE API NÃO ENCONTRADA!
 
 Instruções: registre-se em um dos sítios abaixo para adquirir uma chave de API da CoinGecko:
@@ -176,6 +178,7 @@ Após adquirir a chave, cole-a aqui: "
   apif.write($api)
 end
 apif.close
+$api.freeze
 
 # CRIANDO ARQUIVO DE LOG **************************************
 file = File.new("cryptools.log", 'a') # criando arquivo de log
@@ -201,7 +204,8 @@ loop do # loop geral
       dev = true 
       print "\n[Modo desenvolvedor ativado]
 API = #{$api}
-Data/hora: #{Time.now}\n\n"
+Data/hora: #{Time.now}
+Versão #{versao}\n\n"
     end
     break if (1..10).include?($opt)
   end
@@ -212,8 +216,8 @@ Data/hora: #{Time.now}\n\n"
     print "\n___________________________________HOLDING___________________________________\n"
     loop do # loop holding
       # INPUTS
-      print "\nInsira o nome do ativo: "
-      ativo = gets.chomp.downcase # nome do ativo
+      print "\nInsira o ID do ativo: "
+      ativo = gets.chomp.downcase # ID do ativo
       print "\n"
       dados = data(ativo) # dados do ativo
       c365 = chart(ativo, 365, true) # histórico anual
@@ -264,9 +268,9 @@ Data/hora: #{Time.now}\n\n"
       # MODO DEV
       if dev ==  true
         print "\nVariáveis:\n"
-        %w(ativo sup supc supp value var90 var182 var365 limit dif zona moment ssup volat fator cresc cap scap score).each do |vn|
+        %w(ativo dados sup supc supp value var90 var182 var365 limit dif zona moment ssup volat fator cresc cap scap score).each do |vn|
           v = eval(vn)
-          STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+          STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
       end
 
@@ -339,7 +343,6 @@ Data/hora: #{Time.now}\n\n"
       zonas = [limit[1] - (dif * 0.382), limit[1] - (dif * 0.5), limit[1] - (dif * 0.618), limit[1] - (dif * 0.786)] # zonas da retração de Fibonacci
       cvar = [var1 * 30, var30, var90 / 3.0] # variação
       volat = cvar.max - cvar.min # volatilidade
-      meio = (c90[:prices].max + c90[:prices].min) / 2.0
       chance = (var30 * 2) + (var90 / 5.0) - (volat / 5.0) - (var1 / 3.0).abs # probabilidade de lucro
       if chance > 50
         chance = 50 + Math.sqrt(chance - 50) # diminuindo chances altas
@@ -356,16 +359,16 @@ Data/hora: #{Time.now}\n\n"
       # MODO DEV
       if dev ==  true
         print "\nVariáveis:\n"
-        %w(ativo value meio limit dif var1 var30 var90 zonas cvar volat chance seq).each do |vn|
+        %w(ativo value limit dif var1 var30 var90 zonas cvar volat chance seq).each do |vn|
           v = eval(vn)
-          STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+          STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
       end
 
       # RESULTADO
       print "\n  * Ativo (ID): #{ativo.capitalize}
   * Valor: #{fnum(value, 1)}
-  * Média trimestral: #{fnum(media(c90[:prices])[0], 1)};    Mediana: #{fnum(media(c90[:prices])[1], 1)};    Meio: #{fnum(meio, 1)}
+  * Média trimestral: #{fnum(media(c90[:prices])[0], 1)};    Mediana: #{fnum(media(c90[:prices])[1], 1)};    Meio: #{fnum(media(c90[:prices])[2], 1)}
   * Probabilidade de lucro:   "
       print ava(chance, 60, 1)
       print " (#{fnum(chance, 3)}%)
@@ -380,7 +383,7 @@ Data/hora: #{Time.now}\n\n"
       print "  * Sinal:
     1. Esperar por #{seq} velas negativas de horas consecutivas;
     2. Comprar quando pelo menos uma das alternativas abaixo for verdadeira:
-      2.1 A hora após a sequência é positiva e tem pelo menos 50% de força + volume;
+      2.1 A hora após a sequência é positiva e tem pelo menos +75% de força + volume;
       2.2 Algum suporte foi atingido e a hora após a sequência fechou no positivo;
       2.3 A vela da hora seguinte possui padrão de reversão (libélula, martelo etc.);
 
@@ -426,7 +429,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       if opt == 3 # terceira opção
         ativo = $ativo # resgatando o último ativo
       else
-        print "Insira o nome do ativo: " # inserindo o ativo manualmente
+        print "Insira o ID do ativo: " # inserindo o ativo manualmente
         ativo = gets.chomp
       end
       print "Insira a quantia total investida (em USD): "
@@ -508,7 +511,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         print "\nVariáveis:\n"
         %w(ativo banca value limit7 limit3 dif sg sl gainp lossp lucro risk).each do |vn|
           v = eval(vn)
-          STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+          STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
       end
 
@@ -532,12 +535,16 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
 
   elsif $opt == 4 # MONITOR
     print "\n___________________________________MONITOR___________________________________\n"
-    print "\nInsira o nome do ativo: "
-    ativo = gets.chomp.downcase # nome do ativo
+    print "\nInsira o ID do ativo: "
+    ativo = gets.chomp.downcase # ID do ativo
     print "\nIniciando monitoramento do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (pressione ENTER para interromper):\n\n"
     c7 = chart(ativo, 7, true)
+    dif7 = c7[:prices].max - c7[:prices].min # diferença semanal
+    limit = [c7[:prices].min, c7[:prices].max] # limites da semana
+    zonas = [limit[1] - (dif7 * 0.236), limit[1] - (dif7 * 0.382), limit[1] - (dif7 * 0.5), limit[1] - (dif7 * 0.618), limit[1] - (dif7 * 0.786)] # zonas da retração de Fibonacci
     print "   [Aguardando completar a primeira vela...]\n" if ![0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55].include?(Time.now.min) # aviso de espera
-    init = nil # valor inicial
+    init = c7[:prices][-1] # valor inicial
+    seq = 0 # contador de sequência
     tvar = [] # todas as variações
     loop do # loop para aguardar a hora certa
       $enter = false # variável para tecla pressionada
@@ -565,10 +572,6 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       price = hour[-1] # preço atual
       vol = vols[-1] # volume atual
       cap = caps[-1] # capitalização atual
-      init = price if init == nil # definindo preço inicial
-      seq = 0 if seq == nil # contador de sequências
-      limit = [c7[:prices].min, c7[:prices].max] # limites da semana
-      zonas = [limit[1] - (dif * 0.382), limit[1] - (dif * 0.5), limit[1] - (dif * 0.618), limit[1] - (dif * 0.786)] # zonas da retração de Fibonacci
       if Time.now.min <= 2
         var = ((price / hour[0].to_f) - 1) * 100 # variação total da hora
         tvar << var # inserindo a variação na array
@@ -580,7 +583,6 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         fcompra = ((price - hour.min) / dif.to_f) * 100 # força de compra
         fvenda = ((price - hour.max) / dif.to_f) * 100 # força de venda
         forca = fcompra + fvenda # força somada
-        meio = (hour.max + hour.min) / 2.0
         if forca >= 0
           fv = forca + vvol # força + volume
         else
@@ -591,28 +593,28 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
           if seq >= 0
             seq += 1
           else
-            seq = 0
+            seq = 1
           end
         elsif price - hour[0] < 0
           if seq <= 0
             seq -= 1
           else
-            seq = 0
+            seq = -1
           end
         end
       end
 
       # MODO DEV
       if dev ==  true
-        print "\nVariáveis:\n"
-        %w(ativo hour dif vols caps price vol cap init seq limit zonas).each do |vn|
+        print "\n\nVariáveis:\n"
+        %w(ativo dif7 hour dif vols caps price vol cap init seq limit zonas).each do |vn|
           v = eval(vn)
-          STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+          STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
         if Time.now.min <= 2
-          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca meio fv volat).each do |vn|
+          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca fv volat).each do |vn|
             v = eval(vn)
-            STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+            STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
           end
         end
       end
@@ -622,7 +624,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         print "\n  > Resumo da hora:
     * Abertura: #{fnum(hour[0], 1)};    Fechamento: #{fnum(hour[-1], 1)}    (#{fnum(var, 2)})
     * Máxima: #{fnum(hour.max, 1)};    Mínima: #{fnum(hour.min, 1)}
-    * Média: #{fnum(media(hour)[0], 1)};    Mediana: #{fnum(media(hour)[1], 1)};    Meio: #{fnum(meio, 1)}
+    * Média: #{fnum(media(hour)[0], 1)};    Mediana: #{fnum(media(hour)[1], 1)};    Meio: #{fnum(media(hour)[2], 2)}
     * Volume: $#{fnum(vol, 4)} (#{fnum(vvol, 2)})
     * Capitalização: $#{fnum(cap, 4)} (#{fnum(vcap, 2)})
     * Volatilidade: #{fnum(volat, 3)}%
@@ -631,17 +633,19 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     * Variação média: #{fnum(vtm, 2)}
     * Variação total: #{fnum(vtotal, 2)}"
         print "\n    * Sequência de #{seq.abs} horas" if seq.abs > 1
-        if price <= zonas[0] # checando zonas de compra
-          print "\n    * Zona de compra: "
-          if price <= zonas[0] && price > zonas[1]
-            print "zona 1 (entre 38.2% e 50% abaixo do topo)"
-          elsif price <= zonas[1] && price > zonas[2]
-            print "zona 2 (entre 50% e 61.8% abaixo do topo)"
-          elsif price <= zonas[2] && price >= zonas[3]
-            print "zona 3 (entre 61.8% e 78.6% abaixo do topo)"
+        if price <= zonas[1] # checando zonas de compra
+          print "\n    * Zona: "
+          if price <= zonas[1] && price > zonas[2]
+            print "zona de compra 1 (entre -38.2% e -50% do topo)"
+          elsif price <= zonas[2] && price > zonas[3]
+            print "zona de compra 2 (entre -50% e -61.8% do topo)"
+          elsif price <= zonas[3] && price >= zonas[4]
+            print "zona de compra 3 (entre -61.8% e -78.6% do topo)"
           else
-            print "zona morta (menor que 78.6% abaixo do topo)"
+            print "zona morta (abaixo de -78.6% do topo)"
           end
+        elsif price >= zonas[0]
+          print "zona de venda (acima de -23.6% do topo)"
         end
         file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração de #{fnum(var, 2)}, força+volume de #{fnum(fv, 2)})\n")
         print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
@@ -684,7 +688,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         print "\nVariáveis:\n"
         %w(ativo tempo v1 v2 var).each do |vn|
           v = eval(vn)
-          STDERR.puts "  #{vn.upcase} (#{v.class.to_s.downcase}) = #{v}"
+          STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
       end
 
@@ -817,8 +821,9 @@ https://www.financebrokerage.com/pt-br/padroes-de-graficos/    https://www.inves
 3. Limites ('stops'): calcula os limites de ganho e de perda de uma negociação, além do possível lucro e risco de prejuízo. A sugestão é aplicar a agressividade de acordo com a zona em que o ativo se encontrava no momento da compra: 'arrojado' para a zona 1, 'agressivo' para a zona 2 e 'berserk' para a zona 3.
 3.1 Legendas: a) Limite de ganho: momento de venda em lucro; b) Limite de perda: momento de venda em prejuízo; c) Lucro absoluto: possibilidade de lucro em quantia absoluta, caso seja atingido o limite de ganho; d) Quantia em risco: quantidade em risco de prejuízo, caso seja atingido o limite de perda.
 4. Monitor: monitora o valor da criptomoeda em intervalos de 5 minutos. É mostrado um resumo ao final de cada hora, com estatísticas e dados importantes. Atenção: as zonas de compra apresentadas nesse modo são para negociações ('trading').
-4.1 Legendas: a) Abertura: valor do ativo no início da hora; b) Fechamento: valor do ativo no final da hora; c) Máxima: máximo valor atingido durante a hora; d) Mínima: mínimo valor atingido durante a hora; e) Média: média de todos os valores durante a hora; f) Mediana: valor no centro do conjunto de todos os valores da hora; g) Meio: média entre a máxima e a mínima; h) Volume: volume das últimas 24 horas; i) Força: força dos compradores ('bulls', valor positivo) contra a força dos vendedores ('bears', valor negativo); j) Força + volume: soma da força com a variação do volume durante a hora; k) Variação mista: média da variação do valor e da capitalização do mercado; l) Variação média: ḿédia das variações das horas desde o início do monitoramento; m) Variação total: variação total desde o início do monitoramento; m) Zona de compra: zonas de compra para negociações.
+4.1 Legendas: a) Abertura: valor do ativo no início da hora; b) Fechamento: valor do ativo no final da hora; c) Máxima: máximo valor atingido durante a hora; d) Mínima: mínimo valor atingido durante a hora; e) Média: média de todos os valores durante a hora; f) Mediana: valor no centro do conjunto de todos os valores da hora; g) Meio: média entre a máxima e a mínima; h) Volume: volume das últimas 24 horas; i) Força: força dos compradores ('bulls', valor positivo) contra a força dos vendedores ('bears', valor negativo); j) Força + volume: soma da força com a variação do volume durante a hora; k) Variação mista: média da variação do valor e da capitalização do mercado; l) Variação média: ḿédia das variações das horas desde o início do monitoramento; m) Variação total: variação total desde o início do monitoramento; m) Zona: zonas de compra/venda para negociações; n) Sequência: horas consecutivas, positivas ou negativas.
 5. Calculadora: calcula a variação percentual do valor de um ativo; 6. Registro: visualiza ou deleta o arquivo de registro; 7. Procurar ativos: útil para descobrir o ID de alguma criptomoeda; 8. Testar servidor: checa a conexão com o CoinGecko.
+Visite a página do projeto e dê uma estrela: https://github.com/milodraco/cryptools
 Lembre-se: nenhum método garante o lucro, assim como nenhum elimina a possibilidade de prejuízo. Opere somente se estiver ciente dos riscos envolvidos e consulte um profissional em caso de dúvida.
 ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR O LUCRO."
     tutorial.split("\n").each do |l|
