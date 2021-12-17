@@ -35,6 +35,11 @@ def data(a) # DADOS DO CRIPTOATIVO
   request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
   request["x-rapidapi-key"] = $api
   response = http.request(request)
+  if JSON.parse(response.read_body) == nil || response.read_body.include?("error")
+    print "\n\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
+    gets
+    exit
+  end
 
   # convertendo em array e substituindo caracteres
   data = JSON.parse(response.read_body.gsub(":", ",").gsub("{", "[").gsub("}", "]"))[JSON.parse(response.read_body.gsub(":", ",").gsub("{", "[").gsub("}", "]")).index("market_data") + 1]
@@ -60,7 +65,7 @@ def data(a) # DADOS DO CRIPTOATIVO
   if out.length > 0
     print "#{out.length} entradas]\n"
   else
-    print "falha]\n"
+    print "erro]\n"
     gets
     exit
   end
@@ -110,7 +115,7 @@ def chart(a, d, p) # HISTÓRICO DO ATIVO
   request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
   request["x-rapidapi-key"] = $api
   response = http.request(request)
-  if eval(response.read_body)[:prices] == nil
+  if eval(response.read_body)[:prices] == nil || response.read_body.include?("error")
     print "\n\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
     gets
     exit
@@ -157,7 +162,7 @@ end
 # INTERNET ***************************************************
 print "\n[Checando conexão... "
 if internet? == false # erro de conexão
-  print "falha]\n\n"
+  print "erro]\n\n"
   sleep 1
   exit
 else
@@ -166,7 +171,7 @@ end
 
 # API ********************************************************
 apif = File.new("api.config", 'a+') # lendo arquivo de log
-$api = apif.read.chomp # chave da API
+$api = apif.read.chomp.strip # chave da API
 while $api == "" || $api == nil
   print "\nERRO: CHAVE DE API NÃO ENCONTRADA!
 
@@ -174,7 +179,7 @@ Instruções: registre-se em um dos sítios abaixo para adquirir uma chave de AP
 https://www.coingecko.com/pt/api    https://rapidapi.com/coingecko/api/coingecko
 
 Após adquirir a chave, cole-a aqui: "
-  $api = gets.chomp
+  $api = gets.chomp.strip
   apif.write($api)
 end
 apif.close
@@ -203,9 +208,10 @@ loop do # loop geral
     if $opt == 11
       dev = true 
       print "\n[Modo desenvolvedor ativado]
-API = #{$api}
-Data/hora: #{Time.now}
-Versão #{versao}\n\n"
+Versão: #{versao}
+Plataforma: #{RUBY_PLATFORM}
+Data/hora: #{Time.now.asctime}
+API: #{$api.inspect}\n\n"
     end
     break if (1..10).include?($opt)
   end
@@ -538,7 +544,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     print "\nInsira o ID do ativo: "
     ativo = gets.chomp.downcase # ID do ativo
     print "\nIniciando monitoramento do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (pressione ENTER para interromper):\n\n"
-    c7 = chart(ativo, 7, true)
+    c7 = chart(ativo, 7, true) # histórico semanal
     dif7 = c7[:prices].max - c7[:prices].min # diferença semanal
     limit = [c7[:prices].min, c7[:prices].max] # limites da semana
     zonas = [limit[1] - (dif7 * 0.236), limit[1] - (dif7 * 0.382), limit[1] - (dif7 * 0.5), limit[1] - (dif7 * 0.618), limit[1] - (dif7 * 0.786)] # zonas da retração de Fibonacci
@@ -562,7 +568,6 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       # CAPTURANDO DADOS DA API
       ping1 = Time.now # medindo o ping
       c1 = chart(ativo, 1, false)
-      ping2 = Time.now # encerrando a medição de ping
 
       #CÁLCULOS
       hour = c1[:prices].drop((c1[:prices].length * (23 / 24.0)).round) # histórico dos preços da última hora
@@ -573,9 +578,15 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       vol = vols[-1] # volume atual
       cap = caps[-1] # capitalização atual
       if Time.now.min <= 2
+        if Time.now.hour == 0 # redefinindo as zonas à meia-noite
+          c7 = chart(ativo, 7, true) # histórico semanal
+          dif7 = c7[:prices].max - c7[:prices].min # diferença semanal
+          limit = [c7[:prices].min, c7[:prices].max] # limites da semana
+          zonas = [limit[1] - (dif7 * 0.236), limit[1] - (dif7 * 0.382), limit[1] - (dif7 * 0.5), limit[1] - (dif7 * 0.618), limit[1] - (dif7 * 0.786)] # zonas da retração de Fibonacci
+        end
         var = ((price / hour[0].to_f) - 1) * 100 # variação total da hora
         tvar << var # inserindo a variação na array
-        tvar = tvar.drop(1) if tvar.length > 24 # limitando a 24 horas
+        tvar = tvar.drop(1) if tvar.length > 24 # limitando a média para 24 horas
         vtm = media(tvar)[0] # variação total média
         vvol = ((vol / vols[0].to_f) - 1) * 100 # variação do volume da hora
         vcap = ((cap / caps[0].to_f) - 1) * 100 # variação da capitalização
@@ -590,12 +601,12 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         end
         volat = (dif / price.to_f) * 100 # volatilidade
         if price - hour[0] > 0 # hora positiva ou negativa?
-          if seq >= 0
+          if seq >= 0 # positiva
             seq += 1
           else
             seq = 1
           end
-        elsif price - hour[0] < 0
+        elsif price - hour[0] < 0 # negativa
           if seq <= 0
             seq -= 1
           else
@@ -603,11 +614,25 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
           end
         end
       end
+      if seq.abs > 1 # alertas sonoros para sequências
+        seq.abs.times do
+          if RUBY_PLATFORM.downcase.include?("linux")
+            puts 7.chr
+          elsif RUBY_PLATFORM.downcase.include?("mac")
+            system('say "beep"')
+          else
+            print "\a" 
+          end
+          sleep 0.25
+        end
+      end
+      ping2 = Time.now # encerrando a medição de ping
+      ping = ping2 - ping1
 
       # MODO DEV
       if dev ==  true
         print "\n\nVariáveis:\n"
-        %w(ativo dif7 hour dif vols caps price vol cap init seq limit zonas).each do |vn|
+        %w(ativo dif7 hour dif vols caps price vol cap init seq limit zonas ping).each do |vn|
           v = eval(vn)
           STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
@@ -648,12 +673,12 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
           print "zona de venda (acima de -23.6% do topo)"
         end
         file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração de #{fnum(var, 2)}, força+volume de #{fnum(fv, 2)})\n")
-        print "\n\n\a  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
+        print "\n\n  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
         n += 1
       else
         print "\n    * #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (#{fnum((((price / hour[(-1 - (hour.length / 12.0)).round].to_f) - 1) * 100), 2)});    Volume: $#{fnum(vol, 4)} (#{fnum((((vols[-1] / vols[(-1 - (vols.length / 12.0)).round].to_f) - 1) * 100), 2)})..." # parcial a cada 10 minutos
       end
-      (290 - (ping2 - ping1).round).times do # esperando 5 minutos - ping
+      (290 - ping.round).times do # esperando 5 minutos - ping
         begin # checando se tecla foi pressionada
           $enter = STDIN.read_nonblock(1)
         rescue IO::WaitReadable
@@ -745,6 +770,7 @@ Inserir uma opção: "
   elsif $opt == 7 # PESQUISA DE ATIVOS
     print "\n___________________________________PESQUISA__________________________________\n"
 
+    print "\n   [Importando lista de ativos... "
     url = URI("https://coingecko.p.rapidapi.com/coins/list") # API
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -753,6 +779,12 @@ Inserir uma opção: "
     request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
     request["x-rapidapi-key"] = $api
     response = http.request(request)
+    if eval(response.read_body) == nil || response.read_body.include?("error")
+      print "erro]\n" # erro em caso de retorno vazio
+      gets
+      exit
+    end
+    print "#{eval(response.read_body).length} entradas]\n"
 
       loop do # loop de pesquisa
       print "\nInsira o termo para pesquisa: "
@@ -786,12 +818,12 @@ Inserir uma opção: "
 
   elsif $opt == 8 # TESTANDO SERVIDOR
     print "\n___________________________________SERVIDOR__________________________________\n"
-    sleep 0.5
     if internet?
       link = "OK"
     else
       link = "sem conexão"
     end
+
     ping1 = Time.now
     url = URI("https://coingecko.p.rapidapi.com/ping")
     http = Net::HTTP.new(url.host, url.port)
@@ -802,17 +834,18 @@ Inserir uma opção: "
     request["x-rapidapi-key"] = $api
     response = http.request(request)
     ping2 = Time.now
+    ping = ping2 - ping1
+
     print "\n  * Conexão: #{link}
   * Mensagem: #{eval(response.read_body).shift[-1]}
-  * Ping: ", (ping2 - ping1).round(2), " segundo(s)\n"
-    sleep 3
+  * Ping: #{fnum(ping, 3)} segundo(s)\n"
+    sleep 2
 
   elsif $opt == 9 # TUTORIAL
     print "\n____________________________________AJUDA____________________________________\n\n"
     tutorial = "Instruções gerais: execute o arquivo '.rb' no terminal do Linux ou em outro SO e insira as informações da transação desejada. Exemplo no Linux: se o arquivo estiver na pasta pessoal, basta abrir o terminal e digitar 'ruby CrypTools.rb'. Lembre de usar ponto em vez de vírgula nas casas decimais. Se precisar de mais informações sobre criptomoedas, acesse os sítios abaixo:
 https://www.infomoney.com.br/guias/criptomoedas/    https://economia.uol.com.br/faq/criptomoedas-o-que-e-como-funciona-bitcoin-e-mais.htm    https://www.forbes.com/advisor/investing/what-is-cryptocurrency/
-Caso não possua cadastro em nenhuma corretora de criptomoedas, considere se cadastrar na Binance, uma das maiores corretoras do mundo:
-https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O
+Caso não possua cadastro em nenhuma corretora de criptomoedas, considere se cadastrar na Binance, uma das maiores corretoras do mundo: https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O
 1. Investimento ('holding'): o algoritmo avalia um determinado criptoativo, ajudando o usuário a decidir se deve investir para obter lucro a longo prazo. Ideal para poupanças ('savings' e 'earnings') e 'stakings'.
 1.1 Legendas: a) Valor: valor unitário do ativo; Capitalização do mercado: 'market cap'; c) Suprimento: suprimento em circulação e suprimento total; d) Zona de compra: faixa ideal de preço para compra de acordo com a Retração de Fibonacci; e) Avaliação do momento: avaliação do valor atual de acordo com a zona de compra.
 2. Negociação ('trading'): o algoritmo estipula sinais para fazer 'swing trading'. Ideal para investidores experientes que estão acostumados a fazer negociações. Tenha em mente que o trading envolve alto risco de prejuízo financeiro, use este algoritmo por própria conta e risco. Instruções: insira todos os dados corretamente. Ao analisar o gráfico, você precisará  visualizar as velas com intervalo de 1 hora. Se constatar que o mínimo de velas negativas consecutivas foi atingido, verifique se o valor atual da criptomoeda está dentro de alguma das zonas de compra. Caso esteja, espere o valor do ativo se aproximar de algum suporte ou pela aparição de algum padrão de vela de reversão para então comprar. Exemplos de padrões de vela de reversão: Dragonfly Doji ('Libélula'), Hammer ('Martelo') e  Tweezer Bottom ('Fundo Duplo'). Se quiser saber mais sobre velas japonesas, clique nos sítios abaixo:
