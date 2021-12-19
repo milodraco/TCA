@@ -883,4 +883,4 @@ Lembre-se: é recomendável que se consulte um profissional antes de fazer qualq
   end # if das opções
 end # loop geral
 
-# Adicionar notícias e top 10; aprimorar cálculo de trading com volume e cap; corrigir bugs.
+# Adicionar notícias, top 10 e 50 random; aprimorar cálculo de trading com volume e cap; corrigir bugs.
