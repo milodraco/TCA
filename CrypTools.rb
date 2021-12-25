@@ -314,7 +314,7 @@ API: #{$api.inspect}\n\n"
       print " (#{fnum(score, 3)})\n"
 
       # GRAVAÇÃO E LOOP
-      file.write("  #{n}. Holding de #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
+      file.write("  #{n}. Investimento no ativo #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
       n += 1
       print "\nCalcular outro investimento? (s/n) "
       lp = gets.chomp.upcase
@@ -543,7 +543,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
   * Lucro absoluto: #{fnum(lucro, 1)}
   * Quantia em risco: #{fnum(risk, 1)}\n"
       print "\nALERTA: risco muito superior ao lucro!\n" if lucro < risk / 1.5
-      file.write("  #{n}. Stops (#{sperfil[perfil - 1]}): stop-gain de #{fnum(sg, 1)} (+#{fnum(gainp * 100, 2)}), stop-loss de #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)}), lucro de #{fnum(lucro, 1)} e risco em #{fnum(risk, 1)}\n") # escrevendo log
+      file.write("  #{n}. Limites para (#{sperfil[perfil - 1]}): stop-gain de #{fnum(sg, 1)} (+#{fnum(gainp * 100, 2)}), stop-loss de #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)}), lucro de #{fnum(lucro, 1)} e risco em #{fnum(risk, 1)}\n") # escrevendo log
       n += 1
       print "\nCalcular outros limites? (s/n) "
       lp = gets.chomp.upcase
@@ -826,6 +826,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     end
     file.write("\n")
     print "\n\nATENÇÃO: as pontuações obtidas são valores aproximados, favor recalcular com maior exatidão na opção 1 (Investimento)."
+    n += 1
     gets
     file.close
     file = File.new("cryptools.log", 'a') # criando arquivo de log
