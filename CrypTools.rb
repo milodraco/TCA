@@ -1,4 +1,4 @@
-versao = 2.4
+versao = 2.5
 
 print "\n                              "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
@@ -17,12 +17,54 @@ require 'open-uri'
 require 'json'
 
 # FUNÇÕES ****************************************************
+def title(s) # IMPRIMINDO TÍTULO
+  print "\n"
+  x = 80 - s.length
+  (x / 2).times do
+    print "_"
+  end
+  print s.upcase
+  (x / 2.0).round.times do
+    print "_"
+  end
+  print "\n"
+end
+
 def internet? # CHECANDO CONEXÃO
   if open('https://google.com/') || open('https://www.coingecko.com/')
     return true
   else
     return false
   end
+end
+
+def beep # SOM DE BIPE
+  if RUBY_PLATFORM.downcase.include?("linux")
+    print 7.chr
+  elsif RUBY_PLATFORM.downcase.include?("mac")
+    system('say "beep"')
+  else
+    print "\a" 
+  end
+end
+
+def listar # LISTA DE TODOS OS ATIVOS
+  print "\n   [Importando lista de ativos... "
+  url = URI("https://coingecko.p.rapidapi.com/coins/list") # API
+  http = Net::HTTP.new(url.host, url.port)
+  http.use_ssl = true
+  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+  request = Net::HTTP::Get.new(url)
+  request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
+  request["x-rapidapi-key"] = $api
+  response = http.request(request)
+  if eval(response.read_body) == nil || response.read_body.include?("error")
+    print "erro]\n" # erro em caso de retorno vazio
+    gets
+    exit
+  end
+  print "#{eval(response.read_body).length} entradas]\n"
+  return eval(response.read_body)
 end
 
 def data(a, p) # DADOS DO CRIPTOATIVO
@@ -167,6 +209,7 @@ if internet? == false # erro de conexão
   exit
 else
   print "OK]\n"
+  beep
 end
 
 # API ********************************************************
@@ -195,9 +238,12 @@ n = 1 # contador
 
 loop do # loop geral
 
-  print "\n_____________________________________MENU____________________________________\n\n"
-  ["1. Investimento ('holding')", "2. Negociação ('trading')", "3. Limites ('stops')", "4. Monitor", "5. 100 Mais", "6. Procurar ativos", "7. Registro", "8. Testar servidor", "9. Notícias (inglês)", "10. Ajuda", "11. Sair"].each do |l|
-    print "  ", l, "\n"
+  # MENU INICIAL **********************************************************
+  title("menu")
+  print "\n"
+  menu = ["Investimento ('holding')", "Negociação ('trading')", "Limites ('stops')", "Monitor", "100 Mais", "Caça ao Tesouro", "Procurar ativos", "Registro", "Testar servidor", "Notícias (inglês)", "Ajuda", "Sair"]
+  menu.each do |l|
+    print "  #{menu.index(l) + 1}. #{l}\n"
     sleep 0.05
   end
   print "\n"
@@ -205,7 +251,7 @@ loop do # loop geral
   loop do
     print "Insira uma opção: "
     $opt = gets.chomp.to_i
-    if $opt == 12
+    if $opt == menu.length + 1
       dev = true 
       print "\n[Modo desenvolvedor ativado]
 Versão: #{versao}
@@ -213,21 +259,21 @@ Plataforma: #{RUBY_PLATFORM}
 Data/hora: #{Time.now.asctime}
 API: #{$api.inspect}\n\n"
     end
-    break if (1..11).include?($opt)
+    break if (1..menu.length).include?($opt)
   end
 
   if $opt == 1 # if 1
 
-    # HOLDING
-    print "\n___________________________________HOLDING___________________________________\n"
+    # HOLDING **********************************************************
+    title("investimento/holding")
     loop do # loop holding
       # INPUTS
       print "\nInsira o ID do ativo: "
       ativo = gets.chomp.downcase # ID do ativo
       if ativo == "" || ativo == nil # erro para ativo vazio
-        print "\nERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
+        print "ERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
         gets
-        exit
+        break
       end
       print "\n"
       dados = data(ativo, true) # dados do ativo
@@ -327,17 +373,17 @@ API: #{$api.inspect}\n\n"
 
   elsif $opt == 2
 
-    # TRADING
-    print "\n___________________________________TRADING___________________________________\n"
+    # TRADING **********************************************************
+    title("trading")
     print "\nATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR O LUCRO.\n"
     loop do # loop trading
       # INPUTS
       print "\nInsira o ativo que será negociado: "
       ativo = gets.chomp.downcase
       if ativo == "" || ativo == nil # erro para ativo vazio
-        print "\nERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
+        print "ERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
         gets
-        exit
+        break
       end
       print "\n"
       c90 = chart(ativo, 90, true) # histórico do trimestre
@@ -414,8 +460,11 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       end
     end # loop trading
 
-  elsif $opt == 3 # STOPS
-    print "\n__________________________________STOPS______________________________________\n"
+  elsif $opt == 3 
+
+    # STOPS **********************************************************
+    
+    title("limites/stops")
     loop do
       # INPUTS
       print "\nComo você gostaria de inserir os valores? \n
@@ -449,9 +498,9 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         ativo = gets.chomp
       end
       if ativo == "" || ativo == nil # erro para ativo vazio
-        print "\nERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
+        print "ERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
         gets
-        exit
+        break
       end
       print "Insira a quantia total investida (em USD): "
       banca = gets.chomp.to_f
@@ -554,14 +603,16 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       end
     end # loop dos stops
 
-  elsif $opt == 4 # MONITOR
-    print "\n___________________________________MONITOR___________________________________\n"
+  elsif $opt == 4 
+
+    # MONITOR **********************************************************
+    title("monitor")
     print "\nInsira o ID do ativo: "
     ativo = gets.chomp.downcase # ID do ativo
     if ativo == "" || ativo == nil # erro para ativo vazio
-        print "\nERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
+        print "ERRO: ATIVO INVÁLIDO!\n" # erro em caso de retorno vazio
         gets
-        exit
+        break
       end
     print "\nIniciando monitoramento do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (pressione ENTER para interromper):\n\n"
     c7 = chart(ativo, 7, true) # histórico semanal
@@ -636,13 +687,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       end
       if seq.abs > 1 # alertas sonoros para sequências
         seq.abs.times do
-          if RUBY_PLATFORM.downcase.include?("linux")
-            puts 7.chr
-          elsif RUBY_PLATFORM.downcase.include?("mac")
-            system('say "beep"')
-          else
-            print "\a" 
-          end
+          beep
           sleep 0.25
         end
       end
@@ -712,8 +757,10 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     file.close
     file = File.new("cryptools.log", 'a') # criando arquivo de log
 
-  elsif $opt == 5 # 100 MAIS
-    print "\n___________________________________100 MAIS__________________________________\n"
+  elsif $opt == 5 
+
+    # 100 MAIS **********************************************************
+    title("100 mais")
     
     # API
     print "\n   [Importando lista... "
@@ -735,7 +782,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     elsif q < 10
       q = 10 # mínimo
     end
-    list = [] # lista com todos os ativos
+    list = [] # lista com todos os ativos calculados
     num = 0 # posição do ativo
     best = [] # melhores ativos
 
@@ -796,7 +843,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         best << [x["name"], x["id"], score]
       else
         (0..best.length - 1).each do |y|
-          if score > best[y][2]
+          if score >= best[y][2]
             best.insert(y, [x["name"], x["id"], score]) 
             break
           end
@@ -817,7 +864,8 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     end
 
     # RESULTADO
-    print "\a\nMelhores ativos para investimento:"
+    beep
+    print "\nMelhores ativos para investimento:"
     file.write("  #{n}. Melhores ativos para investimento:")
     best.each do |z|
       print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)}"
@@ -831,30 +879,141 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     file.close
     file = File.new("cryptools.log", 'a') # criando arquivo de log
 
-  elsif $opt == 6 # PESQUISA DE ATIVOS
-    print "\n___________________________________PESQUISA__________________________________\n"
+  elsif $opt == 6 
 
-    print "\n   [Importando lista de ativos... "
-    url = URI("https://coingecko.p.rapidapi.com/coins/list") # API
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-    request["x-rapidapi-key"] = $api
-    response = http.request(request)
-    if eval(response.read_body) == nil || response.read_body.include?("error")
-      print "erro]\n" # erro em caso de retorno vazio
-      gets
-      exit
+    # CAÇA AO TESOURO **********************************************************
+    title("caça ao tesouro")
+
+    # API
+    bau = listar.shuffle.take(100) # todos os ativos
+
+    # VARIÁVEIS
+    list = [] # lista com todos os ativos calculados
+    num = 0 # posição do ativo
+    best = [] # melhores ativos
+
+    # LISTA DE ATIVOS COM ERRO
+    errof = File.new("error.log", 'a+') # criando/lendo arquivo com lista de ativos que deram erro
+    erro = eval(errof.read)
+    errof.close
+
+    erro = [] if erro == nil
+    print "\nLista de ativos com erro: #{erro}\n" if dev == true
+
+    bau.reverse.each do |x|
+      ativo = x[:id] # ID do ativo
+      next if ativo.include?("usd") || erro.include?(ativo) # pulando as lastreadas no dólar ou com erro
+      erro << ativo # inserindo ativo na lista de erro
+      File.delete("error.log") # deletando arquivo
+      errof = File.new("error.log", 'w') # reabrindo arquivo no modo gravação
+      errof.write(erro) # gravando lista de erro no arquivo
+      print "\n  #{num + 1}. #{ativo.capitalize}:"
+      dados = data(ativo, false) # dados do ativo
+      c365 = chart(ativo, 365, false) # histórico anual
+      c182 = {:prices => c365[:prices].drop((c365[:prices].length * 0.5).round), :caps => c365[:caps].drop((c365[:caps].length * 0.5).round), :vols => c365[:vols].drop((c365[:vols].length * 0.5).round)} # histórico semestral
+      c90 = {:prices => c365[:prices].drop((c365[:prices].length * 0.75).round), :caps => c365[:caps].drop((c365[:caps].length * 0.75).round), :vols => c365[:vols].drop((c365[:vols].length * 0.75).round)} # histórico trimestral
+      value = c90[:prices][-1] # valor atual
+      sup = [dados["max_supply"].to_f, dados["total_supply"].to_f].max # suprimento total
+      supc = dados["circulating_supply"] # suprimento em circulação
+      erro.delete(ativo) # removendo ativo na lista de erro
+      errof = File.new("error.log", 'w') # reabrindo arquivo no modo gravação
+      errof.write(erro) # gravando lista de erro no arquivo
+
+      # CÁLCULOS
+      supp = (supc / sup.to_f) * 100 # percentual do suprimento
+      var90 = ((value / c90[:prices][0]) - 1) * 100 # variação do trimestre
+      var182 = ((value / c182[:prices][0]) - 1) * 100 # variação do semestre
+      var365 = ((value / c365[:prices][0]) - 1) * 100 # variação do ano
+      limit = [c90[:prices].min, c90[:prices].max] # máximo e mínimo do trimestre
+      dif = limit[1] - limit[0] # diferença entre mínimo e máximo do trimestre
+      zona = [limit[1] - (dif * 0.5), limit[1] - (dif * 0.764)] # zona de compra
+      moment = ((value - zona[1]).abs / value) * 10 # avaliação do momento de compra
+      moment *= Math::PI if value < zona[1]
+      if supp > 0
+        ssup = Math.sqrt(supp) # score do suprimento em circulação
+      else
+        ssup = 0.0
+      end
+      volat = (((var90 * 2) - var182).abs + ((var182 * 2) - var365).abs)**0.25 # avaliação da volatilidade
+      fator = 5.5 + volat # fator divisor de acordo com a volatilidade para avaliação do crescimento
+      if fator < 7
+        fator = 7.0
+      elsif fator > 21
+        fator = 21.0
+      end
+      volat = 10 + ((volat - 10) / Math::PI) if volat > 10 # compressor
+      cresc = ((var90 + var182 + var365)/fator).abs**(1/3.0) * 2 # avaliação do crescimento
+      cresc = 20 + Math.sqrt(cresc - 20) if cresc > 20 # compressor
+      cresc *= -1 if var90 + var182 + var365 < 0 # valores negativos
+      cap = c90[:caps][-1] # capital atual
+      if cap > 0 && cap != nil
+        scap = (Math.sqrt(Math.log(cap)) - 4) * 5 # score do capital atual
+      else
+        scap = 0.0
+      end
+      if sup > 0
+        score = (cresc * 1) + (scap * 2) + (ssup * 0.5) - (volat - 5) - (moment * 1) # avaliação final
+      else
+        score = (cresc * 1.1) + (scap * 2.1) - (volat - 5) - (moment * 1) # avaliação sem suprimento
+      end
+
+      # PARCIAL
+      list << [x[:name], x[:id], score] # adicionando todos os ativos
+      if best.length == 0
+        best << [x[:name], x[:id], score]
+      else
+        (0..best.length - 1).each do |y|
+          if score > best[y][2]
+            best.insert(y, [x[:name], x[:id], score]) 
+            break
+          end
+        end
+      end
+      if dev == true
+        print " #{score}" 
+      else
+        print " #{fnum(score, 3)}"
+      end
+      num += 1
     end
-    print "#{eval(response.read_body).length} entradas]\n"
+    best = best.take(3) if best.length > 3
 
-      loop do # loop de pesquisa
+    # MODO DEV
+    if dev ==  true
+      print "\n\nVariáveis:\n"
+      %w(q num list best).each do |vn|
+        v = eval(vn)
+        STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
+      end
+    end
+
+    # RESULTADO
+    beep
+    print "\n\nTesouro encontrado:"
+    file.write("  #{n}. Tesouro encontrado:")
+    best.each do |z|
+      print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)}"
+      file.write(" #{best.index(z) + 1}. #{z[0]} (#{fnum(z[2], 3)});")
+      sleep 0.1
+    end
+    file.write("\n")
+    print "\n\nATENÇÃO: as pontuações obtidas são valores aproximados, favor recalcular com maior exatidão na opção 1 (Investimento)."
+    n += 1
+    gets
+    errof.close
+    file.close
+    file = File.new("cryptools.log", 'a') # criando arquivo de log
+
+  elsif $opt == 7 
+
+    # PESQUISA DE ATIVOS **********************************************************
+    title("pesquisa")
+
+    list = listar # lista de todos os ativos
+    loop do # loop de pesquisa
       print "\nInsira o termo para pesquisa: "
       search = gets.chomp # palavra para pesquisa
       found = 1 # contador
-      list = eval(response.read_body) # lista de todos os ativos
       (0..list.length-1).each do |x|
         if dev == true
           print "\n" + "#{list[x]}" # imprimindo lista completa no modo dev
@@ -867,7 +1026,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         id = list[x][:id] # ID do ativo
         symbol = list[x][:symbol] # símbolo do ativo
         if name.downcase.include?(search.downcase) || symbol.downcase.include?(search.downcase) # checando se há correspondência
-          print "\a" if dev == true # alerta sonoro para o modo dev
+          beep if dev == true # alerta sonoro para o modo dev
           print "\n  #{found}. #{name} (#{symbol}): #{id}"
           found += 1
           sleep 0.1
@@ -883,8 +1042,11 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       break if lp == "N"
     end # loop da pesquisa
 
-  elsif $opt == 7 # REGISTRO
-    print "\n__________________________________REGISTRO___________________________________\n"
+  elsif $opt == 8 
+
+    # REGISTRO **********************************************************
+    title("registro")
+
     if File.exist?("cryptools.log") # checando se arquivo de log existe
       print "\n  1. Ler registro
   2. Apagar registro
@@ -920,8 +1082,11 @@ Inserir uma opção: "
       print "\nERRO: ARQUIVO DE REGISTRO NÃO ENCONTRADO!\n"
     end
 
-  elsif $opt == 8 # TESTANDO SERVIDOR
-    print "\n___________________________________SERVIDOR__________________________________\n"
+  elsif $opt == 9 
+
+    # TESTANDO SERVIDOR
+    title("testar servidor")
+    
     sleep 0.1
     print "\n   [Checando conexão...]\n"
 
@@ -948,8 +1113,10 @@ Inserir uma opção: "
   * Ping: #{fnum(ping, 3)} segundo(s)\n"
     sleep 2
 
-  elsif $opt == 9 # TUTORIAL
-    print "\n___________________________________NOTÍCIAS__________________________________\n"
+  elsif $opt == 10 
+
+    # NOTÍCIAS **********************************************************
+    title("notícias")
 
     sleep 0.1
     print "\n   [Importando notícias...]\n"
@@ -975,8 +1142,12 @@ Inserir uma opção: "
       gets
     end
 
-  elsif $opt == 10 # TUTORIAL
-    print "\n____________________________________AJUDA____________________________________\n\n"
+  elsif $opt == 11 
+
+    # AJUDA **********************************************************
+    title("ajuda")
+    print "\n"
+
     tutorial = "Instruções gerais: execute o arquivo '.rb' no terminal do Linux ou em outro SO e insira as informações da transação desejada. Exemplo no Linux: se o arquivo estiver na pasta pessoal, basta abrir o terminal e digitar 'ruby CrypTools.rb'. Lembre de usar ponto em vez de vírgula nas casas decimais. Se precisar de mais informações sobre criptomoedas, acesse os sítios abaixo:
 https://www.infomoney.com.br/guias/criptomoedas/    https://economia.uol.com.br/faq/criptomoedas-o-que-e-como-funciona-bitcoin-e-mais.htm    https://www.forbes.com/advisor/investing/what-is-cryptocurrency/
 Caso não possua cadastro em nenhuma corretora de criptomoedas, considere se cadastrar na Binance, uma das maiores corretoras do mundo: https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O
@@ -989,7 +1160,7 @@ https://www.financebrokerage.com/pt-br/padroes-de-graficos/    https://www.inves
 3.1 Legendas: a) Limite de ganho: momento de venda em lucro; b) Limite de perda: momento de venda em prejuízo; c) Lucro absoluto: possibilidade de lucro em quantia absoluta, caso seja atingido o limite de ganho; d) Quantia em risco: quantidade em risco de prejuízo, caso seja atingido o limite de perda.
 4. Monitor: monitora o valor da criptomoeda em intervalos de 5 minutos. É mostrado um resumo ao final de cada hora, com estatísticas e dados importantes. Atenção: as zonas de compra apresentadas nesse modo são para negociações ('trading').
 4.1 Legendas: a) Abertura: valor do ativo no início da hora; b) Fechamento: valor do ativo no final da hora; c) Máxima: máximo valor atingido durante a hora; d) Mínima: mínimo valor atingido durante a hora; e) Média: média de todos os valores durante a hora; f) Mediana: valor no centro do conjunto de todos os valores da hora; g) Meio: média entre a máxima e a mínima; h) Volume: volume das últimas 24 horas; i) Força: força dos compradores ('bulls', valor positivo) contra a força dos vendedores ('bears', valor negativo); j) Força + volume: soma da força com a variação do volume durante a hora; k) Variação mista: média da variação do valor e da capitalização do mercado; l) Variação média: ḿédia das variações das horas desde o início do monitoramento; m) Variação total: variação total desde o início do monitoramento; m) Zona: zonas de compra/venda para negociações; n) Sequência: horas consecutivas, positivas ou negativas.
-5. 100 Mais: procura os melhores ativos para investimento ('holding') dentre aqueles com maior capitalização; 6. Procurar ativos: útil para descobrir o ID de alguma criptomoeda; 7. Registro: visualiza ou deleta o arquivo de registro; 8. Testar servidor: checa a conexão com o CoinGecko; 9. Notícias: últimas atualizações do mundo dos criptoativos.
+5. 100 Mais: procura os melhores ativos para investimento ('holding') dentre aqueles com maior capitalização; 6. Caça ao Tesouro: encontra os três melhores ativos dentre 100 aleatórios; 7. Procurar ativos: útil para descobrir o ID de alguma criptomoeda; 8. Registro: visualiza ou deleta o arquivo de registro; 9. Testar servidor: checa a conexão com o CoinGecko; 10. Notícias: últimas atualizações do mundo dos criptoativos.
 Visite a página do projeto e dê uma estrela: https://github.com/milodraco/cryptools
 Lembre-se: nenhum método garante o lucro, assim como nenhum elimina a possibilidade de prejuízo. Opere somente se estiver ciente dos riscos envolvidos e consulte um profissional em caso de dúvida.
 ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A NÃO SER QUE VOCÊ TENHA CERTEZA QUE SABE O QUE ESTÁ FAZENDO. NENHUM MÉTODO PODE GARANTIR O LUCRO."
@@ -1002,7 +1173,7 @@ ATENÇÃO! SAIBA QUE O TRADING ENVOLVE ALTO RISCO DE PREJUÍZO, NÃO NEGOCIE A N
       gets
     end
 
-  elsif $opt == 11 # EXIT
+  elsif $opt == 12 # SAIR **********************************************************
     file.close
     print "\n"
     fim = "Todo o registro foi salvo no arquivo 'cryptools.log'.
