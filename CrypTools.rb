@@ -15,6 +15,7 @@ require 'net/http'
 require 'openssl'
 require 'open-uri'
 require 'json'
+require 'cmath'
 
 # FUNÇÕES ****************************************************
 def title(s) # IMPRIMINDO TÍTULO
@@ -252,12 +253,17 @@ loop do # loop geral
     print "Insira uma opção: "
     $opt = gets.chomp.to_i
     if $opt == menu.length + 1
-      dev = true 
-      print "\n[Modo desenvolvedor ativado]
+      if dev == false
+        dev = true 
+        print "\n[Modo desenvolvedor ativado]
 Versão: #{versao}
 Plataforma: #{RUBY_PLATFORM}
 Data/hora: #{Time.now.asctime}
 API: #{$api.inspect}\n\n"
+      else
+        dev = false
+        print "\n[Modo desenvolvedor desativado]\n\n"
+      end
     end
     break if (1..menu.length).include?($opt)
   end
@@ -1073,9 +1079,17 @@ Inserir uma opção: "
         File.delete("cryptools.log")
         file = File.new("cryptools.log", 'a') # criando arquivo de log
         file.write("\nRegistros de #{"%02d" % time.day}/#{"%02d" % time.month}/#{time.year}, às #{"%02d" % time.hour}:#{"%02d" % time.min}:\n") # escrevendo cabeçalho com data e hora
-        file.close
         print "\n   [Arquivo deletado com sucesso]"
         gets
+      end
+      if File.exist?("error.log")
+        print "\nDeletar registro de erros? (s/n) "
+        sure = gets.chomp.upcase
+        if sure == "S"
+          File.delete("error.log")
+          print "\n   [Arquivo deletado com sucesso]"
+          gets
+        end
       end
     end
     else
