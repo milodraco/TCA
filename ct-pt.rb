@@ -1,4 +1,4 @@
-versao = 2.5
+versao = 2.6
 
 print "\n                              "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
@@ -719,7 +719,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         print "\n  > Resumo da hora:
     * Abertura: #{fnum(hour[0], 1)};    Fechamento: #{fnum(hour[-1], 1)}    (#{fnum(var, 2)})
     * Máxima: #{fnum(hour.max, 1)};    Mínima: #{fnum(hour.min, 1)}
-    * Média: #{fnum(media(hour)[0], 1)};    Mediana: #{fnum(media(hour)[1], 1)};    Meio: #{fnum(media(hour)[2], 2)}
+    * Média: #{fnum(media(hour)[0], 1)};    Mediana: #{fnum(media(hour)[1], 1)};    Meio: #{fnum(media(hour)[2], 1)}
     * Volume: $#{fnum(vol, 4)} (#{fnum(vvol, 2)})
     * Capitalização: $#{fnum(cap, 4)} (#{fnum(vcap, 2)})
     * Volatilidade: #{fnum(volat, 3)}%
@@ -729,7 +729,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     * Variação total: #{fnum(vtotal, 2)}"
         print "\n    * Sequência de #{seq.abs} horas" if seq.abs > 1
         if price <= zonas[1] # checando zonas de compra
-          print "\n    * ALERTA:    "
+          print "\n    * ALERTA: "
           if price <= zonas[1] && price > zonas[2]
             print "zona de compra 1 (entre -38.2% e -50% do topo)"
           elsif price <= zonas[2] && price > zonas[3]
@@ -740,7 +740,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
             print "zona morta (abaixo de -78.6% do topo)"
           end
         elsif price >= zonas[0]
-          print "\n    * ALERTA:    zona de venda (acima de -23.6% do topo)"
+          print "\n    * ALERTA: zona de venda (acima de -23.6% do topo)"
         end
         file.write("  #{n}. Valor do ativo #{ativo.capitalize} às #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variaração de #{fnum(var, 2)}, força+volume de #{fnum(fv, 2)})\n")
         print "\n\n  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
@@ -899,9 +899,8 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
 
     # LISTA DE ATIVOS COM ERRO
     errof = File.new("error.log", 'a+') # criando/lendo arquivo com lista de ativos que deram erro
-    erro = eval(errof.read)
+    erro = errof.read.chomp.strip.gsub("[", "").gsub("]", "").gsub(",", "").gsub("\"", "").split(" ") if erro.nil? == true
     errof.close
-
     erro = [] if erro == nil
     print "\nLista de ativos com erro: #{erro}\n" if dev == true
 
@@ -923,6 +922,10 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       erro.delete(ativo) # removendo ativo na lista de erro
       errof = File.new("error.log", 'w') # reabrindo arquivo no modo gravação
       errof.write(erro) # gravando lista de erro no arquivo
+      if value == nil || c365 == nil
+        print " -"
+        next
+      end
 
       # CÁLCULOS
       supp = (supc / sup.to_f) * 100 # percentual do suprimento
@@ -961,6 +964,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
       else
         score = (cresc * 1.1) + (scap * 2.1) - (volat - 5) - (moment * 1) # avaliação sem suprimento
       end
+      beep if score >= 20
 
       # PARCIAL
       list << [x[:name], x[:id], score] # adicionando todos os ativos
