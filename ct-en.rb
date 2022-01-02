@@ -765,7 +765,7 @@ Remember to set limits right after buying to control the trading risk.\n"
   elsif $opt == 5 
 
     # 100 MAIS **********************************************************
-    title("100 mais")
+    title("top 100")
     
     # API
     print "\n   [Importing List... "
