@@ -1,4 +1,4 @@
-versao = 2.6
+versao = 2.7
 
 print "\n                              "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
@@ -873,7 +873,7 @@ Remember to set limits right after buying to control the trading risk.\n"
     print "\nBest assets for holding:"
     file.write("  #{n}. Best assets for holding:")
     best.each do |z|
-      print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)}"
+      print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)} (https://www.coingecko.com/en/coins/#{z[1]})"
       file.write(" #{best.index(z) + 1}. #{z[0]} (#{fnum(z[2], 3)});")
       sleep 0.1
     end
@@ -1001,7 +1001,7 @@ Remember to set limits right after buying to control the trading risk.\n"
     print "\n\nTreasure found:"
     file.write("  #{n}. Treasure found:")
     best.each do |z|
-      print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)}"
+      print "\n  #{best.index(z) + 1}. #{z[0]} (#{z[1]}): #{fnum(z[2], 3)} (https://www.coingecko.com/en/coins/#{z[1]})"
       file.write(" #{best.index(z) + 1}. #{z[0]} (#{fnum(z[2], 3)});")
       sleep 0.1
     end
@@ -1036,7 +1036,7 @@ Remember to set limits right after buying to control the trading risk.\n"
         symbol = list[x][:symbol] # símbolo do ativo
         if name.downcase.include?(search.downcase) || symbol.downcase.include?(search.downcase) # checando se há correspondência
           beep if dev == true # alerta sonoro para o modo dev
-          print "\n  #{found}. #{name} (#{symbol}): #{id}"
+          print "\n  #{found}. #{name} (#{symbol}): #{id} (https://www.coingecko.com/en/coins/#{id})"
           found += 1
           sleep 0.1
         end
@@ -1136,7 +1136,7 @@ Enter an option: "
     title("news")
 
     sleep 0.1
-    print "\n   [Importing news...]\n"
+    print "\n   [Importing news..."
     url = URI("https://coingecko.p.rapidapi.com/status_updates")
     http = Net::HTTP.new(url.host, url.port)
     http.use_ssl = true
@@ -1145,19 +1145,26 @@ Enter an option: "
     request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
     request["x-rapidapi-key"] = $api
     response = http.request(request)
+    print " OK]\n"
 
+    print "\nType search term or press ENTER for all news: "
+    search = gets.chomp.downcase # palavra para pesquisa
     num = 1
     JSON.parse(response.read_body)["status_updates"].each do |x|
-      cal = "#{x["created_at"][8..9]}/#{x["created_at"][5..6]}/#{x["created_at"][0..3]}" # data no calendário
-      print "\n#{num} of #{JSON.parse(response.read_body)["status_updates"].length}:___________________________________________________________#{cal}\n"
-      x["description"].split("\r").each do |y|
-        print y
-        sleep 0.05
+      if x["description"].downcase.include?(search)
+        cal = "#{x["created_at"][5..6]}/#{x["created_at"][8..9]}/#{x["created_at"][0..3]}" # data no calendário
+        print "\n#{num} of #{JSON.parse(response.read_body)["status_updates"].length}:___________________________________________________________#{cal}\n"
+        x["description"].split("\r").each do |y|
+          print y
+          sleep 0.05
+        end
+        print "\n"
+        gets
       end
       num += 1
-      print "\n"
-      gets
     end
+    print "\n   [News finished]"
+    gets
 
   elsif $opt == 11 
 
