@@ -1016,7 +1016,7 @@ Remember to set limits right after buying to control the trading risk.\n"
   elsif $opt == 7 
 
     # PESQUISA DE ATIVOS **********************************************************
-    title("pesquisa")
+    title("search")
 
     list = listar # lista de todos os ativos
     loop do # loop de pesquisa
@@ -1102,7 +1102,7 @@ Enter an option: "
   elsif $opt == 9 
 
     # TESTANDO SERVIDOR
-    title("testar servidor")
+    title("check server")
     
     sleep 0.1
     print "\n   [Checking connection...]\n"
@@ -1162,7 +1162,7 @@ Enter an option: "
   elsif $opt == 11 
 
     # AJUDA **********************************************************
-    title("ajuda")
+    title("help")
     print "\n"
 
     tutorial = "General instructions: run the file '.rb' in Linux terminal or other OS and enter the desired transaction information. Linux example: if the file is in your home folder, just open the terminal and type 'ruby ct-en.rb'. If you need more information about cryptocurrencies, go to the sites below:
