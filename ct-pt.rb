@@ -1212,3 +1212,6 @@ Lembre-se: é recomendável que se consulte um profissional antes de fazer qualq
 
   end # if das opções
 end # loop geral
+
+# adicionar $ nas moedas
+# adicionar procura no registro
