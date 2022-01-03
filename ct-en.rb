@@ -1152,7 +1152,7 @@ Enter an option: "
     num = 1
     JSON.parse(response.read_body)["status_updates"].each do |x|
       if x["description"].downcase.include?(search)
-        cal = "#{x["created_at"][5..6]}/#{x["created_at"][8..9]}/#{x["created_at"][0..3]}" # data no calendário
+        cal = "#{x["created_at"][5..6]}-#{x["created_at"][8..9]}-#{x["created_at"][0..3]}" # data no calendário
         print "\n#{num} of #{JSON.parse(response.read_body)["status_updates"].length}:___________________________________________________________#{cal}\n"
         x["description"].split("\r").each do |y|
           print y
@@ -1173,12 +1173,12 @@ Enter an option: "
     print "\n"
 
     tutorial = "General instructions: run the file '.rb' in Linux terminal or other OS and enter the desired transaction information. Linux example: if the file is in your home folder, just open the terminal and type 'ruby ct-en.rb'. If you need more information about cryptocurrencies, go to the sites below:
-https://www.infomoney.com.br/guias/criptomoedas/ https://economia.uol.com.br/faq/criptomoedas-o-que-e-como-funciona-bitcoin-e-mais.htm https://www.forbes.com/advisor/investing/what-is-cryptocurrency/
+https://www.infomoney.com.br/guias/criptomoedas/    https://economia.uol.com.br/faq/criptomoedas-o-que-e-como-funciona-bitcoin-e-mais.htm    https://www.forbes.com/advisor/investing/what-is-cryptocurrency/
 If you are not registered with any cryptocurrency exchange, consider registering with Binance, one of the largest exchanges in the world: https://accounts.binance.me/pt-BR/register?ref=M7Y0CB4O
 1. Holding: the algorithm evaluates a given crypto-asset, helping the user to decide whether to invest for long-term profit. Ideal for 'savings' and 'earnings' and 'stakings'.
 1.1 Subtitles: a) Value: unit value of the asset; b) Market capitalization: market cap; c) Supply: outstanding supply and total supply; d) Buying zone: ideal price range for purchase according to Fibonacci Retraction; e) Momentum valuation: current value evaluation according to the buying zone.
 2. Trading: the algorithm stipulates signals for swing trading. Ideal for experienced traders who are used to trading. Keep in mind that trading involves high risk of financial loss, use this algorithm at your own risk. Instructions: Enter all data correctly. When analyzing the chart, you need to view candles with a 1 hour interval. If you see that the minimum of consecutive negative candles has been reached, check whether the current value of the cryptocurrency is within one of the buy zones. If so, wait until the asset value approaches support or a reversal candlestick pattern appears before buying. Examples of reversal candlestick patterns: Dragonfly Doji, Hammer and Tweezer Bottom. If you want to learn more about Japanese candles, click on the sites below:
-https://www.financebrokerage.com/pt-br/padroes-de-graficos/ https://www.investirnabolsa.com/curso-cfd/velas-japonesas/ https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/
+https://www.financebrokerage.com/pt-br/padroes-de-graficos/    https://www.investirnabolsa.com/curso-cfd/velas-japonesas/    https://www.forex.com/en-us/market-analysis/latest-research/japanese-candlestick-patterns-cheat-sheet-fx/
 2.1 Subtitles: a) Quarterly average: average of all values in the last quarter; b) Median: value in the center of all values in the quarter's history; c) Middle: average between the quarter's maximum and minimum; d) Buying zones: best buying zones according to Fibonacci Retracement.
 3. Stops: calculates the limits of gain and loss of a trade, as well as the possible profit and loss risk. The suggestion is to apply the strategy according to the zone in which the asset was at the moment of purchase: 'bold' for zone 1, 'aggressive' for zone 2 and 'berserk' for zone 3.
 3.1 Subtitles: a) Stop-gain: moment of selling at a profit; b) Stop-loss: moment of selling at a loss; c) Absolute profit: possibility of profit in absolute amount, in case the gain limit is reached; d) Amount at risk: amount at risk of loss, in case the loss limit is reached.
