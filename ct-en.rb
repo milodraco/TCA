@@ -1,12 +1,12 @@
-versao = 2.7
+versao = 2.8
 
-print "\n                              "
+print "\n                                "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
   print l
   sleep 0.05
 end
 sleep 0.3
-print "\n                                by Milo_Draco\n"
+print "\n                                  by Milo_Draco\n"
 dev = false # modo desenvolvedor
 
 # REQUERIMENTOS **********************************************
@@ -219,7 +219,7 @@ while $api == "" || $api == nil
   print "\nERROR: API KEY NOT FOUND!
 
 Instructions: register at one of the sites below to obtain a CoinGecko API key:
-https://www.coingecko.com/pt/api    https://rapidapi.com/coingecko/api/coingecko
+https://www.coingecko.com/en/api    https://rapidapi.com/coingecko/api/coingecko
 
 After obtaining the key, paste it here: "
   $api = gets.chomp.strip
@@ -1036,7 +1036,7 @@ Remember to set limits right after buying to control the trading risk.\n"
         symbol = list[x][:symbol] # símbolo do ativo
         if name.downcase.include?(search.downcase) || symbol.downcase.include?(search.downcase) # checando se há correspondência
           beep if dev == true # alerta sonoro para o modo dev
-          print "\n  #{found}. #{name} (#{symbol}): #{id} (https://www.coingecko.com/en/coins/#{id})"
+          print "\n  #{found}. #{name} ($#{symbol}): #{id} (https://www.coingecko.com/en/coins/#{id})"
           found += 1
           sleep 0.1
         end
@@ -1070,10 +1070,17 @@ Enter an option: "
     print "\n"
     if opt == 1 # ler registro
     log = File.open("cryptools.log") # lendo arquivo de log
+    print "Enter the search term or press ENTER for the entire record: "
+    search = gets.chomp.downcase # palavra para pesquisa
+    print "\n"
     log.read.split("\n\n").reverse.each do |l|
-      puts l
-      gets
+      if l.downcase.include?(search)
+        puts l
+        gets
+      end
     end
+    print "\n   [End of log]"
+    gets
     elsif opt == 2 # apagar registro
       print "Delete log file? (y/n) "
       sure = gets.chomp.upcase

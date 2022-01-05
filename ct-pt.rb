@@ -1,12 +1,12 @@
-versao = 2.7
+versao = 2.8
 
-print "\n                              "
+print "\n                                "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
   print l
   sleep 0.05
 end
 sleep 0.3
-print "\n                               por Milo_Draco\n"
+print "\n                                 por Milo_Draco\n"
 dev = false # modo desenvolvedor
 
 # REQUERIMENTOS **********************************************
@@ -241,7 +241,7 @@ loop do # loop geral
   # MENU INICIAL **********************************************************
   title("menu")
   print "\n"
-  menu = ["Investimento ('holding')", "Negociação ('trading')", "Limites ('stops')", "Monitor", "100 Mais", "Caça ao tesouro", "Procurar ativos", "Registro", "Testar servidor", "Notícias (inglês)", "Ajuda", "Sair"]
+  menu = ["Investimento ('holding')", "Negociação ('trading')", "Limites ('stops')", "Monitor", "100 mais", "Caça ao tesouro", "Procurar ativos", "Registro", "Testar servidor", "Notícias (inglês)", "Ajuda", "Sair"]
   menu.each do |l|
     print "  #{menu.index(l) + 1}. #{l}\n"
     sleep 0.05
@@ -1036,7 +1036,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
         symbol = list[x][:symbol] # símbolo do ativo
         if name.downcase.include?(search.downcase) || symbol.downcase.include?(search.downcase) # checando se há correspondência
           beep if dev == true # alerta sonoro para o modo dev
-          print "\n  #{found}. #{name} (#{symbol}): #{id} (https://www.coingecko.com/pt/moedas/#{id})"
+          print "\n  #{found}. #{name} ($#{symbol}): #{id} (https://www.coingecko.com/pt/moedas/#{id})"
           found += 1
           sleep 0.1
         end
@@ -1070,10 +1070,17 @@ Inserir uma opção: "
     print "\n"
     if opt == 1 # ler registro
     log = File.open("cryptools.log") # lendo arquivo de log
+    print "Insira o termo para pesquisa ou pressione ENTER para o registro completo:\n"
+    search = gets.chomp.downcase # palavra para pesquisa
+    print "\n"
     log.read.split("\n\n").reverse.each do |l|
-      puts l
-      gets
+      if l.downcase.include?(search)
+        puts l
+        gets
+      end
     end
+    print "\n   [Fim do registro]"
+    gets
     elsif opt == 2 # apagar registro
       print "Deletar arquivo de registro? (s/n) "
       sure = gets.chomp.upcase
@@ -1148,7 +1155,7 @@ Inserir uma opção: "
     print " OK]\n"
 
     print "\nInsira o termo para pesquisa ou pressione ENTER para todas as notícias:\n"
-    search = gets.chomp.downcase # palavra para pesquisa    
+    search = gets.chomp.downcase # palavra para pesquisa
     num = 1
     JSON.parse(response.read_body)["status_updates"].each do |x|
       if x["description"].downcase.include?(search)
@@ -1212,6 +1219,3 @@ Lembre-se: é recomendável que se consulte um profissional antes de fazer qualq
 
   end # if das opções
 end # loop geral
-
-# adicionar $ nas moedas
-# adicionar procura no registro
