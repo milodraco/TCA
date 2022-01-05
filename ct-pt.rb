@@ -363,6 +363,7 @@ API: #{$api.inspect}\n\n"
   * AVALIAÇÃO FINAL: "
       print ava(score, 30, 1)
       print " (#{fnum(score, 3)})\n"
+      print "\nALERTA: histórico do ativo é menor do que 12 meses!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
 
       # GRAVAÇÃO E LOOP
       file.write("  #{n}. Investimento no ativo #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
@@ -455,6 +456,7 @@ API: #{$api.inspect}\n\n"
       2.3 A vela da hora seguinte possui padrão de reversão (libélula, martelo etc.);
 
 Lembre-se de definir os limites logo após a compra para controlar o risco da negociação.\n"
+      print "\nALERTA: histórico do ativo é menor do que 3 meses!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
       n += 1
       print "\nCalcular outra negociação? (s/n) "
       lp = gets.chomp.upcase

@@ -363,6 +363,7 @@ API: #{$api.inspect}\n\n"
   * FINAL VALUATION: "
       print ava(score, 30, 1)
       print " (#{fnum(score, 3)})\n"
+      print "\nALERT: asset history is less than 12 months!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
 
       # GRAVAÇÃO E LOOP
       file.write("  #{n}. Holding of asset #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
@@ -455,6 +456,7 @@ API: #{$api.inspect}\n\n"
       2.3 The candlestick of the next hour has a reversal pattern (dragonfly, hammer, etc.);
 
 Remember to set limits right after buying to control the trading risk.\n"
+      print "\nALERT: asset history is less than 3 months!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
       n += 1
       print "\nCalculate another trade? (y/n) "
       lp = gets.chomp.upcase
