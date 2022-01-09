@@ -796,7 +796,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     print "\n   [Aguarde alguns minutos...]\n"
     JSON.parse(response.read_body).take(q).reverse.each do |x|
       ativo = x["id"] # ID do ativo
-      next if ativo.include?("usd") # pulando as lastreadas no dólar
+      next if ativo.include?("usd") || ativo.include?("dollar") || ativo == "tether" # pulando as lastreadas no dólar
       print "\n#{num + 1}. #{ativo.capitalize}:" if dev == true # imprimindo lista no modo dev
       dados = data(ativo, false) # dados do ativo
       c365 = chart(ativo, 365, false) # histórico anual
@@ -908,7 +908,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
 
     bau.reverse.each do |x|
       ativo = x[:id] # ID do ativo
-      next if ativo.include?("usd") || erro.include?(ativo) # pulando as lastreadas no dólar ou com erro
+      next if ativo.include?("usd") || ativo.include?("dollar") || ativo == "tether" || erro.include?(ativo) # pulando as lastreadas no dólar ou com erro
       erro << ativo # inserindo ativo na lista de erro
       File.delete("error.log") # deletando arquivo
       errof = File.new("error.log", 'w') # reabrindo arquivo no modo gravação
