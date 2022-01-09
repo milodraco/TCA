@@ -1,4 +1,4 @@
-versao = 2.8
+versao = 2.9
 
 print "\n                                "
 ("CrypTools v. " + versao.to_s).split("").each do |l|
@@ -48,16 +48,20 @@ def beep # SOM DE BIPE
   end
 end
 
-def listar # LISTA DE TODOS OS ATIVOS
-  print "\n   [Importando lista de ativos... "
-  url = URI("https://coingecko.p.rapidapi.com/coins/list") # API
+def apidata(u)
+  url = URI(u)
   http = Net::HTTP.new(url.host, url.port)
   http.use_ssl = true
   http.verify_mode = OpenSSL::SSL::VERIFY_NONE
   request = Net::HTTP::Get.new(url)
   request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
   request["x-rapidapi-key"] = $api
-  response = http.request(request)
+  return http.request(request)
+end
+
+def listar # LISTA DE TODOS OS ATIVOS
+  print "\n   [Importando lista de ativos... "
+  response = apidata("https://coingecko.p.rapidapi.com/coins/list")
   if eval(response.read_body) == nil || response.read_body.include?("error")
     print "erro]\n" # erro em caso de retorno vazio
     gets
@@ -69,14 +73,7 @@ end
 
 def data(a, p) # DADOS DO CRIPTOATIVO
   print "   [Importando dados do ativo... " if p == true
-  url = URI("https://coingecko.p.rapidapi.com/coins/" + a)
-  http = Net::HTTP.new(url.host, url.port)
-  http.use_ssl = true
-  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-  request = Net::HTTP::Get.new(url)
-  request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-  request["x-rapidapi-key"] = $api
-  response = http.request(request)
+  response = apidata("https://coingecko.p.rapidapi.com/coins/" + a)
   if JSON.parse(response.read_body) == nil || response.read_body.include?("error")
     print "\n\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
     gets
@@ -149,14 +146,7 @@ end
 
 def chart(a, d, p) # HISTÓRICO DO ATIVO
   print "   [Importando histórico de ", d, " dias... " if p == true
-  url = URI("https://coingecko.p.rapidapi.com/coins/" + a + "/market_chart?vs_currency=usd&days=" + d.to_s)
-  http = Net::HTTP.new(url.host, url.port)
-  http.use_ssl = true
-  http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-  request = Net::HTTP::Get.new(url)
-  request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-  request["x-rapidapi-key"] = $api
-  response = http.request(request)
+  response = apidata("https://coingecko.p.rapidapi.com/coins/" + a + "/market_chart?vs_currency=usd&days=" + d.to_s)
   if eval(response.read_body)[:prices] == nil || response.read_body.include?("error")
     print "\n\nERRO: ATIVO NÃO ENCONTRADO!\n" # erro em caso de retorno vazio
     gets
@@ -199,17 +189,6 @@ def ava(s, b, o) # AVALIAÇÃO DE SCORE
     end
   end
   return x
-end
-
-# INTERNET ***************************************************
-print "\n[Checando conexão... "
-if internet? == false # erro de conexão
-  print "erro]\n\n"
-  sleep 1
-  exit
-else
-  print "OK]\n"
-  beep
 end
 
 # API ********************************************************
@@ -771,14 +750,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     
     # API
     print "\n   [Importando lista... "
-    url = URI("https://coingecko.p.rapidapi.com/coins/markets?vs_currency=usd&page=1&per_page=100&order=market_cap_desc")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-    request["x-rapidapi-key"] = $api
-    response = http.request(request)
+    response = apidata("https://coingecko.p.rapidapi.com/coins/markets?vs_currency=usd&page=1&per_page=100&order=market_cap_desc")
     print "#{JSON.parse(response.read_body).length} entradas]\n"
 
     # INPUTS
@@ -906,7 +878,7 @@ Lembre-se de definir os limites logo após a compra para controlar o risco da ne
     erro = [] if erro == nil
     print "\nLista de ativos com erro: #{erro}\n" if dev == true
 
-    bau.reverse.each do |x|
+    bau.each do |x|
       ativo = x[:id] # ID do ativo
       next if ativo.include?("usd") || ativo.include?("dollar") || ativo == "tether" || erro.include?(ativo) # pulando as lastreadas no dólar ou com erro
       erro << ativo # inserindo ativo na lista de erro
@@ -1123,14 +1095,7 @@ Inserir uma opção: "
     end
 
     ping1 = Time.now
-    url = URI("https://coingecko.p.rapidapi.com/ping")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-    request["x-rapidapi-key"] = $api
-    response = http.request(request)
+    response = apidata("https://coingecko.p.rapidapi.com/ping")
     ping2 = Time.now
     ping = ping2 - ping1
 
@@ -1146,15 +1111,14 @@ Inserir uma opção: "
 
     sleep 0.1
     print "\n   [Importando notícias..."
-    url = URI("https://coingecko.p.rapidapi.com/status_updates")
-    http = Net::HTTP.new(url.host, url.port)
-    http.use_ssl = true
-    http.verify_mode = OpenSSL::SSL::VERIFY_NONE
-    request = Net::HTTP::Get.new(url)
-    request["x-rapidapi-host"] = 'coingecko.p.rapidapi.com'
-    request["x-rapidapi-key"] = $api
-    response = http.request(request)
-    print " OK]\n"
+    response = apidata("https://coingecko.p.rapidapi.com/status_updates")
+    if response.read_body == nil || response.read_body == "" || response.read_body.downcase.include?("error") || response.read_body.downcase.include?("invalid")
+      print "\nERRO: NOTÍCIAS NÃO IMPORTADAS!\n"
+      gets
+      exit
+    else 
+      print " OK]\n"
+    end
 
     print "\nInsira o termo para pesquisa ou pressione ENTER para todas as notícias:\n"
     search = gets.chomp.downcase # palavra para pesquisa
