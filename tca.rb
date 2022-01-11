@@ -391,7 +391,7 @@ Remember to set stops right after buying to control the trading risk.\n"
   * Absolute profit: #{fnum(lucro, 1)}
   * Amount at risk: #{fnum(risk, 1)}\n"
       print "\nWARNING: risk far outweighs profit!\n" if lucro < risk / 1.5
-      log.write("  #{n}. Stops for (#{sperfil[perfil - 1]}): stop-gain in #{fnum(sg, 1)} (+#{fnum(gainp * 100, 2)}), stop-loss in #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)}), profit of #{fnum(lucro, 1)} and risk of #{fnum(risk, 1)}\n") # escrevendo log
+      log.write("  #{n}. Stops for #{ativo.capitalize} (#{sperfil[perfil - 1]}): stop-gain in #{fnum(sg, 1)} (+#{fnum(gainp * 100, 2)}), stop-loss in #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)}), profit of #{fnum(lucro, 1)} and risk of #{fnum(risk, 1)}\n") # escrevendo log
       n += 1
       print "\nCalculate other stops? (y/n) "
       lp = gets.chomp.upcase
