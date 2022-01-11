@@ -1,4 +1,4 @@
-$error = Logger.new('error.log', 'monthly')
+$error = Logger.new('errors.log', 'monthly')
 
 def title(s) # IMPRIMINDO TÍTULO
   print "\n"
