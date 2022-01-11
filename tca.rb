@@ -50,7 +50,7 @@ Version: #{versao}
 Platform: #{RUBY_PLATFORM}
 Date/time: #{Time.now.asctime}
 Path: #{Dir.pwd.inspect}
-API: #{$api.inspect}\n\n"
+API: #{$api}\n\n"
       else
         dev = false
         print "\n[Developer mode disabled]\n\n"
@@ -142,7 +142,7 @@ API: #{$api.inspect}\n\n"
         print " (#{fnum(ssup, 3)})\n"
       end
       print "  * Annual variation: #{fnum(var365, 2)}
-  * Annual valuation: "
+  * Variation valuation: "
       print ava(cresc, 10, 1)
       print " (#{fnum(cresc, 3)})
   * Volatility valuation: "
@@ -155,7 +155,7 @@ API: #{$api.inspect}\n\n"
   * FINAL VALUATION: "
       print ava(score, 30, 1)
       print " (#{fnum(score, 3)})\n"
-      print "\nALERT: asset history is less than 12 months!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
+      print "\nWARNING: asset history is less than 12 months!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
 
       # GRAVAÇÃO E LOOP
       log.write("  #{n}. Holding of asset #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
@@ -229,16 +229,16 @@ API: #{$api.inspect}\n\n"
       print "\n  * Asset (ID): #{ativo.capitalize}
   * Price: #{fnum(value, 1)}
   * Quarterly average: #{fnum(media(c90[:prices])[0], 1)};    Median: #{fnum(media(c90[:prices])[1], 1)};    Middle: #{fnum(media(c90[:prices])[2], 1)}
-  * Profit probability:   "
+  * Profit probability: "
       print ava(chance, 60, 1)
       print " (#{fnum(chance, 3)}%)
   * Volatility:   "
       print ava(volat, 100, 2)
       print " (#{fnum(volat, 3)}%)"
       print "\n  * Buying zones:
-    - Zone 1: #{fnum(zonas[1], 1)} a #{fnum(zonas[0], 1)}
-    - Zone 2: #{fnum(zonas[2], 1)} a #{fnum(zonas[1], 1)}
-    - Zone 3: #{fnum(zonas[3], 1)} a #{fnum(zonas[2], 1)}\n"
+    - Zone 1: #{fnum(zonas[1], 1)} to #{fnum(zonas[0], 1)}
+    - Zone 2: #{fnum(zonas[2], 1)} to #{fnum(zonas[1], 1)}
+    - Zone 3: #{fnum(zonas[3], 1)} to #{fnum(zonas[2], 1)}\n"
       log.write("  #{n}. Signal for #{ativo}: #{seq} hours (chance of #{fnum(chance, 2)}), zone 1: from #{fnum(zonas[1], 1)} to #{fnum(zonas[0], 1)}, zone 2: from #{fnum(zonas[2], 1)} to #{fnum(zonas[1], 1)}, zone 3: from #{fnum(zonas[3], 1)} to #{fnum(zonas[2], 1)}\n") # escrevendo log
       print "  * Signal:
     1. Wait for #{seq} consecutive hours negative candlesticks;
@@ -247,8 +247,8 @@ API: #{$api.inspect}\n\n"
       2.2 Some support has been reached and the hour after sequence has closed in positive;
       2.3 The candlestick of the next hour has a reversal pattern (dragonfly, hammer, etc.);
 
-Remember to set limits right after buying to control the trading risk.\n"
-      print "\nALERT: asset history is less than 3 months!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
+Remember to set stops right after buying to control the trading risk.\n"
+      print "\nWARNING: asset history is less than 3 months!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
       n += 1
       print "\nCalculate another trade? (y/n) "
       lp = gets.chomp.upcase
@@ -274,7 +274,7 @@ Remember to set limits right after buying to control the trading risk.\n"
       else
         resgat = false
       end
-      print "\n  3. Use the values from the last calculated trade (#{$ativo.capitalize})?\n" if resgat == true
+      print "\n  3. Use the values from the last calculated trade (#{$ativo.capitalize})?" if resgat == true
       print "\n\nEnter option: "
       opt = gets.chomp.to_i # opção inserida
       if resgat == true # número de opções para mostrar?
@@ -390,7 +390,7 @@ Remember to set limits right after buying to control the trading risk.\n"
     2. Stop-loss: #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)})
   * Absolute profit: #{fnum(lucro, 1)}
   * Amount at risk: #{fnum(risk, 1)}\n"
-      print "\nALERT: risk far outweighs profit!\n" if lucro < risk / 1.5
+      print "\nWARNING: risk far outweighs profit!\n" if lucro < risk / 1.5
       log.write("  #{n}. Stops for (#{sperfil[perfil - 1]}): stop-gain in #{fnum(sg, 1)} (+#{fnum(gainp * 100, 2)}), stop-loss in #{fnum(sl, 1)} (#{fnum(lossp * 100, 2)}), profit of #{fnum(lucro, 1)} and risk of #{fnum(risk, 1)}\n") # escrevendo log
       n += 1
       print "\nCalculate other stops? (y/n) "
@@ -523,7 +523,7 @@ Remember to set limits right after buying to control the trading risk.\n"
     * Total variance: #{fnum(vtotal, 2)}"
         print "\n    * Sequence of #{seq.abs} hours" if seq.abs > 1
         if price <= zonas[1] # checando zonas de compra
-          print "\n    * ALERT: "
+          print "\n    * WARNING: "
           if price <= zonas[1] && price > zonas[2]
             print "buying zone 1 (between -38.2% and -50% from the top)"
           elsif price <= zonas[2] && price > zonas[3]
@@ -534,7 +534,7 @@ Remember to set limits right after buying to control the trading risk.\n"
             print "dead zone (below -78.6% from the top)"
           end
         elsif price >= zonas[0]
-          print "\n    * ALERT: selling zone (above -23.6% top)"
+          print "\n    * WARNING: selling zone (above -23.6% top)"
         end
         log.write("  #{n}. Asset value #{ativo.capitalize} at #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variance of #{fnum(var, 2)}, strength+volume of #{fnum(fv, 2)})\n")
         print "\n\n  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
@@ -689,7 +689,7 @@ Remember to set limits right after buying to control the trading risk.\n"
     bypass = bypassf.read.chomp.strip.gsub("\"", "").split(" ") if bypass.nil? == true # separando e corrigindo arranjo
     bypassf.close # fechando arquivo de bypass
     bypass = [] if bypass == nil # arranjo vazio em caso de valor vazio
-    print "\nList of assets with error: #{bypass}\n" if dev == true
+    print "\nBypassed assets: #{bypass}\n" if dev == true
 
     bau.each do |x|
       ativo = x[:id] # ID do ativo
@@ -880,7 +880,7 @@ Enter an option: "
         gets
       end
       if File.exist?("bypass.log")
-        print "\nDelete log of assets to bypass ('bypass.log')? (y/n) "
+        print "\nDelete log of bypassed assets ('bypass.log')? (y/n) "
         sure = gets.chomp.upcase
         if sure == "Y"
           File.delete("bypass.log")
@@ -971,7 +971,7 @@ Enter an option: "
   elsif $opt == 12 # SAIR **********************************************************
     log.close # fechando arquivo de log
     print "\n"
-    fim = "The entire log was saved to the file 'records.log'.
+    fim = "The entire log was saved into the file 'records.log'.
 Remember: it is recommended to consult a professional before making any investment. See you later!\n"
     fim.split("\n").each do |l|
       print l + "\n"
@@ -984,5 +984,5 @@ Remember: it is recommended to consult a professional before making any investme
 end # loop geral
 
 =begin
-Aprimorar o salvamento do arranjo no modo Caça ao Tesouro  
+Acrescentar o volume no cálculo de trading.
 =end
