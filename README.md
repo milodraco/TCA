@@ -1,4 +1,4 @@
-TCA (Text-based Cryptocurrency Analyzer)
+Text-based Cryptocurrency Analyzer (TCA)
 
 Written by Milo_Draco
 
