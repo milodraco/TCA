@@ -1,4 +1,5 @@
-CrypTools
+TCA (Text-based Cryptocurrency Analyzer)
+
 Written by Milo_Draco
 
 Algorithm to help trading with cryptocurrencies.
