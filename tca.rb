@@ -3,9 +3,9 @@ versao = 3.0
 print "\n                "
 ("Text-based Cryptocurrency Analyzer (TCA) - v. " + versao.to_s).split("").each do |l|
   print l
-  sleep 0.05
+  sleep 0.02
 end
-sleep 0.3
+sleep 0.5
 print "\n                                  by Milo_Draco\n"
 dev = false # modo desenvolvedor
 
@@ -19,7 +19,7 @@ require 'logger'
 require Dir.pwd + '/api.rb'
 require Dir.pwd + '/functions.rb'
 
-# CRIANDO ARQUIVOS DE LOG **************************************
+# CRIANDO ARQUIVO DE LOG **************************************
 log = File.new("records.log", 'a') # criando arquivo de log
 time = Time.now # data e hora atual
 log.write("\nRecords of #{"%02d" % time.month}-#{"%02d" % time.day}-#{time.year}, at #{"%02d" % time.hour}:#{"%02d" % time.min}:\n") # escrevendo cabeçalho com data e hora
@@ -49,6 +49,7 @@ loop do # loop geral
 Version: #{versao}
 Platform: #{RUBY_PLATFORM}
 Date/time: #{Time.now.asctime}
+Path: #{Dir.pwd.inspect}
 API: #{$api.inspect}\n\n"
       else
         dev = false
@@ -685,9 +686,9 @@ Remember to set limits right after buying to control the trading risk.\n"
 
     # LISTA DE ATIVOS COM ERRO
     bypassf = File.new("bypass.log", 'a+') # criando/lendo arquivo com lista de ativos que deram erro
-    bypass = bypassf.read.chomp.strip.gsub("[", "").gsub("]", "").gsub(",", "").gsub("\"", "").split(" ") if bypass.nil? == true
-    bypassf.close
-    bypass = [] if bypass == nil
+    bypass = bypassf.read.chomp.strip.gsub("\"", "").split(" ") if bypass.nil? == true # separando e corrigindo arranjo
+    bypassf.close # fechando arquivo de bypass
+    bypass = [] if bypass == nil # arranjo vazio em caso de valor vazio
     print "\nList of assets with error: #{bypass}\n" if dev == true
 
     bau.each do |x|
@@ -696,7 +697,7 @@ Remember to set limits right after buying to control the trading risk.\n"
       bypass << ativo # inserindo ativo na lista de erro
       File.delete("bypass.log") # deletando arquivo
       bypassf = File.new("bypass.log", 'w') # reabrindo arquivo no modo gravação
-      bypassf.write(bypass) # gravando lista de erro no arquivo
+      bypassf.write(bypass.to_s.tr('[],', '')) # gravando lista de erro no arquivo
       print "\n  #{num + 1}. #{ativo.capitalize}:"
       dados = data(ativo, false) # dados do ativo
       c365 = chart(ativo, 365, false) # histórico anual
@@ -707,9 +708,10 @@ Remember to set limits right after buying to control the trading risk.\n"
       supc = dados["circulating_supply"] # suprimento em circulação
       bypass.delete(ativo) # removendo ativo na lista de erro
       bypassf = File.new("bypass.log", 'w') # reabrindo arquivo no modo gravação
-      bypassf.write(bypass) # gravando lista de erro no arquivo
-      if value == nil || c365 == nil
-        print " -"
+      bypassf.write(bypass.to_s.tr('[],', '')) # gravando lista de erro no arquivo
+      num += 1 # contador
+      if value == nil || c365 == nil || c365[:prices].length < 90 # pulando em caso de valor vazio, histórico vazio ou menor que 90 dias
+        print " --"
         next
       end
 
@@ -750,7 +752,7 @@ Remember to set limits right after buying to control the trading risk.\n"
       else
         score = (cresc * 1.1) + (scap * 2.1) - (volat - 5) - (moment * 1) # avaliação sem suprimento
       end
-      beep if score >= 20
+      beep if score >= 20 && c365[:prices].length >= 364 # bipe em caso de score 20
 
       # PARCIAL
       list << [x[:name], x[:id], score] # adicionando todos os ativos
@@ -765,11 +767,10 @@ Remember to set limits right after buying to control the trading risk.\n"
         end
       end
       if dev == true
-        print " #{score}" 
+        print " #{score} (#{c365[:prices].length} inputs)" # pontuação do ativo
       else
         print " #{fnum(score, 3)}"
       end
-      num += 1
     end
     best = best.take(3) if best.length > 3
 
@@ -868,7 +869,7 @@ Enter an option: "
     print "\n   [End of log]"
     gets
     elsif opt == 2 # apagar registro
-      print "Delete log file? (y/n) "
+      print "Delete log file ('records.log')? (y/n) "
       sure = gets.chomp.upcase
       if sure == "Y"
         log.close
@@ -879,7 +880,7 @@ Enter an option: "
         gets
       end
       if File.exist?("bypass.log")
-        print "\nDelete log of assets with error? (y/n) "
+        print "\nDelete log of assets to bypass ('bypass.log')? (y/n) "
         sure = gets.chomp.upcase
         if sure == "Y"
           File.delete("bypass.log")
@@ -912,7 +913,7 @@ Enter an option: "
     ping = ping2 - ping1
 
     print "\n  * Connection: #{link}
-  * Message: #{eval(response.read_body).shift[-1]}
+  * Message: #{eval(response.read_body).shift[-1].inspect}
   * Ping: #{fnum(ping, 3)} second(s)\n"
     sleep 2
 
@@ -924,8 +925,9 @@ Enter an option: "
     sleep 0.1
     print "\n   [Importing news..."
     response = apidata("https://coingecko.p.rapidapi.com/status_updates")
-    if response.read_body == nil || response.read_body == "" || response.read_body.downcase.include?("error") || response.read_body.downcase.include?("invalid")
-      print "\nERROR: NEWS NOT IMPORTED!\n"
+    if response.read_body == nil || response.read_body == "" || JSON.parse(response.read_body)["status_updates"] == nil || JSON.parse(response.read_body)["status_updates"] == []
+      print "\nERROR: NEWS NOT IMPORTED!\n" # erro em caso de não receber notícias
+      $error.debug(response.read_body) # escrevendo a resposta da API no log de erros
       gets
       exit
     else 
@@ -943,7 +945,6 @@ Enter an option: "
           print y
           sleep 0.05
         end
-        print "\n"
         gets
       end
       num += 1
@@ -983,7 +984,5 @@ Remember: it is recommended to consult a professional before making any investme
 end # loop geral
 
 =begin
-Separar as funções em outro arquivo OK
-Manter o projeto só em inglês OK
 Aprimorar o salvamento do arranjo no modo Caça ao Tesouro  
 =end
