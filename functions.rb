@@ -120,7 +120,7 @@ def media(a) # MÉDIA E MEDIANA
 end
 
 def chart(a, d, p) # HISTÓRICO DO ATIVO
-  print "   [Importing history of ", d, " days... " if p == true
+  print "   [Importing chart of ", d, " days... " if p == true
   response = apidata("https://coingecko.p.rapidapi.com/coins/" + a + "/market_chart?vs_currency=usd&days=" + d.to_s)
   if eval(response.read_body)[:prices] == nil || eval(response.read_body)[:prices] == "" || response.read_body.downcase.include?("invalid") || response.read_body.downcase.include?("could not find coin")
     print "\n\nERROR: ASSET NOT FOUND!\n" # erro em caso de retorno vazio

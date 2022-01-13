@@ -1,4 +1,4 @@
-versao = 3.0
+versao = 3.1
 
 print "\n                "
 ("Text-based Cryptocurrency Analyzer (TCA) - v. " + versao.to_s).split("").each do |l|
@@ -155,7 +155,7 @@ API: #{$api}\n\n"
   * FINAL VALUATION: "
       print ava(score, 30, 1)
       print " (#{fnum(score, 3)})\n"
-      print "\nWARNING: asset history is less than 12 months!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
+      print "\nWARNING: asset chart is less than 12 months!\n" if c365[:prices].length < 364 || c365[:prices] == c182[:prices]
 
       # GRAVAÇÃO E LOOP
       log.write("  #{n}. Holding of asset #{ativo.capitalize} (#{fnum(value, 1)}): #{fnum(score, 3)} (#{ava(score, 30, 1)})", "\n") # escrevendo log
@@ -243,12 +243,12 @@ API: #{$api}\n\n"
       print "  * Signal:
     1. Wait for #{seq} consecutive hours negative candlesticks;
     2. Buy when at least one of the alternatives below is true:
-      2.1 The hour after sequence is positive and has at least +75% strength + volume;
+      2.1 The hour after the sequence is positive and has a minimum SVV of 50%;
       2.2 Some support has been reached and the hour after sequence has closed in positive;
       2.3 The candlestick of the next hour has a reversal pattern (dragonfly, hammer, etc.);
 
 Remember to set stops right after buying to control the trading risk.\n"
-      print "\nWARNING: asset history is less than 3 months!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
+      print "\nWARNING: asset chart is less than 3 months!\n" if c90[:prices].length < 90 || c90[:prices] == c30[:prices]
       n += 1
       print "\nCalculate another trade? (y/n) "
       lp = gets.chomp.upcase
@@ -464,14 +464,14 @@ Remember to set stops right after buying to control the trading risk.\n"
         fcompra = ((price - hour.min) / dif.to_f) * 100 # força de compra
         fvenda = ((price - hour.max) / dif.to_f) * 100 # força de venda
         forca = fcompra + fvenda # força somada
-        if forca >= 0
-          fv = forca + vvol # força + volume
-        else
-          fv = forca + (vvol * -1)
-        end
         volat = (dif / price.to_f) * 100 # volatilidade
+        if forca >= 0
+          fvv = (forca + vvol) * var # SVV = (força + volume) * variação
+        else
+          fvv = (forca + (vvol * -1)) * var
+        end
         if price - hour[0] > 0 # hora positiva ou negativa?
-          if seq >= 0 # positiva
+          if seq >= 0 # adiciona valor à sequência positiva
             seq += 1
           else
             seq = 1
@@ -501,7 +501,7 @@ Remember to set stops right after buying to control the trading risk.\n"
           STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
         end
         if Time.now.min <= 2
-          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca fv volat).each do |vn|
+          %w(var tvar vtm vvol vcap vtotal fcompra fvenda forca fvv volat).each do |vn|
             v = eval(vn)
             STDERR.puts "  #{vn.upcase} (#{defined?(v)} - #{v.class.to_s.downcase}) = #{v}"
           end
@@ -516,8 +516,8 @@ Remember to set stops right after buying to control the trading risk.\n"
     * Average: #{fnum(media(hour)[0], 1)};    Median: #{fnum(media(hour)[1], 1)};    Middle: #{fnum(media(hour)[2], 1)}
     * Volume: $#{fnum(vol, 4)} (#{fnum(vvol, 2)})
     * Capitalization: $#{fnum(cap, 4)} (#{fnum(vcap, 2)})
-    * Volatility: #{fnum(volat, 3)}%
-    * Strength: #{fnum(forca, 2)};    Strength + volume: #{fnum(fv, 2)}
+    * Volatility: #{volat.round(2)}%
+    * Strength: #{fnum(forca, 2)};    SVV: #{fnum(fvv, 2)}
     * Mixed variance (cap. and value): #{fnum((var + vcap) / 2.0, 2)}
     * Average variance: #{fnum(vtm, 2)}
     * Total variance: #{fnum(vtotal, 2)}"
@@ -536,7 +536,7 @@ Remember to set stops right after buying to control the trading risk.\n"
         elsif price >= zonas[0]
           print "\n    * WARNING: selling zone (above -23.6% top)"
         end
-        log.write("  #{n}. Asset value #{ativo.capitalize} at #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variance of #{fnum(var, 2)}, strength+volume of #{fnum(fv, 2)})\n")
+        log.write("  #{n}. Asset value #{ativo.capitalize} at #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min}: #{fnum(price, 1)} (variance of #{fnum(var, 2)}, strength+volume of #{fnum(fvv, 2)})\n")
         print "\n\n  > #{"%02d" % Time.now.hour}:#{"%02d" % Time.now.min} (#{ativo.capitalize}): #{fnum(price, 1)};    Volume: $#{fnum(vol, 4)}..." # INÍCIO DA HORA
         n += 1
       else
